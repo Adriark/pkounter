@@ -86,16 +86,21 @@ label {
   justify-content: space-between;
   gap: 14px;
   height: 78px;
-  padding: 8px 16px;
+  padding: 6px 16px;
   border-bottom: 1px solid #242d33;
   background: #12181c;
+  overflow: visible;
+  position: relative;
+  z-index: 10;
 }
 
 .brand-block {
   display: flex;
   align-items: center;
-  flex: 0 0 auto;
-  min-width: max-content;
+  flex: 0 0 250px;
+  min-width: 250px;
+  height: 78px;
+  overflow: visible;
 }
 
 .topbar h1 {
@@ -105,12 +110,14 @@ label {
 
 .brand-logo {
   display: block;
-  height: 56px;
-  width: auto;
+  width: 240px;
+  height: auto;
   max-width: none;
+  max-height: none;
   object-fit: contain;
   object-position: left center;
   flex-shrink: 0;
+  transform: translateY(-2px);
 }
 
 .rules {
@@ -323,7 +330,7 @@ label {
   background: #10161a;
   color: #8999a4;
   font-size: 0.72rem;
-  line-height: 1;
+  line-height: 1.1;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -2179,5 +2186,168 @@ body.modal-open::before {
 
   .stat-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* =========================
+   Responsive layout fixes
+   ========================= */
+
+:root {
+  --topbar-height: 78px;
+  --footer-height: 26px;
+}
+
+/* Desktop: una sola línea, sin huecos raros */
+.topbar {
+  height: var(--topbar-height);
+  min-height: var(--topbar-height);
+  padding: 6px 16px;
+  flex-wrap: nowrap;
+  align-content: center;
+  overflow: hidden;
+}
+
+.brand-block {
+  display: flex;
+  align-items: center;
+  flex: 0 0 250px;
+  min-width: 250px;
+  height: 100%;
+  overflow: hidden;
+}
+
+.topbar h1 {
+  margin: 0;
+  line-height: 0;
+}
+
+.brand-logo {
+  display: block;
+  width: 235px;
+  height: auto;
+  max-width: none;
+  max-height: 62px;
+  object-fit: contain;
+  object-position: left center;
+  flex-shrink: 0;
+}
+
+.rules {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 6px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: thin;
+}
+
+.rules > * {
+  flex: 0 0 auto;
+}
+
+.app-shell {
+  height: calc(100dvh - var(--topbar-height) - var(--footer-height));
+}
+
+.site-footer {
+  height: var(--footer-height);
+  min-height: var(--footer-height);
+  padding: 0 10px;
+  font-size: 0.64rem;
+  line-height: 1;
+}
+
+/* Tablet / ventana estrecha */
+@media (max-width: 1100px) {
+  body {
+    height: auto;
+    min-height: 100dvh;
+    overflow-y: auto;
+  }
+
+  .topbar {
+    height: auto;
+    min-height: 96px;
+    padding: 10px 12px;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    overflow: visible;
+  }
+
+  .brand-block {
+    flex: 0 0 100%;
+    min-width: 0;
+    height: 44px;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .brand-logo {
+    width: min(230px, 72vw);
+    max-height: 44px;
+  }
+
+  .rules {
+    flex: 0 0 100%;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 2px;
+  }
+
+  .app-shell {
+    height: auto;
+    min-height: 0;
+    overflow: visible;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "team"
+      "editor"
+      "suggestions"
+      "counters"
+      "threat";
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .site-footer {
+    height: auto;
+    min-height: var(--footer-height);
+    flex-wrap: wrap;
+    white-space: normal;
+    text-align: center;
+    padding: 6px 10px;
+  }
+}
+
+/* Móvil */
+@media (max-width: 650px) {
+  .topbar {
+    min-height: 86px;
+    padding: 8px;
+  }
+
+  .brand-block {
+    height: 38px;
+  }
+
+  .brand-logo {
+    width: min(190px, 74vw);
+    max-height: 38px;
+  }
+
+  .rules {
+    justify-content: flex-start;
+  }
+
+  .app-shell {
+    padding: 8px;
   }
 }
