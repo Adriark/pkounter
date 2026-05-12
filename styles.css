@@ -2190,7 +2190,8 @@ body.modal-open::before {
 }
 
 /* =========================
-   Responsive layout fixes
+   Final responsive overrides
+   Header, controls and dropdowns
    ========================= */
 
 :root {
@@ -2198,14 +2199,19 @@ body.modal-open::before {
   --footer-height: 26px;
 }
 
-/* Desktop: una sola línea, sin huecos raros */
+/* Header base */
+
 .topbar {
   height: var(--topbar-height);
   min-height: var(--topbar-height);
   padding: 6px 16px;
+  flex-direction: row;
   flex-wrap: nowrap;
+  align-items: center;
   align-content: center;
-  overflow: hidden;
+  overflow: visible !important;
+  position: relative;
+  z-index: 1000;
 }
 
 .brand-block {
@@ -2231,24 +2237,100 @@ body.modal-open::before {
   object-fit: contain;
   object-position: left center;
   flex-shrink: 0;
+  transform: none;
 }
 
+/* Topbar controls */
+
 .rules {
-  display: flex;
+  display: flex !important;
+  grid-template-columns: none !important;
   align-items: center;
   justify-content: flex-end;
   flex: 1 1 auto;
   min-width: 0;
+  width: auto;
+  max-width: 100%;
   gap: 6px;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scrollbar-width: thin;
+  flex-wrap: wrap;
+  overflow: visible !important;
+  padding-bottom: 0;
+  position: relative;
+  z-index: 1001;
 }
 
 .rules > * {
   flex: 0 0 auto;
+  width: auto !important;
+  max-width: max-content;
 }
+
+.top-link,
+.rules > span,
+.format-control,
+.language-control {
+  flex: 0 0 auto;
+  width: auto !important;
+  max-width: max-content;
+  white-space: nowrap;
+}
+
+.format-control {
+  position: relative;
+  z-index: 1002;
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  max-width: min(360px, calc(100vw - 24px));
+  overflow: visible !important;
+}
+
+.format-control:first-child {
+  grid-column: auto !important;
+}
+
+.format-label {
+  flex: 0 0 auto;
+  min-width: auto;
+  white-space: nowrap;
+}
+
+.format-button {
+  flex: 0 1 auto;
+  width: auto !important;
+  min-width: 0;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.language-control .format-button {
+  min-width: 76px;
+  max-width: 120px;
+}
+
+/* Dropdowns: importante para que vuelvan a desplegarse */
+
+.format-menu {
+  position: absolute;
+  top: calc(100% + 7px);
+  right: 0;
+  z-index: 5000;
+  min-width: 100%;
+  max-width: min(340px, calc(100vw - 20px));
+  overflow: visible;
+}
+
+.language-control .format-menu {
+  min-width: 150px;
+}
+
+.format-menu[hidden] {
+  display: none;
+}
+
+/* Shell/footer */
 
 .app-shell {
   height: calc(100dvh - var(--topbar-height) - var(--footer-height));
@@ -2262,76 +2344,191 @@ body.modal-open::before {
   line-height: 1;
 }
 
-/* Tablet / ventana estrecha */
-@media (max-width: 1100px) {
+/* Medium screens */
+
+@media (max-width: 1480px) {
   body {
     height: auto;
     min-height: 100dvh;
+    overflow-x: hidden;
     overflow-y: auto;
-  }
-
-  .topbar {
-    height: auto;
-    min-height: 96px;
-    padding: 10px 12px;
-    gap: 8px;
-    flex-wrap: wrap;
-    align-content: flex-start;
-    overflow: visible;
-  }
-
-  .brand-block {
-    flex: 0 0 100%;
-    min-width: 0;
-    height: 44px;
-    justify-content: center;
-    overflow: hidden;
-  }
-
-  .brand-logo {
-    width: min(230px, 72vw);
-    max-height: 44px;
-  }
-
-  .rules {
-    flex: 0 0 100%;
-    width: 100%;
-    justify-content: center;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding-bottom: 2px;
   }
 
   .app-shell {
     height: auto;
     min-height: 0;
     overflow: visible;
+  }
+}
+
+/* Tablet / narrow desktop */
+
+@media (max-width: 1180px) {
+  .topbar {
+    height: auto;
+    min-height: 104px;
+    padding: 10px 12px;
+    gap: 8px;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    overflow: visible !important;
+  }
+
+  .brand-block {
+    flex: 0 0 auto;
+    width: 100%;
+    min-width: 0;
+    height: 46px;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .brand-logo {
+    width: min(235px, 72vw);
+    max-height: 46px;
+  }
+
+  .rules {
+    width: 100%;
+    max-width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    overflow: visible !important;
+    padding-bottom: 0;
+  }
+
+  .format-button {
+    max-width: 190px;
+  }
+
+  .language-control .format-button {
+    max-width: 110px;
+  }
+
+  .app-shell {
     grid-template-columns: 1fr;
+    grid-template-rows: none;
     grid-template-areas:
       "team"
       "editor"
-      "suggestions"
       "counters"
-      "threat";
-    gap: 10px;
+      "threat"
+      "suggestions";
+    height: auto;
+    min-height: 0;
+    overflow: visible;
     padding: 10px;
+    gap: 12px;
   }
 
   .site-footer {
     height: auto;
     min-height: var(--footer-height);
+    justify-content: center;
     flex-wrap: wrap;
     white-space: normal;
+    overflow: visible;
     text-align: center;
     padding: 6px 10px;
   }
+
+  .site-footer span {
+    overflow: visible;
+    text-overflow: clip;
+  }
 }
 
-/* Móvil */
-@media (max-width: 650px) {
+/* Mobile */
+
+@media (max-width: 760px) {
   .topbar {
-    min-height: 86px;
+    min-height: 96px;
     padding: 8px;
+    overflow: visible !important;
+  }
+
+  .brand-block {
+    height: 42px;
+  }
+
+  .brand-logo {
+    width: min(210px, 72vw);
+    max-height: 42px;
+  }
+
+  .rules {
+    display: flex !important;
+    grid-template-columns: none !important;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    overflow: visible !important;
+    gap: 6px;
+    padding-bottom: 0;
+  }
+
+  .rules > * {
+    width: auto !important;
+    max-width: max-content;
+  }
+
+  .top-link,
+  .rules > span {
+    min-height: 32px;
+    padding-inline: 10px;
+    font-size: 0.72rem;
+  }
+
+  .format-control,
+  .language-control {
+    width: auto !important;
+    min-height: 32px;
+    max-width: calc(100vw - 18px);
+    overflow: visible !important;
+  }
+
+  .format-label {
+    min-height: 32px;
+    padding-inline: 9px;
+    font-size: 0.72rem;
+  }
+
+  .format-button {
+    width: auto !important;
+    min-height: 32px;
+    min-width: 0;
+    max-width: 155px;
+    padding: 0 30px 0 10px;
+    font-size: 0.72rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .language-control .format-button {
+    min-width: 70px;
+    max-width: 100px;
+  }
+
+  .format-menu {
+    left: 0;
+    right: auto;
+    min-width: max-content;
+    max-width: calc(100vw - 20px);
+  }
+
+  .app-shell {
+    padding: 8px;
+    gap: 10px;
+  }
+}
+
+/* Very small mobile */
+
+@media (max-width: 430px) {
+  .topbar {
+    min-height: 92px;
   }
 
   .brand-block {
@@ -2339,15 +2536,37 @@ body.modal-open::before {
   }
 
   .brand-logo {
-    width: min(190px, 74vw);
+    width: min(185px, 70vw);
     max-height: 38px;
   }
 
   .rules {
-    justify-content: flex-start;
+    gap: 5px;
   }
 
-  .app-shell {
-    padding: 8px;
+  .top-link,
+  .rules > span {
+    min-height: 30px;
+    padding-inline: 8px;
+    font-size: 0.68rem;
+  }
+
+  .format-label {
+    min-height: 30px;
+    padding-inline: 8px;
+    font-size: 0.68rem;
+  }
+
+  .format-button {
+    min-height: 30px;
+    max-width: 132px;
+    padding-right: 28px;
+    font-size: 0.68rem;
+  }
+
+  .language-control .format-button {
+    min-width: 64px;
+    max-width: 88px;
   }
 }
+
