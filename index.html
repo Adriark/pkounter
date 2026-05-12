@@ -3,16 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Pokeark</title>
-    <link rel="icon" href="assets/Pokeark2.ico" />
+    <title>Pkounter</title>
+    <link rel="icon" href="assets/Pkounter_logo.png" />
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
     <header class="topbar">
       <div class="brand-block">
-        <h1><img class="brand-logo" src="assets/PokeArk_logo-cropped.png" alt="PokeArk" /></h1>
+        <h1><img class="brand-logo" src="assets/Pkounter_logo.png" alt="Pkounter" /></h1>
       </div>
       <div class="rules">
+        <a class="top-link" href="about.html" data-i18n="aboutButton">About</a>
         <div class="format-control">
           <span class="format-label" data-i18n="formatLabel">Formato</span>
           <button id="formatButton" class="format-button" type="button" aria-haspopup="listbox" aria-expanded="false"></button>
@@ -47,12 +48,20 @@
           </div>
         </div>
 
-        <div id="importTray" class="import-tray" hidden>
+        <div id="importTray" class="import-tray" role="dialog" aria-modal="true" aria-labelledby="import-title" hidden>
+          <div class="import-dialog">
+            <div class="import-dialog-head">
+              <div>
+                <h2 id="import-title" data-i18n="importDialogTitle">Importar equipo</h2>
+                <p data-i18n="importDialogHint">Pega tu equipo en formato Showdown sin mover el builder de sitio.</p>
+              </div>
+            </div>
           <label for="importBox" data-i18n="importLabel">Pega tu equipo en formato Showdown</label>
           <textarea id="importBox" placeholder="Pega aquí un equipo en formato Showdown..."></textarea>
           <div class="import-actions">
             <button id="importTeam" type="button" data-i18n="importTeamButton">Importar equipo</button>
             <button id="cancelImport" class="ghost-button" type="button" data-i18n="closeButton">Cerrar</button>
+          </div>
           </div>
         </div>
         <textarea id="exportBox" class="sr-only" readonly></textarea>
@@ -106,7 +115,7 @@
         <div class="section-head">
           <div>
             <h2 id="threat-title">Buscar counters</h2>
-            <p>Respuestas directas contra una amenaza</p>
+            <p data-i18n="threatHint">Respuestas directas contra una amenaza</p>
           </div>
         </div>
 
@@ -118,7 +127,8 @@
     </main>
 
     <footer class="site-footer">
-      <span data-i18n="attributionNotice">Pokeark no está afiliado a Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown ni MunchStats.</span>
+      <span data-i18n="madeBy">Hecho por Adriark.</span>
+      <span data-i18n="attributionNotice">Pkounter no está afiliado a Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown ni MunchStats.</span>
       <span>
         <span data-i18n="dataSources">Datos y recursos:</span>
         <a href="https://munchstats.com/" target="_blank" rel="noreferrer">MunchStats</a>,

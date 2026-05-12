@@ -1,6 +1,6 @@
-# Champions Core Builder
+# Pkounter
 
-Aplicacion estatica para crear equipos de Pokemon Champions en dobles Reg M-A.
+Aplicacion estatica para crear equipos de Pokemon Champions en varios formatos con sugerencias, counters y export Showdown.
 
 ## Que incluye
 
@@ -11,6 +11,7 @@ Aplicacion estatica para crear equipos de Pokemon Champions en dobles Reg M-A.
 - Importacion y exportacion tipo Showdown Champions con linea `EVs:` usando valores Champions 0-32.
 - Sugerencias en tiempo real basadas en uso, partners, roles de VGC y cobertura defensiva.
 - Analisis de mayores counters al completar 6 Pokemon.
+- Pagina About/FAQ con fuentes, cadencia de actualizacion y contacto.
 - Sprites de Pokemon y objetos desde Pokemon Showdown.
 - Snapshot local de MunchStats en `munchstats-data.js` para uso, movimientos, objetos, habilidades, naturalezas, repartos de stats y partners.
 

@@ -35,8 +35,9 @@ const UI_TEXT = {
   es: {
     addButton: "Añadir",
     addPokemonPlaceholder: "Añadir Pokémon...",
+    aboutButton: "Sobre Pkounter",
     applyPopularSet: "Aplicar set popular",
-    attributionNotice: "Pokeark no está afiliado a Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown ni MunchStats.",
+    attributionNotice: "Pkounter no está afiliado a Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown ni MunchStats.",
     clearButton: "Limpiar",
     closeButton: "Cerrar",
     configTitle: "Configuración",
@@ -47,12 +48,15 @@ const UI_TEXT = {
     exportButton: "Exportar",
     formatLabel: "Formato",
     importButton: "Importar",
+    importDialogHint: "Pega tu equipo en formato Showdown sin mover el builder de sitio.",
+    importDialogTitle: "Importar equipo",
     importLabel: "Pega tu equipo en formato Showdown",
     importPlaceholder: "Pega aquí un equipo en formato Showdown...",
     importTeamButton: "Importar equipo",
     languageLabel: "Idioma",
     levelRule: "Nivel 50",
     majorCountersHint: "Se activa al completar 6 Pokémon",
+    madeBy: "Hecho por Adriark.",
     megaConflict: "Conflicto de Mega",
     megaRule: "1 Mega",
     movePlaceholder: "Movimiento {n}",
@@ -74,8 +78,9 @@ const UI_TEXT = {
   en: {
     addButton: "Add",
     addPokemonPlaceholder: "Add Pokémon...",
+    aboutButton: "About",
     applyPopularSet: "Apply popular set",
-    attributionNotice: "Pokeark is not affiliated with Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown, or MunchStats.",
+    attributionNotice: "Pkounter is not affiliated with Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown, or MunchStats.",
     clearButton: "Clear",
     closeButton: "Close",
     configTitle: "Configuration",
@@ -86,12 +91,15 @@ const UI_TEXT = {
     exportButton: "Export",
     formatLabel: "Format",
     importButton: "Import",
+    importDialogHint: "Paste a Showdown-format team without moving the builder layout.",
+    importDialogTitle: "Import team",
     importLabel: "Paste your team in Showdown format",
     importPlaceholder: "Paste a Showdown-format team here...",
     importTeamButton: "Import team",
     languageLabel: "Language",
     levelRule: "Level 50",
     majorCountersHint: "Active after filling all 6 Pokémon",
+    madeBy: "Made by Adriark.",
     megaConflict: "Mega conflict",
     megaRule: "1 Mega",
     movePlaceholder: "Move {n}",
@@ -991,8 +999,14 @@ function addRandomTeamMember(mon) {
   if (index === -1 || !mon) return;
   const slot = emptySlot();
   slot.pokemon = mon;
-  applyRandomizedSet(slot, mon);
+  applyRandomizedSet(slot, mon, usedRandomItems());
   team[index] = slot;
+}
+
+function usedRandomItems() {
+  return new Set(team
+    .filter((slot) => slot.pokemon && slot.item)
+    .map((slot) => normalizeItemName(slot.item)));
 }
 
 function randomTeamArchetype() {
@@ -1156,12 +1170,13 @@ function weatherAbuser(candidate, weather) {
   return false;
 }
 
-function applyRandomizedSet(slot, mon) {
+function applyRandomizedSet(slot, mon, usedItems = new Set()) {
   applyPopularSet(slot, mon);
 
   if (!mon.isMega) {
-    const items = itemOptionsFor(mon, slot).slice(0, 10);
-    slot.item = weightedRandomPick(items, (item) => Math.max(2, itemUsageFor(mon, item)) + Math.random() * 5) || slot.item;
+    const allItems = itemOptionsFor(mon, slot);
+    const picked = weightedRandomPick(allItems.slice(0, 10), (item) => Math.max(2, itemUsageFor(mon, item)) + Math.random() * 5) || slot.item;
+    slot.item = nonDuplicateRandomItem(mon, picked, allItems, usedItems) || picked || slot.item;
   }
 
   const abilities = abilityOptionsFor(mon, slot);
@@ -1180,6 +1195,16 @@ function applyRandomizedSet(slot, mon) {
   }
 
   slot.moves = randomMovesFor(mon, slot);
+}
+
+function nonDuplicateRandomItem(mon, picked, options, usedItems) {
+  const normalizedPicked = normalizeItemName(picked);
+  if (!normalizedPicked || !usedItems.has(normalizedPicked)) return normalizedPicked;
+  const fallback = [...options]
+    .map(normalizeItemName)
+    .filter((item) => item && !usedItems.has(item))
+    .sort((a, b) => itemUsageFor(mon, b) - itemUsageFor(mon, a) || a.localeCompare(b))[0];
+  return fallback || normalizedPicked;
 }
 
 function randomMovesFor(mon, slot) {
