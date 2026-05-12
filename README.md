@@ -13,21 +13,6 @@ Aplicacion estatica para crear equipos de Pokemon Champions en varios formatos c
 - Analisis de mayores counters al completar 6 Pokemon.
 - Pagina About/FAQ con fuentes, cadencia de actualizacion y contacto.
 - Sprites de Pokemon y objetos desde Pokemon Showdown.
-- Snapshot local de MunchStats en `munchstats-data.js` para uso, movimientos, objetos, habilidades, naturalezas, repartos de stats y partners.
-
-## Actualizar datos de MunchStats
-
-La forma comoda es abrir `Abrir app actualizada.cmd`. Ese lanzador descarga los ultimos datos de MunchStats, regenera `munchstats-data.js` y abre la app en el navegador desde un servidor local.
-
-Si abres `index.html` directamente con doble clic, la app usa el ultimo snapshot local disponible. Un archivo `file://` no puede descargar datos de MunchStats y reescribir `munchstats-data.js` por si solo.
-
-Tambien puedes actualizarlo manualmente con:
-
-```bash
-node scripts/sync-munchstats.mjs
-```
-
-El script descarga el formato `[Champions] VGC 2026 Reg M-A (Bo3)` con rating `1760` desde la API JSON de MunchStats y regenera `munchstats-data.js`.
 
 ## Fuentes usadas
 
