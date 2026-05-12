@@ -1,111 +1,194 @@
 <!doctype html>
 <html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>About | Pkounter</title>
-    <link rel="icon" href="assets/Pkounter_logo.png" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body class="about-page">
-    <header class="topbar">
-      <div class="brand-block">
-        <h1><img class="brand-logo" src="assets/Pkounter_logo.png" alt="Pkounter" /></h1>
-      </div>
-      <div class="rules">
-        <a class="top-link" href="index.html">Builder</a>
-        <a class="top-link active" href="about.html">About</a>
-        <span>VGC / BSS / OU</span>
-        <span>Nivel 50</span>
-      </div>
-    </header>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>About | Pkounter</title>
+  <link rel="icon" href="assets/Pkounter_logo.png" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
 
-    <main class="about-shell">
-      <section class="about-hero">
-        <p class="eyebrow">Pkounter</p>
-        <h2>FAQ / About</h2>
-        <p>
-          Pkounter es un asistente de teambuilding para Champions que combina datos de uso,
-          sets comunes y lectura defensiva/ofensiva para proponer compañeros, counters y ajustes.
-        </p>
-        <p lang="en">
-          Pkounter is a Champions teambuilding assistant that combines usage data, common sets,
-          and offensive/defensive team reads to suggest partners, counters, and set adjustments.
-        </p>
-      </section>
+<body class="about-page" data-language="es">
 
-      <section class="about-grid" aria-label="FAQ">
-        <article class="about-card">
-          <h3>¿De dónde sale la información?</h3>
-          <p>
-            La base competitiva se apoya en MunchStats y datos de Pokémon Showdown/Smogon. Los
-            Pokémon, objetos, habilidades, movimientos y sprites se contrastan con recursos de
-            Pokémon Showdown, PokéAPI y datos locales de Champions.
-          </p>
-          <h3 lang="en">Where does the information come from?</h3>
-          <p lang="en">
-            Competitive data is based on MunchStats plus Pokémon Showdown/Smogon data. Pokémon,
-            items, abilities, moves, and sprites are matched against Pokémon Showdown, PokéAPI,
-            and local Champions data.
-          </p>
-        </article>
+<header class="topbar">
+  <div class="brand-block">
+    <h1><img class="brand-logo" src="assets/Pkounter_logo.png" alt="Pkounter" /></h1>
+  </div>
 
-        <article class="about-card">
-          <h3>¿Cada cuánto se actualizan los datos?</h3>
-          <p>
-            La web puede refrescar sus archivos de datos a diario si el servidor ejecuta el script
-            programado, pero las estadísticas públicas del metagame se consideran mensuales, que es
-            la cadencia realista de actualización de uso.
-          </p>
-          <h3 lang="en">How often is the data updated?</h3>
-          <p lang="en">
-            The site can refresh its local data files daily when the server runs the scheduled
-            script, but public metagame usage stats should be treated as monthly data, which is the
-            realistic usage update cadence.
-          </p>
-        </article>
+  <div class="rules">
+    <a class="top-link" href="index.html" data-about-i18n="builderButton">Builder</a>
+    <a class="top-link active" href="about.html" data-about-i18n="aboutButton">About</a>
+    <span>VGC / BSS / OU</span>
+    <span data-about-i18n="levelRule">Nivel 50</span>
+  </div>
+</header>
 
-        <article class="about-card">
-          <h3>¿La app usa IA externa?</h3>
-          <p>
-            Las sugerencias que ves en la web se calculan con lógica local del propio builder:
-            roles, porcentajes de uso, daño estimado, velocidad, tipos, habilidades y movimientos.
-            No consume tu ChatGPT al usar la página publicada.
-          </p>
-          <h3 lang="en">Does the app use external AI?</h3>
-          <p lang="en">
-            The suggestions shown in the website are produced by local builder logic: roles, usage
-            percentages, estimated damage, Speed, types, abilities, and moves. Using the published
-            page does not consume your ChatGPT.
-          </p>
-        </article>
+<main class="about-shell">
 
-        <article class="about-card">
-          <h3>He encontrado un bug o una incoherencia</h3>
-          <p>
-            Si ves un set raro, una traducción incorrecta, un dato que no encaja o tienes una
-            sugerencia, escríbeme a
-            <a href="mailto:contactpkounter@gmail.com">contactpkounter@gmail.com</a>.
-          </p>
-          <h3 lang="en">I found a bug or inconsistency</h3>
-          <p lang="en">
-            If you find an odd set, a wrong translation, a data mismatch, or have a suggestion,
-            email me at <a href="mailto:contactpkounter@gmail.com">contactpkounter@gmail.com</a>.
-          </p>
-        </article>
-      </section>
-    </main>
+  <section class="about-hero">
+    <p class="eyebrow">Pkounter</p>
 
-    <footer class="site-footer">
-      <span>Hecho por Adriark. / Made by Adriark.</span>
-      <span>Pkounter no está afiliado a Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown ni MunchStats.</span>
-      <span>
-        Datos y recursos:
-        <a href="https://munchstats.com/" target="_blank" rel="noreferrer">MunchStats</a>,
-        <a href="https://pokemonshowdown.com/" target="_blank" rel="noreferrer">Pokémon Showdown</a>,
-        <a href="https://www.smogon.com/stats/" target="_blank" rel="noreferrer">Smogon</a>,
-        <a href="https://pokeapi.co/" target="_blank" rel="noreferrer">PokéAPI</a>.
-      </span>
-    </footer>
-  </body>
+    <h2 data-about-lang="es">FAQ / Sobre Pkounter</h2>
+    <h2 data-about-lang="en" lang="en" hidden>FAQ / About</h2>
+
+    <p data-about-lang="es">
+      Pkounter es un asistente de teambuilding para Champions que combina datos de uso,
+      sets comunes y lectura defensiva/ofensiva para proponer compañeros, counters y ajustes.
+    </p>
+
+    <p data-about-lang="en" lang="en" hidden>
+      Pkounter is a Champions teambuilding assistant that combines usage data, common sets,
+      and offensive/defensive team reads to suggest partners, counters, and set adjustments.
+    </p>
+  </section>
+
+  <section class="about-grid" aria-label="FAQ">
+
+    <article class="about-card" data-about-lang="es">
+      <h3>¿De dónde sale la información?</h3>
+      <p>
+        La base competitiva se apoya en MunchStats y datos de Pokémon Showdown/Smogon.
+        Los Pokémon, objetos, habilidades, movimientos y sprites se contrastan con recursos
+        de Pokémon Showdown, PokéAPI y datos locales de Champions.
+      </p>
+    </article>
+
+    <article class="about-card" data-about-lang="en" lang="en" hidden>
+      <h3>Where does the information come from?</h3>
+      <p>
+        Competitive data is based on MunchStats plus Pokémon Showdown/Smogon data.
+        Pokémon, items, abilities, moves, and sprites are matched against Pokémon Showdown,
+        PokéAPI, and local Champions data.
+      </p>
+    </article>
+
+    <article class="about-card" data-about-lang="es">
+      <h3>¿Cada cuánto se actualizan los datos?</h3>
+      <p>
+        La web refresca sus archivos de datos automáticamente con el script programado.
+        Aun así, las estadísticas públicas del metagame deben tratarse como datos de uso
+        con cadencia realista mensual.
+      </p>
+    </article>
+
+    <article class="about-card" data-about-lang="en" lang="en" hidden>
+      <h3>How often is the data updated?</h3>
+      <p>
+        The site refreshes its local data files automatically through the scheduled script.
+        Still, public metagame usage stats should be treated as usage data with a realistic
+        monthly cadence.
+      </p>
+    </article>
+
+    <article class="about-card" data-about-lang="es">
+      <h3>¿La app usa IA externa?</h3>
+      <p>
+        Las sugerencias que ves en la web se calculan con lógica local del propio builder:
+        roles, porcentajes de uso, daño estimado, velocidad, tipos, habilidades y movimientos.
+        No consume tu ChatGPT al usar la página publicada.
+      </p>
+    </article>
+
+    <article class="about-card" data-about-lang="en" lang="en" hidden>
+      <h3>Does the app use external AI?</h3>
+      <p>
+        The suggestions shown in the website are produced by local builder logic:
+        roles, usage percentages, estimated damage, Speed, types, abilities, and moves.
+        Using the published page does not consume your ChatGPT.
+      </p>
+    </article>
+
+    <article class="about-card" data-about-lang="es">
+      <h3>He encontrado un bug o una incoherencia</h3>
+      <p>
+        Si ves un set raro, una traducción incorrecta, un dato que no encaja o tienes una
+        sugerencia, escríbeme a
+        <a href="mailto:contactpkounter@gmail.com">contactpkounter@gmail.com</a>.
+      </p>
+    </article>
+
+    <article class="about-card" data-about-lang="en" lang="en" hidden>
+      <h3>I found a bug or inconsistency</h3>
+      <p>
+        If you find an odd set, a wrong translation, a data mismatch, or have a suggestion,
+        email me at <a href="mailto:contactpkounter@gmail.com">contactpkounter@gmail.com</a>.
+      </p>
+    </article>
+
+  </section>
+
+</main>
+
+<footer class="site-footer">
+
+  <span data-about-lang="es">
+    Pkounter no está afiliado a Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown ni MunchStats.
+  </span>
+
+  <span data-about-lang="en" lang="en" hidden>
+    Pkounter is not affiliated with Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown, or MunchStats.
+  </span>
+
+  <span data-about-lang="es">
+    Datos y recursos:
+    <a href="https://munchstats.com/" target="_blank" rel="noreferrer">MunchStats</a>,
+    <a href="https://pokemonshowdown.com/" target="_blank" rel="noreferrer">Pokémon Showdown</a>,
+    <a href="https://www.smogon.com/stats/" target="_blank" rel="noreferrer">Smogon</a>,
+    <a href="https://pokeapi.co/" target="_blank" rel="noreferrer">PokéAPI</a>.
+  </span>
+
+  <span data-about-lang="en" lang="en" hidden>
+    Data and resources:
+    <a href="https://munchstats.com/" target="_blank" rel="noreferrer">MunchStats</a>,
+    <a href="https://pokemonshowdown.com/" target="_blank" rel="noreferrer">Pokémon Showdown</a>,
+    <a href="https://www.smogon.com/stats/" target="_blank" rel="noreferrer">Smogon</a>,
+    <a href="https://pokeapi.co/" target="_blank" rel="noreferrer">PokéAPI</a>.
+  </span>
+
+  <span data-about-lang="es">Hecho por Adriark.</span>
+  <span data-about-lang="en" lang="en" hidden>Made by Adriark.</span>
+
+</footer>
+
+<script>
+  (() => {
+    const TEXT = {
+      es: {
+        builderButton: "Builder",
+        aboutButton: "Sobre Pkounter",
+        levelRule: "Nivel 50",
+      },
+      en: {
+        builderButton: "Builder",
+        aboutButton: "About",
+        levelRule: "Level 50",
+      },
+    };
+
+    function getSavedLanguage() {
+      try {
+        const saved = JSON.parse(localStorage.getItem("champions-core-builder") || "{}")?.selectedLanguage;
+        return saved === "en" ? "en" : "es";
+      } catch {
+        return "es";
+      }
+    }
+
+    const language = getSavedLanguage();
+
+    document.documentElement.lang = language;
+    document.body.dataset.language = language;
+
+    document.querySelectorAll("[data-about-lang]").forEach((node) => {
+      node.hidden = node.dataset.aboutLang !== language;
+    });
+
+    document.querySelectorAll("[data-about-i18n]").forEach((node) => {
+      const key = node.dataset.aboutI18n;
+      node.textContent = TEXT[language][key] || node.textContent;
+    });
+  })();
+</script>
+
+</body>
 </html>
