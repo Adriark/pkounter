@@ -1,0 +1,11 @@
+{
+  "name": "pkounter",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/start-app.mjs",
+    "sync:munchstats": "node scripts/sync-munchstats.mjs",
+    "build": "echo No build needed"
+  }
+}

@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pokeark</title>
+    <link rel="icon" href="assets/Pokeark2.ico" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="brand-block">
+        <h1><img class="brand-logo" src="assets/PokeArk_logo-cropped.png" alt="PokeArk" /></h1>
+      </div>
+      <div class="rules">
+        <div class="format-control">
+          <span class="format-label" data-i18n="formatLabel">Formato</span>
+          <button id="formatButton" class="format-button" type="button" aria-haspopup="listbox" aria-expanded="false"></button>
+          <div id="formatMenu" class="format-menu" role="listbox" hidden></div>
+          <select id="formatSelect" hidden aria-label="Formato"></select>
+        </div>
+        <div class="format-control language-control">
+          <span class="format-label" data-i18n="languageLabel">Idioma</span>
+          <button id="languageButton" class="format-button" type="button" aria-haspopup="listbox" aria-expanded="false"></button>
+          <div id="languageMenu" class="format-menu" role="listbox" hidden></div>
+          <select id="languageSelect" hidden aria-label="Idioma"></select>
+        </div>
+        <span data-i18n="levelRule">Nivel 50</span>
+        <span id="formatMode">6 → 4 dobles</span>
+        <span data-i18n="spRule">66 SP · 32/stat</span>
+        <span data-i18n="megaRule">1 Mega</span>
+      </div>
+    </header>
+
+    <main class="app-shell">
+      <section class="panel team-panel" aria-labelledby="team-title">
+        <div class="section-head">
+          <div>
+            <h2 id="team-title">Equipo final</h2>
+            <p id="teamStatus">0/6 Pokémon</p>
+          </div>
+          <div class="team-actions">
+            <button id="showImport" class="ghost-button" type="button" data-i18n="importButton">Importar</button>
+            <button id="copyExport" class="ghost-button" type="button" data-i18n="exportButton">Exportar</button>
+            <button id="randomTeam" class="random-button" type="button" data-i18n="randomButton">Aleatorio</button>
+            <button id="clearTeam" class="ghost-button" type="button" data-i18n="clearButton">Limpiar</button>
+          </div>
+        </div>
+
+        <div id="importTray" class="import-tray" hidden>
+          <label for="importBox" data-i18n="importLabel">Pega tu equipo en formato Showdown</label>
+          <textarea id="importBox" placeholder="Pega aquí un equipo en formato Showdown..."></textarea>
+          <div class="import-actions">
+            <button id="importTeam" type="button" data-i18n="importTeamButton">Importar equipo</button>
+            <button id="cancelImport" class="ghost-button" type="button" data-i18n="closeButton">Cerrar</button>
+          </div>
+        </div>
+        <textarea id="exportBox" class="sr-only" readonly></textarea>
+
+        <div class="quick-add">
+          <input id="pokemonSearch" list="pokemonList" placeholder="Añadir Pokémon..." autocomplete="off" />
+          <datalist id="pokemonList"></datalist>
+          <button id="addPokemon" type="button" data-i18n="addButton">Añadir</button>
+        </div>
+
+        <div id="teamSlots" class="team-slots"></div>
+
+        <div id="teamSummary" class="summary-grid"></div>
+      </section>
+
+      <section class="panel editor-panel" aria-labelledby="editor-title">
+        <div class="section-head">
+          <div>
+            <h2 id="editor-title">Configuración</h2>
+            <p id="selectedHint">Elige un slot para editarlo</p>
+          </div>
+          <button id="applyPopularSet" class="accent-button" type="button" data-i18n="applyPopularSet">Aplicar set popular</button>
+        </div>
+
+        <div id="editor"></div>
+      </section>
+
+      <section class="panel suggestions-panel" aria-labelledby="suggestions-title">
+        <div class="section-head">
+          <div>
+            <h2 id="suggestions-title">Sugerencias en tiempo real</h2>
+            <p id="suggestionHint">Partners, roles y amenazas del meta</p>
+          </div>
+        </div>
+
+        <div id="suggestions" class="suggestions"></div>
+        <div id="suggestionControls" class="suggestion-more"></div>
+      </section>
+
+      <section class="panel counters-panel" aria-labelledby="counters-title">
+        <div class="section-head">
+          <div>
+            <h2 id="counters-title">Mayores counters</h2>
+            <p data-i18n="majorCountersHint">Se activa al completar 6 Pokémon</p>
+          </div>
+        </div>
+        <div id="counters" class="counters"></div>
+      </section>
+
+      <section class="panel threat-panel" aria-labelledby="threat-title">
+        <div class="section-head">
+          <div>
+            <h2 id="threat-title">Buscar counters</h2>
+            <p>Respuestas directas contra una amenaza</p>
+          </div>
+        </div>
+
+        <div class="threat-search">
+          <input id="threatSearch" list="pokemonList" placeholder="Ej. Archaludon..." autocomplete="off" />
+        </div>
+        <div id="threatResults" class="counters"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span data-i18n="attributionNotice">Pokeark no está afiliado a Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown ni MunchStats.</span>
+      <span>
+        <span data-i18n="dataSources">Datos y recursos:</span>
+        <a href="https://munchstats.com/" target="_blank" rel="noreferrer">MunchStats</a>,
+        <a href="https://pokemonshowdown.com/" target="_blank" rel="noreferrer">Pokémon Showdown</a>,
+        <a href="https://www.smogon.com/stats/" target="_blank" rel="noreferrer">Smogon</a>,
+        <a href="https://pokeapi.co/" target="_blank" rel="noreferrer">PokéAPI</a>.
+      </span>
+    </footer>
+
+    <script src="champions-data.js"></script>
+    <script src="champions-moves.js"></script>
+    <script src="champions-items.js"></script>
+    <script src="munchstats-data.js"></script>
+    <script src="locales-data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

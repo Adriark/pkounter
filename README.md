@@ -1,0 +1,39 @@
+# Champions Core Builder
+
+Aplicacion estatica para crear equipos de Pokemon Champions en dobles Reg M-A.
+
+## Que incluye
+
+- Equipo de 6 con importacion rapida desde sugerencias.
+- Pokedex Champions completa desde `champions-data.js`, con stats, tipos, habilidades, Megas y learnsets.
+- Editor de objeto, habilidad, naturaleza, movimientos y Stat Points.
+- Calculo de estadisticas finales a nivel 50 usando IV 31 y SP como equivalentes de 8 EV.
+- Importacion y exportacion tipo Showdown Champions con linea `EVs:` usando valores Champions 0-32.
+- Sugerencias en tiempo real basadas en uso, partners, roles de VGC y cobertura defensiva.
+- Analisis de mayores counters al completar 6 Pokemon.
+- Sprites de Pokemon y objetos desde Pokemon Showdown.
+- Snapshot local de MunchStats en `munchstats-data.js` para uso, movimientos, objetos, habilidades, naturalezas, repartos de stats y partners.
+
+## Actualizar datos de MunchStats
+
+La forma comoda es abrir `Abrir app actualizada.cmd`. Ese lanzador descarga los ultimos datos de MunchStats, regenera `munchstats-data.js` y abre la app en el navegador desde un servidor local.
+
+Si abres `index.html` directamente con doble clic, la app usa el ultimo snapshot local disponible. Un archivo `file://` no puede descargar datos de MunchStats y reescribir `munchstats-data.js` por si solo.
+
+Tambien puedes actualizarlo manualmente con:
+
+```bash
+node scripts/sync-munchstats.mjs
+```
+
+El script descarga el formato `[Champions] VGC 2026 Reg M-A (Bo3)` con rating `1760` desde la API JSON de MunchStats y regenera `munchstats-data.js`.
+
+## Fuentes usadas
+
+- Roster, stats, Megas y learnsets Champions: PikaChampions `data.js`.
+- Datos de movimientos: Pokemon Showdown `moves.json`.
+- Reglas de formato y sistema SP de Champions: Champions Builder, ChampDex y guias Reg M-A.
+- Uso, partners, objetos, habilidades y spreads competitivos iniciales: MunchStats Champions VGC 2026 Reg M-A Bo3.
+- Principios de construccion de dobles: VGC Guide.
+
+La base competitiva manual de `app.js` se usa como capa de sets populares sobre la Pokedex completa. Si un Pokemon no tiene set meta manual, la app genera un set inicial legal desde su learnset y sus stats.
