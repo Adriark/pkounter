@@ -228,7 +228,7 @@ const POKEARK_LOCALES = {
       "extrasensory": "Paranormal",
       "extremeevoboost": "Novena Potencia",
       "extremespeed": "Veloc. Extrema",
-      "facade": "Imagen",
+      "facade": "Fachada",
       "fairylock": "Cerrojo Feérico",
       "fairywind": "Viento Feérico",
       "fakeout": "Sorpresa",

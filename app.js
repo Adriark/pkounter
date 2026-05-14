@@ -31,6 +31,25 @@ const LANGUAGES = {
   en: "English",
 };
 
+const CHOICE_ITEM_IDS = new Set(["choiceband", "choicescarf", "choicespecs"]);
+const CHOICE_LOCK_BAD_MOVE_IDS = new Set(["protect", "detect", "spikyshield", "kingsshield", "banefulbunker", "silktrap", "obstruct"]);
+const FORM_MOVE_BLOCKLIST = {
+  ninetalesalola: [
+    "burningjealousy",
+    "fireblast",
+    "firespin",
+    "flamecharge",
+    "flamethrower",
+    "flareblitz",
+    "heatwave",
+    "inferno",
+    "mysticalfire",
+    "overheat",
+    "scorchingsands",
+    "solarbeam",
+  ],
+};
+
 const UI_TEXT = {
   es: {
     addButton: "Añadir",
@@ -44,6 +63,7 @@ const UI_TEXT = {
     copiedButton: "Copiado",
     countersTitle: "Mayores counters",
     dataSources: "Datos y recursos:",
+    trademarkNotice: "Pokémon y todos sus nombres respectivos son marcas registradas y \u00a9 de Nintendo 1996-2026.",
     editorEmpty: "Añade o selecciona un Pokémon para editar SPs, movimientos, objeto y habilidad.",
     exportButton: "Exportar",
     formatLabel: "Formato",
@@ -87,6 +107,7 @@ const UI_TEXT = {
     copiedButton: "Copied",
     countersTitle: "Biggest counters",
     dataSources: "Data and resources:",
+    trademarkNotice: "Pokémon and all respective names are trademarks and \u00a9 of Nintendo 1996-2026.",
     editorEmpty: "Add or select a Pokémon to edit SPs, moves, item, and ability.",
     exportButton: "Export",
     formatLabel: "Format",
@@ -123,6 +144,7 @@ const UI_TEXT = {
 const LOCALE_OVERRIDES = {
   es: {
     moves: {
+      facade: "Fachada",
       fakeout: "Sorpresa",
       trailblaze: "Abrecaminos",
       protect: "Protección",
@@ -393,6 +415,7 @@ function bindEvents() {
   });
   els.importTeam.addEventListener("click", () => {
     importShowdown(els.importBox.value);
+    els.importBox.value = "";
     closeImportModal();
     persist();
     renderAll();
@@ -652,6 +675,10 @@ function sortedPokedex() {
   return [...POKEDEX].sort((a, b) => pokemonUsage(b) - pokemonUsage(a) || a.name.localeCompare(b.name));
 }
 
+function isPokemonSelected(mon, exceptIndex = -1) {
+  return team.some((slot, index) => index !== exceptIndex && slot.pokemon?.id === mon?.id);
+}
+
 function p(name, types, stats, usage, roles, abilities, items, nature, spread, moves, teammates, strategy) {
   return {
     id: toId(name),
@@ -690,15 +717,16 @@ function buildChampionsDex() {
   return POKEMON.map((raw, index) => {
     const stats = STATS[index] || [80, 80, 80, 80, 80, 80];
     const rawMoves = MOVES[index] || [];
-    const learnset = unique(rawMoves.map(moveNameFromSlug).filter(Boolean));
     const types = [raw.type1, raw.type2].filter(Boolean);
     const name = canonicalPokemonName(raw);
+    const learnset = sanitizeLearnsetForForm(name, unique(rawMoves.map(moveNameFromSlug).filter(Boolean)));
     const meta = nameKeys(name).map((key) => metaByKey.get(key)).find(Boolean);
     const live = munchStatsForName(name);
     const baseStats = Object.fromEntries(STAT_KEYS.map((key, statIndex) => [key, stats[statIndex] || 1]));
     const isMega = name.startsWith("Mega ");
     const roles = unique([...(meta?.roles || []), ...inferRoles(raw, learnset, baseStats, isMega)]);
-    const moves = legalPopularMoves(live?.moves, learnset, types, roles, baseStats) || (meta?.moves?.length ? meta.moves : pickDefaultMoves(learnset, types, roles, baseStats));
+    const metaMoves = (meta?.moves || []).filter((move) => isLegalMoveForLearnset(learnset, move));
+    const moves = legalPopularMoves(live?.moves, learnset, types, roles, baseStats) || (metaMoves.length ? metaMoves : pickDefaultMoves(learnset, types, roles, baseStats));
     const item = normalizeItemName(isMega ? megaStoneName(name, types) : live?.items?.[0] || meta?.items?.[0] || suggestedItem(roles, baseStats));
     const popularAbility = live?.abilities?.find((ability) => (raw.abilities || [raw.ab1, raw.ab2]).filter(Boolean).some((known) => toId(known) === toId(ability))) || "";
 
@@ -729,6 +757,12 @@ function buildChampionsDex() {
       isMega,
     };
   }).sort((a, b) => (b.usage || 0) - (a.usage || 0) || a.name.localeCompare(b.name));
+}
+
+function sanitizeLearnsetForForm(name, learnset) {
+  const blocked = new Set(FORM_MOVE_BLOCKLIST[toId(name)] || []);
+  if (!blocked.size) return learnset;
+  return learnset.filter((move) => !blocked.has(toId(move)));
 }
 
 function canonicalPokemonName(raw) {
@@ -762,13 +796,24 @@ function munchStatsForName(name) {
   return nameKeys(name).map((key) => stats.pokemon?.[key]).find(Boolean) || null;
 }
 
-function legalPopularMoves(moves, learnset, types, roles, baseStats) {
+function legalPopularMoves(moves, learnset, types, roles, baseStats, options = {}) {
   if (!moves?.length) return null;
-  const learnsetIds = new Set(learnset.map(toId));
-  const legal = moves.filter((move) => learnsetIds.has(toId(move)) || moveInfo(move));
+  const legal = moves.filter((move) => isLegalMoveForLearnset(learnset, move));
   if (!legal.length) return null;
-  const picked = unique([...legal.slice(0, 4), ...pickDefaultMoves(learnset, types, roles, baseStats)]).slice(0, 4);
+  const candidates = unique([...legal, ...pickDefaultMoves(learnset, types, roles, baseStats)])
+    .filter((move) => isLegalMoveForLearnset(learnset, move));
+  const ordered = options.avoidChoiceLock && candidates.some((move) => !isChoiceLockBadMove(move))
+    ? [...candidates.filter((move) => !isChoiceLockBadMove(move)), ...candidates.filter((move) => isChoiceLockBadMove(move))]
+    : candidates;
+  const picked = ordered.slice(0, 4);
   return [...picked, "", "", "", ""].slice(0, 4);
+}
+
+function isLegalMoveForLearnset(learnset, move) {
+  if (!move) return false;
+  const learnsetIds = new Set((learnset || []).map(toId));
+  if (!learnsetIds.size) return Boolean(moveInfo(move) || getMoveData(move));
+  return learnsetIds.has(toId(move));
 }
 
 function nameKeys(name) {
@@ -951,6 +996,13 @@ function emptySlot() {
 function addPokemonByName(name) {
   const mon = findPokemon(name);
   if (!mon) return;
+  const duplicateIndex = team.findIndex((slot) => slot.pokemon?.id === mon.id);
+  if (duplicateIndex !== -1) {
+    selectedSlot = duplicateIndex;
+    if (threatSearchMode === "auto") syncThreatSearchFromSelected();
+    renderAll();
+    return;
+  }
   const index = team.findIndex((slot) => !slot.pokemon);
   if (index === -1) return;
   selectedSlot = index;
@@ -1208,9 +1260,11 @@ function nonDuplicateRandomItem(mon, picked, options, usedItems) {
 }
 
 function randomMovesFor(mon, slot) {
-  const pool = moveOptionsFor(mon, slot)
+  const rawPool = moveOptionsFor(mon, slot)
     .map((move) => ({ move, info: moveInfo(move), data: getMoveData(move) || {}, usage: moveUsageFor(mon, move) }))
     .filter((entry) => entry.info);
+  const nonChoiceLocked = rawPool.filter((entry) => !isChoiceLockBadMove(entry.move));
+  const pool = isChoiceItem(slot.item) && nonChoiceLocked.length >= 4 ? nonChoiceLocked : rawPool;
   const selected = [];
   const poolCopy = [...pool];
 
@@ -1233,7 +1287,7 @@ function randomMovesFor(mon, slot) {
   }
 
   const protectUsage = moveUsageFor(mon, "Protect");
-  const wantsProtect = isDoublesFormat() ? protectUsage >= 35 && Math.random() < 0.72 : protectUsage >= 50 && Math.random() < 0.38;
+  const wantsProtect = !isChoiceItem(slot.item) && (isDoublesFormat() ? protectUsage >= 35 && Math.random() < 0.72 : protectUsage >= 50 && Math.random() < 0.38);
   if (wantsProtect && pool.some((entry) => toId(entry.move) === "protect") && !selected.some((move) => toId(move) === "protect")) {
     selected[selected.length - 1] = "Protect";
   }
@@ -1295,7 +1349,7 @@ function applyPopularSet(slot, mon) {
   slot.ability = live?.abilities?.find((ability) => mon.abilities?.some((known) => toId(known) === toId(ability))) || mon.popularAbility || mon.abilities[0] || "";
   slot.nature = live?.nature || mon.nature || "Hardy";
   slot.sp = { ...(live?.spread || mon.spread) };
-  const moves = legalPopularMoves(live?.moves, mon.learnset || [], mon.types || [], mon.roles || [], mon.baseStats || {}) || mon.moves || [];
+  const moves = legalPopularMoves(live?.moves, mon.learnset || [], mon.types || [], mon.roles || [], mon.baseStats || {}, { avoidChoiceLock: isChoiceItem(slot.item) }) || mon.moves || [];
   slot.moves = [...moves.slice(0, 4), "", "", "", ""].slice(0, 4);
 }
 
@@ -1311,6 +1365,7 @@ function renderAll() {
   renderThreatCounters();
   renderCounters();
   els.exportBox.value = exportShowdown();
+  wireSpriteFallbacks();
   persist();
 }
 
@@ -1321,9 +1376,16 @@ function syncThreatSearchFromSelected() {
 }
 
 function sanitizeTeam() {
+  const seen = new Set();
   for (const slot of team) {
     if (!slot.pokemon) continue;
+    if (seen.has(slot.pokemon.id)) {
+      Object.assign(slot, emptySlot());
+      continue;
+    }
+    seen.add(slot.pokemon.id);
     if (!isChampionsItem(slot.item, slot.pokemon)) slot.item = defaultItemFor(slot.pokemon);
+    slot.moves = sanitizeMovesForSlot(slot);
   }
 }
 
@@ -1340,7 +1402,7 @@ function renderTeam() {
         </button>`;
       }
       return `<button class="slot-card ${index === selectedSlot ? "active" : ""}" type="button" data-slot="${index}">
-        <span class="sprite-frame"><img src="${pokemonSprite(slot.pokemon)}" alt="${slot.pokemon.name}" onerror="fallbackSprite(this, '${plannerSprite(slot.pokemon)}')"></span>
+        <span class="sprite-frame"><img src="${pokemonSprite(slot.pokemon)}" alt="${slot.pokemon.name}" data-fallback="${plannerSprite(slot.pokemon)}"></span>
         <span>
           <span class="slot-name">${slot.pokemon.name}</span>
           <span class="slot-meta">${slot.item ? `${itemIconHtml(slot.item)}${itemUiName(slot.item)}` : t("noItem")} · ${natureUiName(slot.nature)}</span>
@@ -1428,13 +1490,25 @@ function statPlannerRowHtml(mon, slot, stats, key) {
 
 function moveOptionsFor(mon, slot) {
   const legalMoves = (mon.learnset || []).length ? mon.learnset : mon.moves || [];
-  const currentMoves = (slot.moves || []).filter(Boolean);
+  const currentMoves = (slot.moves || []).filter((move) => isLegalMoveForMon(mon, move));
   return unique([...legalMoves, ...currentMoves])
-    .filter((move) => moveInfo(move) || getMoveData(move) || currentMoves.some((current) => toId(current) === toId(move)))
+    .filter((move) => isLegalMoveForMon(mon, move))
     .sort((a, b) => {
       const usageDiff = moveUsageFor(mon, b) - moveUsageFor(mon, a);
       return usageDiff || a.localeCompare(b);
     });
+}
+
+function sanitizeMovesForSlot(slot) {
+  const mon = slot.pokemon;
+  const legal = new Map(moveOptionsFor(mon, { ...slot, moves: [] }).map((move) => [toId(move), move]));
+  const clean = (slot.moves || []).map((move) => legal.get(toId(move)) || "").slice(0, 4);
+  return [...clean, "", "", "", ""].slice(0, 4);
+}
+
+function isLegalMoveForMon(mon, move) {
+  if (!mon || !move) return false;
+  return isLegalMoveForLearnset(mon.learnset || [], move);
 }
 
 function localizedName(category, name) {
@@ -1555,6 +1629,14 @@ function pokemonUsage(mon) {
 
 function itemUsageFor(mon, item) {
   return usageFromMap(munchStatsForName(mon?.name)?.itemUsage || mon?.itemUsage, displayItemName(item));
+}
+
+function isChoiceItem(item) {
+  return CHOICE_ITEM_IDS.has(toId(displayItemName(item) || item));
+}
+
+function isChoiceLockBadMove(move) {
+  return CHOICE_LOCK_BAD_MOVE_IDS.has(toId(move));
 }
 
 function abilityUsageFor(mon, ability) {
@@ -1737,6 +1819,12 @@ function editorTeamSupportLine(mon, slot, stats, candidate) {
 }
 
 function editorCautionLine(mon, slot, stats, candidate) {
+  if (isChoiceItem(slot.item) && slot.moves.some(isChoiceLockBadMove)) {
+    const item = itemUiName(slot.item);
+    return selectedLanguage === "es"
+      ? `lleva ${item}: si usas ${moveUiName("Protect")} quedará bloqueado y tendrá que cambiar para atacar después`
+      : `it is holding ${item}: if it uses Protect, it gets locked and must switch before attacking again`;
+  }
   const weaknesses = Object.keys(TYPE_CHART).filter((type) => battleMultiplier(type, { ...mon, ability: slot.ability || mon.popularAbility || mon.abilities?.[0] }) > 1);
   const shared = weaknesses.filter((type) => team.filter((other) => other.pokemon && other !== slot && battleMultiplier(type, { ...other.pokemon, ability: other.ability || other.pokemon.popularAbility || other.pokemon.abilities?.[0] }) > 1).length);
   if (shared.length) return selectedLanguage === "es" ? `comparte debilidad a ${formatTypeList(shared.slice(0, 2))}; no lo juntes gratis con otro slot que reciba el mismo golpe` : `shares a weakness to ${formatTypeList(shared.slice(0, 2))}; avoid pairing it freely with another slot that takes the same hit`;
@@ -1798,9 +1886,9 @@ function renderEditor() {
       <div>
         <label>Pokémon</label>
         <div class="select-with-art">
-          <span class="select-art pokemon-art"><img src="${pokemonSprite(mon)}" alt="" onerror="fallbackSprite(this, '${plannerSprite(mon)}')"></span>
+          <span class="select-art pokemon-art"><img src="${pokemonSprite(mon)}" alt="" data-fallback="${plannerSprite(mon)}"></span>
           <select class="has-art" data-field="pokemon">
-            ${sortedPokedex().map((pmon) => `<option value="${pmon.name}" ${pmon.id === mon.id ? "selected" : ""}>${pokemonOptionLabel(pmon)}</option>`).join("")}
+            ${sortedPokedex().filter((pmon) => pmon.id === mon.id || !isPokemonSelected(pmon, selectedSlot)).map((pmon) => `<option value="${pmon.name}" ${pmon.id === mon.id ? "selected" : ""}>${pokemonOptionLabel(pmon)}</option>`).join("")}
           </select>
         </div>
       </div>
@@ -1852,7 +1940,7 @@ function renderEditor() {
     input.addEventListener("change", () => {
       if (input.dataset.field === "pokemon") {
         const next = findPokemon(input.value);
-        if (next) {
+        if (next && !isPokemonSelected(next, selectedSlot)) {
           slot.pokemon = next;
           applyPopularSet(slot, next);
         }
@@ -1899,7 +1987,7 @@ function renderSuggestions() {
   const teamFull = filled.length >= MAX_TEAM;
   els.suggestions.innerHTML = `<div class="strategy-box"><strong>${selectedLanguage === "es" ? "Lectura de la core" : "Core read"}:</strong> ${needSummary(profile)}</div>` + suggestions
     .map(({ mon, score, reasons, explanation, advice, fit }) => `<article class="suggestion-card">
-      <span class="sprite-frame"><img src="${pokemonSprite(mon)}" alt="${mon.name}" onerror="fallbackSprite(this, '${plannerSprite(mon)}')"></span>
+      <span class="sprite-frame"><img src="${pokemonSprite(mon)}" alt="${mon.name}" data-fallback="${plannerSprite(mon)}"></span>
       <div>
         <span class="suggestion-name">${mon.name}</span>
         <span class="mini">${typeIconRow(mon.types)} · ${selectedLanguage === "es" ? "uso" : "usage"} ${pokemonUsage(mon).toFixed(2)}%</span>
@@ -1909,7 +1997,7 @@ function renderSuggestions() {
         <div class="tag-row">${suggestionReasonChips(reasons).slice(0, 4).map((reason) => `<span class="tag">${localizeInlineTerms(reason)}</span>`).join("")}</div>
         <div class="suggestion-actions">
           <span class="score">${fit} · ${Math.round(score)} pts</span>
-          <button type="button" data-import="${mon.name}" ${teamFull ? "disabled" : ""}>${teamFull ? t("teamFull") : t("importButton")}</button>
+          <button class="${teamFull ? "team-full-button" : ""}" type="button" data-import="${mon.name}" ${teamFull ? "disabled" : ""}>${teamFull ? t("teamFull") : t("importButton")}</button>
         </div>
       </div>
     </article>`)
@@ -1929,6 +2017,7 @@ function renderSuggestions() {
     suggestionLimit = 8;
     renderSuggestions();
   });
+  wireSpriteFallbacks(els.suggestions);
 }
 
 function needSummary(profile) {
@@ -2161,7 +2250,7 @@ function popularMoveDetails(mon) {
   const moves = unique([...(usageMoves.length ? usageMoves : []), ...(mon.moves || [])]);
   const entries = moves
     .map((move, index) => ({ move, usage: moveUsageFor(mon, move), index, info: moveInfo(move), data: getMoveData(move) || {} }))
-    .filter((entry) => entry.info)
+    .filter((entry) => entry.info && isLegalMoveForMon(mon, entry.move))
     .sort((a, b) => b.usage - a.usage || a.index - b.index || a.move.localeCompare(b.move));
   const hasUsage = entries.some((entry) => entry.usage > 0);
   return entries
@@ -2537,18 +2626,19 @@ function renderThreatCounters() {
   }
 
   const counters = analyzeThreatCounters(target).slice(0, 8);
-  const targetStats = calculateStats(target, { nature: target.nature, sp: target.spread });
   els.threatResults.innerHTML = `
     <div class="threat-target">
-      <span class="sprite-frame"><img src="${pokemonSprite(target)}" alt="${target.name}" onerror="fallbackSprite(this, '${plannerSprite(target)}')"></span>
+      <span class="sprite-frame"><img src="${pokemonSprite(target)}" alt="${target.name}" data-fallback="${plannerSprite(target)}"></span>
       <div>
-        <strong>${target.name}</strong>
-        <span class="mini">${typeIconRow(target.types)} · Def ${targetStats.def} · SpD ${targetStats.spd} · Spe ${targetStats.spe}</span>
+        <div class="threat-target-head">
+          <strong>${target.name}</strong>
+          ${typeIconRow(target.types)}
+        </div>
         ${baseStatsHtml(target)}
       </div>
     </div>
     ${counters.map(({ mon, score, reasons, explanation, advice }) => `<article class="counter-card">
-      <span class="sprite-frame"><img src="${pokemonSprite(mon)}" alt="${mon.name}" onerror="fallbackSprite(this, '${plannerSprite(mon)}')"></span>
+      <span class="sprite-frame"><img src="${pokemonSprite(mon)}" alt="${mon.name}" data-fallback="${plannerSprite(mon)}"></span>
       <div>
         <span class="suggestion-name">${mon.name}</span>
         <span class="mini">${typeIconRow(mon.types)} · ${Math.round(score)} pts</span>
@@ -2559,6 +2649,7 @@ function renderThreatCounters() {
       </div>
     </article>`).join("")}
   `;
+  wireSpriteFallbacks(els.threatResults);
 }
 
 function analyzeThreatCounters(target) {
@@ -2618,7 +2709,7 @@ function analyzeThreatCounters(target) {
 }
 
 function bestCounterMove(mon, target, preferredCategory = "") {
-  const moves = unique([...(mon.moves || []), ...(mon.learnset || [])]);
+  const moves = unique([...(mon.moves || []), ...(mon.learnset || [])]).filter((move) => isLegalMoveForMon(mon, move));
   return moves
     .map((move) => {
       const info = moveInfo(move);
@@ -2753,7 +2844,7 @@ function renderCounters() {
   els.counters.innerHTML = analyzeCounters()
     .slice(0, 6)
     .map(({ mon, score, reasons, explanation, advice }) => `<article class="counter-card">
-      <span class="sprite-frame"><img src="${pokemonSprite(mon)}" alt="${mon.name}" onerror="fallbackSprite(this, '${plannerSprite(mon)}')"></span>
+      <span class="sprite-frame"><img src="${pokemonSprite(mon)}" alt="${mon.name}" data-fallback="${plannerSprite(mon)}"></span>
       <div>
         <span class="suggestion-name">${mon.name}</span>
         <span class="mini">${typeIconRow(mon.types)} · ${selectedLanguage === "es" ? "riesgo" : "risk"} ${Math.round(score)} · ${selectedLanguage === "es" ? "uso" : "usage"} ${pokemonUsage(mon).toFixed(2)}%</span>
@@ -2918,7 +3009,7 @@ function calculateStats(mon, slot) {
   return Object.fromEntries(
     STAT_KEYS.map((key) => {
       const sp = Number(slot.sp?.[key] || 0);
-      const ev = sp * 8;
+      const ev = clamp(sp, 0, MAX_SP_STAT);
       const base = mon.baseStats[key];
       if (key === "hp") {
         return [key, Math.floor(((2 * base + IV + Math.floor(ev / 4)) * LEVEL) / 100) + LEVEL + 10];
@@ -3069,7 +3160,10 @@ function showdownPokemonName(mon) {
 function importShowdown(text) {
   const blocks = text.split(/\n\s*\n/g).map((block) => block.trim()).filter(Boolean).slice(0, MAX_TEAM);
   for (let i = 0; i < MAX_TEAM; i++) team[i] = emptySlot();
-  blocks.forEach((block, index) => {
+  let insertIndex = 0;
+  const importedIds = new Set();
+  blocks.forEach((block) => {
+    if (insertIndex >= MAX_TEAM) return;
     const lines = block.split(/\n/g).map((line) => line.trim()).filter(Boolean);
     const header = lines[0] || "";
     const name = header.split("@")[0].replace(/\(.*\)/g, "").trim();
@@ -3078,6 +3172,8 @@ function importShowdown(text) {
     const megaName = importedItem ? megaNameFromStone(importedItem) : "";
     if (megaName) mon = findPokemon(megaName) || mon;
     if (!mon) return;
+    if (importedIds.has(mon.id)) return;
+    importedIds.add(mon.id);
     const slot = emptySlot();
     slot.pokemon = mon;
     applyPopularSet(slot, mon);
@@ -3097,7 +3193,9 @@ function importShowdown(text) {
       else if (isImportedMoveLine(line)) moves.push(line);
     }
     if (moves.length) slot.moves = [...moves, "", "", "", ""].slice(0, 4);
-    team[index] = slot;
+    slot.moves = sanitizeMovesForSlot(slot);
+    team[insertIndex] = slot;
+    insertIndex += 1;
   });
   selectedSlot = team.findIndex((slot) => slot.pokemon);
   if (selectedSlot < 0) selectedSlot = 0;
@@ -3283,7 +3381,7 @@ function typePlannerHtml() {
   return `<div class="type-planner">
     <div class="type-planner-head">
       <strong>${selectedLanguage === "es" ? "Análisis de tipos" : "Type analysis"}</strong>
-      <span><b>D</b> ${selectedLanguage === "es" ? "débiles" : "weak"} · <b>R</b> ${selectedLanguage === "es" ? "resisten" : "resist"} · <b>I</b> ${selectedLanguage === "es" ? "inmunes" : "immune"}</span>
+      <span><b>${selectedLanguage === "es" ? "D" : "W"}</b> ${selectedLanguage === "es" ? "débiles" : "weak"} · <b>R</b> ${selectedLanguage === "es" ? "resisten" : "resist"} · <b>I</b> ${selectedLanguage === "es" ? "inmunes" : "immune"}</span>
     </div>
     ${typeBalanceSummaryHtml(sortedRows)}
     <div class="type-balance-grid">
@@ -3310,10 +3408,11 @@ function typeBalanceSummaryHtml(rows) {
 
 function typeBalanceCardHtml(row) {
   const status = row.weak >= 3 || row.weak4 ? "danger" : row.weak ? "warn" : row.resist ? "safe" : "neutral";
+  const weakLabel = selectedLanguage === "es" ? "D" : "W";
   return `<div class="type-balance-card ${status}" title="${typeBalanceTitle(row)}">
     ${typeIconHtml(row.type)}
     <span class="balance-badges">
-      ${row.weak ? `<span class="balance-badge weak">D ${row.weak}${row.weak4 ? ` · ${row.weak4}x4` : ""}</span>` : ""}
+      ${row.weak ? `<span class="balance-badge weak">${weakLabel} ${row.weak}${row.weak4 ? ` · ${row.weak4}x4` : ""}</span>` : ""}
       ${row.resistOnly ? `<span class="balance-badge resist">R ${row.resistOnly}</span>` : ""}
       ${row.immune ? `<span class="balance-badge immune">I ${row.immune}</span>` : ""}
       ${!row.weak && !row.resist ? `<span class="balance-badge neutral">${selectedLanguage === "es" ? "neutral" : "neutral"}</span>` : ""}
@@ -3439,7 +3538,15 @@ function plannerSprite(mon) {
   return `https://raw.githubusercontent.com/richi3f/pokemon-team-planner/master/static/img/pokemon/${num}_${form}_mf_n.png`;
 }
 
-function fallbackSprite(img, fallbackUrl) {
+function wireSpriteFallbacks(root = document) {
+  root.querySelectorAll?.("img[data-fallback]").forEach((img) => {
+    if (img.dataset.fallbackBound) return;
+    img.dataset.fallbackBound = "1";
+    img.addEventListener("error", () => fallbackSprite(img));
+  });
+}
+
+function fallbackSprite(img, fallbackUrl = img?.dataset?.fallback) {
   if (!fallbackUrl || img.dataset.fallbackTried) {
     img.style.display = "none";
     return;
@@ -3491,7 +3598,7 @@ function championsItemPool() {
 function availableItemsFor(mon) {
   const megaStone = mon?.isMega ? megaStoneName(mon.name, mon.types) : "";
   if (mon?.isMega) return megaStone ? [normalizeItemName(megaStone)] : [];
-  return championsItemPool();
+  return championsItemPool().filter((item) => !itemData(item)?.megaStone);
 }
 
 function defaultItemFor(mon) {

@@ -21,6 +21,26 @@ const MIME = {
   ".ico": "image/x-icon",
 };
 
+const SECURITY_HEADERS = {
+  "Content-Security-Policy": [
+    "default-src 'self'",
+    "script-src 'self'",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' https://play.pokemonshowdown.com https://raw.githubusercontent.com data:",
+    "connect-src 'self' https://munchstats.com https://*.munchstats.com",
+    "font-src 'self'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+    "upgrade-insecure-requests",
+  ].join("; "),
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=()",
+};
+
 function run(command, args) {
   return new Promise((resolvePromise, reject) => {
     const child = spawn(command, args, { cwd: ROOT, stdio: "inherit" });
@@ -66,17 +86,17 @@ async function serveFile(req, res) {
 
   const relativePath = relative(ROOT, filePath);
   if (relativePath.startsWith("..") || relativePath.includes(":")) {
-    res.writeHead(403);
+    res.writeHead(403, SECURITY_HEADERS);
     res.end("Forbidden");
     return;
   }
 
   try {
     await readFile(filePath, { flag: "r" });
-    res.writeHead(200, { "Content-Type": MIME[extname(filePath).toLowerCase()] || "application/octet-stream" });
+    res.writeHead(200, { ...SECURITY_HEADERS, "Content-Type": MIME[extname(filePath).toLowerCase()] || "application/octet-stream" });
     createReadStream(filePath).pipe(res);
   } catch {
-    res.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
+    res.writeHead(404, { ...SECURITY_HEADERS, "Content-Type": "text/plain; charset=utf-8" });
     res.end("No encontrado");
   }
 }

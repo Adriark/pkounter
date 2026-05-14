@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https://play.pokemonshowdown.com https://raw.githubusercontent.com data:; connect-src 'self' https://munchstats.com https://*.munchstats.com; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
   <title>Pkounter</title>
 
   <link rel="icon" type="image/png" href="assets/Pkounter_icon.png?v=2" />
@@ -14,7 +16,7 @@
   <body>
     <header class="topbar">
       <div class="brand-block">
-        <h1><img class="brand-logo" src="assets/Pkounter_logo.png" alt="Pkounter" /></h1>
+        <h1><a class="brand-link" href="index.html" aria-label="Pkounter"><img class="brand-logo" src="assets/Pkounter_logo.png" alt="Pkounter" /></a></h1>
       </div>
       <div class="rules">
         <a class="top-link" href="about.html" data-i18n="aboutButton">About</a>
@@ -30,10 +32,13 @@
           <div id="languageMenu" class="format-menu" role="listbox" hidden></div>
           <select id="languageSelect" hidden aria-label="Idioma"></select>
         </div>
-        <span data-i18n="levelRule">Nivel 50</span>
+        <div class="rule-group" aria-label="Reglas del formato">
+        <span class="rule-badge" data-i18n="levelRule">Nivel 50</span>
         <span id="formatMode">6 → 4 dobles</span>
         <span data-i18n="spRule">66 SP · 32/stat</span>
-        <span data-i18n="megaRule">1 Mega</span>
+        <span class="rule-badge" data-i18n="megaRule">1 Mega</span>
+        </div>
+        <a class="top-link coffee-link" href="https://ko-fi.com/Y8Y61ZFSF0#" target="_blank" rel="noreferrer">Buy me a coffee &hearts;</a>
       </div>
     </header>
 
@@ -131,15 +136,16 @@
     </main>
 
 	<footer class="site-footer">
+		<span data-i18n="trademarkNotice">Pokémon y todos sus nombres respectivos son marcas registradas y &copy; de Nintendo 1996-2026.</span>
 		<span data-i18n="attributionNotice">Pkounter no está afiliado a Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown ni MunchStats.</span>
 		<span>
-		<span data-i18n="dataSources">Datos y recursos:</span>
+			<span data-i18n="dataSources">Datos y recursos:</span>
 			<a href="https://munchstats.com/" target="_blank" rel="noreferrer">MunchStats</a>,
 			<a href="https://pokemonshowdown.com/" target="_blank" rel="noreferrer">Pokémon Showdown</a>,
 			<a href="https://www.smogon.com/stats/" target="_blank" rel="noreferrer">Smogon</a>,
 			<a href="https://pokeapi.co/" target="_blank" rel="noreferrer">PokéAPI</a>.
 		</span>
-	<span data-i18n="madeBy">Hecho por Adriark.</span>
+		<span data-i18n="madeBy">Hecho por Adriark.</span>
 	</footer>
 
     <script src="champions-data.js"></script>

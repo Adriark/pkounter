@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' https://play.pokemonshowdown.com https://raw.githubusercontent.com data:; connect-src 'self' https://munchstats.com https://*.munchstats.com; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
   <title>About | Pkounter</title>
  <link rel="icon" type="image/png" href="assets/Pkounter_icon.png?v=2" />
  <link rel="shortcut icon" type="image/png" href="assets/Pkounter_icon.png?v=2" />
@@ -14,14 +16,17 @@
 
 <header class="topbar">
   <div class="brand-block">
-    <h1><img class="brand-logo" src="assets/Pkounter_logo.png" alt="Pkounter" /></h1>
+    <h1><a class="brand-link" href="index.html" aria-label="Volver al builder"><img class="brand-logo" src="assets/Pkounter_logo.png" alt="Pkounter" /></a></h1>
   </div>
 
   <div class="rules">
     <a class="top-link" href="index.html" data-about-i18n="builderButton">Builder</a>
     <a class="top-link active" href="about.html" data-about-i18n="aboutButton">About</a>
-    <span>VGC / BSS / OU</span>
-    <span data-about-i18n="levelRule">Nivel 50</span>
+    <div class="rule-group" aria-label="Reglas del formato">
+      <span class="rule-badge">VGC / BSS / OU</span>
+      <span class="rule-badge" data-about-i18n="levelRule">Nivel 50</span>
+    </div>
+    <a class="top-link coffee-link" href="https://ko-fi.com/Y8Y61ZFSF0#" target="_blank" rel="noreferrer">Buy me a coffee &hearts;</a>
   </div>
 </header>
 
@@ -122,6 +127,14 @@
 <footer class="site-footer">
 
   <span data-about-lang="es">
+    Pokémon y todos sus nombres respectivos son marcas registradas y &copy; de Nintendo 1996-2026.
+  </span>
+
+  <span data-about-lang="en" lang="en" hidden>
+    Pokémon and all respective names are trademarks and &copy; of Nintendo 1996-2026.
+  </span>
+
+  <span data-about-lang="es">
     Pkounter no está afiliado a Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown ni MunchStats.
   </span>
 
@@ -150,45 +163,7 @@
 
 </footer>
 
-<script>
-  (() => {
-    const TEXT = {
-      es: {
-        builderButton: "Builder",
-        aboutButton: "Sobre Pkounter",
-        levelRule: "Nivel 50",
-      },
-      en: {
-        builderButton: "Builder",
-        aboutButton: "About",
-        levelRule: "Level 50",
-      },
-    };
-
-    function getSavedLanguage() {
-      try {
-        const saved = JSON.parse(localStorage.getItem("champions-core-builder") || "{}")?.selectedLanguage;
-        return saved === "en" ? "en" : "es";
-      } catch {
-        return "es";
-      }
-    }
-
-    const language = getSavedLanguage();
-
-    document.documentElement.lang = language;
-    document.body.dataset.language = language;
-
-    document.querySelectorAll("[data-about-lang]").forEach((node) => {
-      node.hidden = node.dataset.aboutLang !== language;
-    });
-
-    document.querySelectorAll("[data-about-i18n]").forEach((node) => {
-      const key = node.dataset.aboutI18n;
-      node.textContent = TEXT[language][key] || node.textContent;
-    });
-  })();
-</script>
+<script src="about.js"></script>
 
 </body>
 </html>
