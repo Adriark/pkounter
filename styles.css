@@ -3307,6 +3307,17 @@ body {
   }
 }
 
+.team-panel .summary-grid {
+  flex: 0 0 auto;
+  grid-template-rows: auto auto auto;
+  overflow: visible;
+  padding-bottom: 2px;
+}
+
+.team-panel .type-planner {
+  align-self: stretch;
+}
+
 .team-full-button:disabled {
   opacity: 1;
   background: #2b775f;
