@@ -89,11 +89,17 @@ const UI_TEXT = {
     slotLabel: "Slot libre",
     spRule: "66 SP · 32/stat",
     suggestionsTitle: "Sugerencias en tiempo real",
+    suggestionsTab: "Teambuilding",
     teamFull: "Equipo lleno",
+    teamCountersTab: "Counters del equipo",
     teamTitle: "Equipo final",
+    threatAdvanced: "Avanzado",
     threatHint: "Respuestas directas contra una amenaza",
     threatPlaceholder: "Ej. Archaludon...",
+    threatSetLabel: "Set objetivo",
+    threatSimple: "Simple",
     threatTitle: "Buscar counters",
+    singleCounterTab: "Counter individual",
   },
   en: {
     addButton: "Add",
@@ -133,11 +139,17 @@ const UI_TEXT = {
     slotLabel: "Empty slot",
     spRule: "66 SP · 32/stat",
     suggestionsTitle: "Real-time suggestions",
+    suggestionsTab: "Teambuilding",
     teamFull: "Team full",
+    teamCountersTab: "Team counters",
     teamTitle: "Final team",
+    threatAdvanced: "Advanced",
     threatHint: "Direct answers into a threat",
     threatPlaceholder: "Ex. Archaludon...",
+    threatSetLabel: "Target set",
+    threatSimple: "Simple",
     threatTitle: "Search counters",
+    singleCounterTab: "Single counter",
   },
 };
 
@@ -168,6 +180,18 @@ const LOCALE_OVERRIDES = {
       haze: "Niebla",
       encore: "Otra Vez",
       disable: "Anulación",
+      lastrespects: "Homenaje Póstumo",
+      wavecrash: "Envite Acuático",
+      flipturn: "Viraje",
+      kowtowcleave: "Genufendiente",
+      snowscape: "Paisaje Nevado",
+      chillingwater: "Agua Fría",
+      scaleshot: "Disparo Escama",
+      dualwingbeat: "Ala Bis",
+      ragefist: "Puño Furia",
+      jetpunch: "Puño Jet",
+      liquidation: "Hidroariete",
+      throatchop: "Golpe Mordaza",
     },
     abilities: {
       intimidate: "Intimidación",
@@ -329,6 +353,13 @@ const team = Array.from({ length: MAX_TEAM }, () => emptySlot());
 let selectedSlot = 0;
 let suggestionLimit = 8;
 let threatSearchMode = "auto";
+let activeSideTab = "suggestions";
+let threatAdvanced = false;
+const majorThreatAdvancedIds = new Set();
+const threatTargetCustomSlots = {};
+const threatCounterAdvancedIds = new Set();
+const threatCounterCustomSlots = {};
+const majorThreatCustomSlots = {};
 
 const els = {
   pokemonSearch: document.querySelector("#pokemonSearch"),
@@ -362,6 +393,8 @@ const els = {
   languageSelect: document.querySelector("#languageSelect"),
   languageButton: document.querySelector("#languageButton"),
   languageMenu: document.querySelector("#languageMenu"),
+  sideTabs: document.querySelectorAll("[data-side-tab]"),
+  sidePanels: document.querySelectorAll("[data-tab-panel]"),
 };
 
 init();
@@ -458,6 +491,9 @@ function bindEvents() {
     if (!option) return;
     updateSelectedLanguage(option.dataset.languageOption);
   });
+  els.sideTabs?.forEach((button) => {
+    button.addEventListener("click", () => setActiveSideTab(button.dataset.sideTab));
+  });
   document.addEventListener?.("click", (event) => {
     if (!event.target.closest?.(".format-control")) {
       closeFormatMenu();
@@ -485,6 +521,20 @@ function closeImportModal() {
   if (!els.importTray || els.importTray.hidden) return;
   els.importTray.hidden = true;
   document.body.classList.remove("modal-open");
+}
+
+function setActiveSideTab(tabName) {
+  activeSideTab = tabName || "suggestions";
+  els.sideTabs?.forEach((button) => {
+    const active = button.dataset.sideTab === activeSideTab;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+  els.sidePanels?.forEach((panel) => {
+    const active = panel.dataset.tabPanel === activeSideTab;
+    panel.classList.toggle("active", active);
+    panel.hidden = !active;
+  });
 }
 
 function updateSelectedFormat(formatId) {
@@ -1364,6 +1414,7 @@ function renderAll() {
   renderSuggestions();
   renderThreatCounters();
   renderCounters();
+  setActiveSideTab(activeSideTab);
   els.exportBox.value = exportShowdown();
   wireSpriteFallbacks();
   persist();
@@ -2612,6 +2663,166 @@ function getMoveData(move) {
   return typeof PS_MOVES !== "undefined" ? PS_MOVES[toId(move)] : null;
 }
 
+function threatSetOptions(target) {
+  const options = spreadOptionsFor(target);
+  if (options.length) return options;
+  return [{ nature: target?.nature || "Hardy", spread: { ...(target?.spread || {}) }, usage: 0 }];
+}
+
+function blankSp() {
+  return Object.fromEntries(STAT_KEYS.map((key) => [key, 0]));
+}
+
+function normalizedSp(sp = {}) {
+  return Object.fromEntries(STAT_KEYS.map((key) => [key, clamp(Number(sp?.[key] || 0), 0, MAX_SP_STAT)]));
+}
+
+function neutralSlotFor(mon) {
+  return {
+    nature: "Hardy",
+    sp: blankSp(),
+    ability: mon?.popularAbility || mon?.abilities?.[0] || "",
+    item: "",
+  };
+}
+
+function cloneCalcSlot(slot, mon) {
+  return {
+    nature: slot?.nature || mon?.nature || "Hardy",
+    sp: normalizedSp(slot?.sp || mon?.spread || {}),
+    ability: slot?.ability || mon?.popularAbility || mon?.abilities?.[0] || "",
+    item: normalizeItemName(slot?.item || mon?.items?.[0] || ""),
+  };
+}
+
+function defaultCustomSlot(mon, seedSlot = null) {
+  if (seedSlot) return cloneCalcSlot(seedSlot, mon);
+  const option = threatSetOptions(mon)[0];
+  return {
+    nature: option?.nature || mon?.nature || "Hardy",
+    sp: normalizedSp(option?.spread || mon?.spread || {}),
+    ability: mon?.popularAbility || mon?.abilities?.[0] || "",
+    item: normalizeItemName(mon?.items?.[0] || ""),
+  };
+}
+
+function teamSlotForMon(mon) {
+  return team.find((slot) => slot.pokemon?.id === mon?.id) || null;
+}
+
+function customSlotFor(store, mon, seedSlot = null) {
+  if (!mon) return neutralSlotFor(mon);
+  if (!store[mon.id]) store[mon.id] = defaultCustomSlot(mon, seedSlot);
+  store[mon.id].sp = normalizedSp(store[mon.id].sp);
+  if (!NATURES[store[mon.id].nature]) store[mon.id].nature = mon.nature || "Hardy";
+  return store[mon.id];
+}
+
+function targetThreatSlot(target) {
+  return threatAdvanced ? customSlotFor(threatTargetCustomSlots, target, teamSlotForMon(target)) : neutralSlotFor(target);
+}
+
+function majorThreatSlot(mon) {
+  return majorThreatAdvancedIds.has(mon.id) ? customSlotFor(majorThreatCustomSlots, mon) : neutralSlotFor(mon);
+}
+
+function threatCounterSlot(mon) {
+  return threatCounterAdvancedIds.has(mon.id) ? customSlotFor(threatCounterCustomSlots, mon) : neutralSlotFor(mon);
+}
+
+function targetSetSummaryHtml(mon, slot, advanced) {
+  const label = advanced
+    ? (selectedLanguage === "es" ? "Set editado" : "Edited set")
+    : (selectedLanguage === "es" ? "Cálculo neutro" : "Neutral calc");
+  const setText = advanced ? `${natureUiName(slot.nature)} · ${spreadText(slot.sp)}` : `${natureUiName("Hardy")} · ${spreadText(slot.sp)}`;
+  return `<span class="mini threat-set-summary">${label}: ${setText}</span>
+    <span class="mini threat-final-stats">${selectedLanguage === "es" ? "Stats finales" : "Final stats"}: ${finalStatsText(mon, slot.nature, slot.sp)}</span>`;
+}
+
+function advancedSlotEditorHtml(mon, slot, scope, id, compact = false) {
+  const stats = calculateStats(mon, slot);
+  const total = totalSp(slot);
+  const natureOptions = natureOptionsFor(mon, slot);
+  return `<div class="mini-sp-editor ${compact ? "compact" : ""}">
+    <label class="mini-nature">
+      <span>${selectedLanguage === "es" ? "Naturaleza" : "Nature"}</span>
+      <select data-advanced-nature data-advanced-scope="${scope}" data-advanced-id="${id}">
+        ${natureOptions.map((nature) => `<option value="${nature}" ${nature === slot.nature ? "selected" : ""}>${natureOptionLabel(mon, nature)}</option>`).join("")}
+      </select>
+    </label>
+    <div class="mini-sp-grid">
+      ${STAT_KEYS.map((key) => `<label>
+        <span>${STAT_LABELS[key]}</span>
+        <input type="number" min="0" max="${MAX_SP_STAT}" value="${slot.sp[key] || 0}" data-advanced-sp="${key}" data-advanced-scope="${scope}" data-advanced-id="${id}">
+        <b>${stats[key]}</b>
+      </label>`).join("")}
+    </div>
+    <div class="mini-sp-total ${total > MAX_SP ? "bad" : ""}">${selectedLanguage === "es" ? "Restantes" : "Remaining"} ${MAX_SP - total} · ${selectedLanguage === "es" ? "final" : "final"} ${STAT_KEYS.map((key) => `${STAT_LABELS[key]} ${stats[key]}`).join(" · ")}</div>
+  </div>`;
+}
+
+function threatSetControlsHtml(target, slot) {
+  return `<div class="threat-tools ${threatAdvanced ? "active" : ""}">
+    <button class="ghost-button threat-advanced-toggle ${threatAdvanced ? "active" : ""}" type="button" data-threat-advanced>${threatAdvanced ? t("threatSimple") : t("threatAdvanced")}</button>
+    ${threatAdvanced ? advancedSlotEditorHtml(target, slot, "threatTarget", target.id) : ""}
+  </div>`;
+}
+
+function majorThreatSetControlsHtml(mon) {
+  const advanced = majorThreatAdvancedIds.has(mon.id);
+  const slot = majorThreatSlot(mon);
+  return `<div class="threat-tools counter-threat-tools">
+    <button class="ghost-button threat-advanced-toggle ${advanced ? "active" : ""}" type="button" data-major-advanced="${mon.id}">${advanced ? t("threatSimple") : t("threatAdvanced")}</button>
+    ${advanced ? advancedSlotEditorHtml(mon, slot, "majorThreat", mon.id, true) : ""}
+  </div>`;
+}
+
+function threatCounterControlsHtml(mon) {
+  if (!threatAdvanced) return "";
+  const advanced = threatCounterAdvancedIds.has(mon.id);
+  const slot = threatCounterSlot(mon);
+  return `<div class="threat-tools counter-threat-tools">
+    <button class="ghost-button threat-advanced-toggle ${advanced ? "active" : ""}" type="button" data-threat-counter-advanced="${mon.id}">${advanced ? t("threatSimple") : t("threatAdvanced")}</button>
+    ${advanced ? advancedSlotEditorHtml(mon, slot, "threatCounter", mon.id, true) : ""}
+  </div>`;
+}
+
+function advancedSlotByScope(scope, id) {
+  const mon = findPokemon(id);
+  if (!mon) return null;
+  if (scope === "threatTarget") return customSlotFor(threatTargetCustomSlots, mon);
+  if (scope === "threatCounter") return customSlotFor(threatCounterCustomSlots, mon);
+  if (scope === "majorThreat") return customSlotFor(majorThreatCustomSlots, mon);
+  return null;
+}
+
+function setAdvancedSp(scope, id, stat, rawValue) {
+  const slot = advancedSlotByScope(scope, id);
+  if (!slot || !STAT_KEYS.includes(stat)) return;
+  const otherTotal = STAT_KEYS
+    .filter((key) => key !== stat)
+    .reduce((sum, key) => sum + Number(slot.sp[key] || 0), 0);
+  const maxForStat = clamp(MAX_SP - otherTotal, 0, MAX_SP_STAT);
+  slot.sp[stat] = clamp(Number(rawValue || 0), 0, maxForStat);
+}
+
+function wireAdvancedSlotControls(root) {
+  root.querySelectorAll("[data-advanced-nature]").forEach((select) => {
+    select.addEventListener("change", () => {
+      const slot = advancedSlotByScope(select.dataset.advancedScope, select.dataset.advancedId);
+      if (!slot) return;
+      slot.nature = select.value;
+      renderAll();
+    });
+  });
+  root.querySelectorAll("[data-advanced-sp]").forEach((input) => {
+    input.addEventListener("change", () => {
+      setAdvancedSp(input.dataset.advancedScope, input.dataset.advancedId, input.dataset.advancedSp, input.value);
+      renderAll();
+    });
+  });
+}
+
 function renderThreatCounters() {
   const query = els.threatSearch.value.trim();
   if (!query) {
@@ -2625,7 +2836,8 @@ function renderThreatCounters() {
     return;
   }
 
-  const counters = analyzeThreatCounters(target).slice(0, 8);
+  const targetSlot = targetThreatSlot(target);
+  const counters = analyzeThreatCounters(target, targetSlot, threatAdvanced).slice(0, 8);
   els.threatResults.innerHTML = `
     <div class="threat-target">
       <span class="sprite-frame"><img src="${pokemonSprite(target)}" alt="${target.name}" data-fallback="${plannerSprite(target)}"></span>
@@ -2634,26 +2846,44 @@ function renderThreatCounters() {
           <strong>${target.name}</strong>
           ${typeIconRow(target.types)}
         </div>
+        ${targetSetSummaryHtml(target, targetSlot, threatAdvanced)}
         ${baseStatsHtml(target)}
+        ${threatSetControlsHtml(target, targetSlot)}
       </div>
     </div>
-    ${counters.map(({ mon, score, reasons, explanation, advice }) => `<article class="counter-card">
+    ${counters.map(({ mon, score, reasons, explanation, advice, counterSlot, counterAdvanced }) => `<article class="counter-card">
       <span class="sprite-frame"><img src="${pokemonSprite(mon)}" alt="${mon.name}" data-fallback="${plannerSprite(mon)}"></span>
       <div>
         <span class="suggestion-name">${mon.name}</span>
         <span class="mini">${typeIconRow(mon.types)} · ${Math.round(score)} pts</span>
+        ${targetSetSummaryHtml(mon, counterSlot, counterAdvanced)}
         ${baseStatsHtml(mon)}
+        ${threatCounterControlsHtml(mon)}
         <p class="suggestion-explain">${localizeInlineTerms(explanation)}</p>
         ${insightListHtml(advice)}
         <div class="tag-row">${reasons.slice(0, 4).map((reason) => `<span class="tag">${localizeInlineTerms(counterReasonLabel(reason))}</span>`).join("")}</div>
       </div>
     </article>`).join("")}
   `;
+  els.threatResults.querySelector("[data-threat-advanced]")?.addEventListener("click", () => {
+    threatAdvanced = !threatAdvanced;
+    renderThreatCounters();
+  });
+  els.threatResults.querySelectorAll("[data-threat-counter-advanced]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const id = button.dataset.threatCounterAdvanced;
+      if (threatCounterAdvancedIds.has(id)) threatCounterAdvancedIds.delete(id);
+      else threatCounterAdvancedIds.add(id);
+      renderThreatCounters();
+    });
+  });
+  wireAdvancedSlotControls(els.threatResults);
   wireSpriteFallbacks(els.threatResults);
 }
 
-function analyzeThreatCounters(target) {
-  const targetStats = calculateStats(target, { nature: target.nature, sp: target.spread });
+function analyzeThreatCounters(target, targetSlot = null, targetAdvanced = false) {
+  const defensiveSlot = targetAdvanced ? targetSlot : null;
+  const targetStats = defensiveSlot ? calculateStats(target, defensiveSlot) : neutralStats(target);
   const targetMoveTypes = unique((target.moves || []).map((move) => moveInfo(move)?.type).filter(Boolean));
   const targetPopularMoves = popularMoveDetails(target);
   const targetLowerDefense = targetStats.spd <= targetStats.def - 8 ? "Special" : targetStats.def <= targetStats.spd - 8 ? "Physical" : "";
@@ -2661,8 +2891,11 @@ function analyzeThreatCounters(target) {
   return uniqueMonsForDisplay(POKEDEX.filter((mon) => mon.id !== target.id))
     .map((mon) => {
       const candidate = analyzeCandidate(mon);
-      const counterMove = bestCounterMove(mon, target, targetLowerDefense);
-      const stats = calculateStats(mon, { nature: mon.nature, sp: mon.spread });
+      const counterAdvanced = threatAdvanced && threatCounterAdvancedIds.has(mon.id);
+      const counterSlot = counterAdvanced ? threatCounterSlot(mon) : neutralSlotFor(mon);
+      const attackingSlot = counterAdvanced ? counterSlot : null;
+      const counterMove = bestCounterMove(mon, target, targetLowerDefense, attackingSlot, defensiveSlot);
+      const stats = attackingSlot ? calculateStats(mon, attackingSlot) : neutralStats(mon);
       let score = Math.min(pokemonUsage(mon), 12) * 0.7;
       const reasons = [];
 
@@ -2672,7 +2905,7 @@ function analyzeThreatCounters(target) {
       };
 
       if (counterMove) {
-        const offenseStat = counterMove.category === "Special" ? mon.baseStats.spa : mon.baseStats.atk;
+        const offenseStat = counterMove.category === "Special" ? stats.spa : stats.atk;
         add((counterMove.multiplier >= 4 ? 42 : 28) + clamp(Math.round((offenseStat - 100) / 4), -18, 18), `${counterMove.move} golpea x${counterMove.multiplier}`);
         if (counterMove.category === targetLowerDefense) add(16, `ataca su defensa ${targetLowerDefense === "Special" ? "especial" : "física"} más débil`);
         if (counterMove.category === "Special" && targetStats.spd < targetStats.def) add(8, "castiga su SpD baja");
@@ -2703,19 +2936,21 @@ function analyzeThreatCounters(target) {
         reasons: cleanReasons,
         explanation: threatCounterExplanation(mon, target, counterMove, stats, targetStats, cleanReasons),
         advice: threatCounterAdvice(mon, target, counterMove, stats, targetStats, cleanReasons, candidate, targetPopularMoves),
+        counterSlot,
+        counterAdvanced,
       };
     })
     .sort((a, b) => b.score - a.score);
 }
 
-function bestCounterMove(mon, target, preferredCategory = "") {
+function bestCounterMove(mon, target, preferredCategory = "", attackerSlot = null, defenderSlot = null) {
   const moves = unique([...(mon.moves || []), ...(mon.learnset || [])]).filter((move) => isLegalMoveForMon(mon, move));
   return moves
     .map((move) => {
       const info = moveInfo(move);
       const data = getMoveData(move) || {};
       if (!info || info.category === "Status") return null;
-      const calc = estimateNeutralDamage(mon, move, target);
+      const calc = estimateNeutralDamage(mon, move, target, attackerSlot, defenderSlot);
       if (!calc) return null;
       const multiplier = calc.multiplier;
       if (multiplier <= 1) return null;
@@ -2726,7 +2961,8 @@ function bestCounterMove(mon, target, preferredCategory = "") {
       const power = data.basePower || moveScore(move, mon.baseStats) || 60;
       const accuracy = data.accuracy === true || data.accuracy === undefined ? 100 : Number(data.accuracy || 100);
       const accuracyFit = (accuracy - 80) * 0.8;
-      const attackStat = info.category === "Special" ? mon.baseStats.spa : mon.baseStats.atk;
+      const attackerStats = attackerSlot ? calculateStats(mon, attackerSlot) : neutralStats(mon);
+      const attackStat = info.category === "Special" ? attackerStats.spa : attackerStats.atk;
       const statFit = attackStat * 0.25;
       const badSide = attackStat < 85 ? -28 : 0;
       const koFit = calc.minPercent >= 100 ? 42 : calc.maxPercent >= 100 ? 32 : calc.minPercent >= 50 ? 24 : calc.maxPercent >= 50 ? 16 : calc.maxPercent >= 34 ? 7 : -8;
@@ -2843,18 +3079,29 @@ function renderCounters() {
 
   els.counters.innerHTML = analyzeCounters()
     .slice(0, 6)
-    .map(({ mon, score, reasons, explanation, advice }) => `<article class="counter-card">
+    .map(({ mon, score, reasons, explanation, advice, targetSlot, advanced }) => `<article class="counter-card">
       <span class="sprite-frame"><img src="${pokemonSprite(mon)}" alt="${mon.name}" data-fallback="${plannerSprite(mon)}"></span>
       <div>
         <span class="suggestion-name">${mon.name}</span>
         <span class="mini">${typeIconRow(mon.types)} · ${selectedLanguage === "es" ? "riesgo" : "risk"} ${Math.round(score)} · ${selectedLanguage === "es" ? "uso" : "usage"} ${pokemonUsage(mon).toFixed(2)}%</span>
+        ${targetSetSummaryHtml(mon, targetSlot, advanced)}
         ${baseStatsHtml(mon)}
+        ${majorThreatSetControlsHtml(mon)}
         <p class="suggestion-explain">${localizeInlineTerms(explanation)}</p>
         ${insightListHtml(advice)}
         <div class="tag-row">${reasons.slice(0, 4).map((reason) => `<span class="tag">${localizeInlineTerms(majorThreatReasonLabel(reason))}</span>`).join("")}</div>
       </div>
     </article>`)
     .join("");
+  els.counters.querySelectorAll("[data-major-advanced]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const id = button.dataset.majorAdvanced;
+      if (majorThreatAdvancedIds.has(id)) majorThreatAdvancedIds.delete(id);
+      else majorThreatAdvancedIds.add(id);
+      renderCounters();
+    });
+  });
+  wireAdvancedSlotControls(els.counters);
 }
 
 function analyzeCounters() {
@@ -2866,10 +3113,13 @@ function analyzeCounters() {
 
   return POKEDEX.filter((mon) => !teamIds.has(mon.id))
     .map((mon) => {
+      const advanced = majorThreatAdvancedIds.has(mon.id);
+      const targetSlot = majorThreatSlot(mon);
+      const targetStats = advanced ? calculateStats(mon, targetSlot) : neutralStats(mon);
       let score = pokemonUsage(mon) * 1.2;
       const reasons = [];
       const attackTypes = unique(mon.moves.map((move) => moveInfo(move)?.type).filter(Boolean));
-      const damageAnswers = teamDamageAnswersTo(mon, filled);
+      const damageAnswers = teamDamageAnswersTo(mon, filled, targetSlot, { advanced });
       const pressured = attackTypes.reduce((count, type) => count + filled.filter((slot) => battleMultiplier(type, { ...slot.pokemon, ability: slot.ability }, mon) > 1).length, 0);
       score += pressured * 5;
       if (pressured >= 4) reasons.push("golpea varias debilidades");
@@ -2880,7 +3130,7 @@ function analyzeCounters() {
         reasons.push("poca cobertura directa");
       }
 
-      const monSpeed = calculateStats(mon, { nature: mon.nature, sp: mon.spread }).spe;
+      const monSpeed = targetStats.spe;
       if (monSpeed > avgSpeed + 20 && !hasSpeedControl) {
         score += 12;
         reasons.push("te supera en velocidad");
@@ -2900,7 +3150,9 @@ function analyzeCounters() {
         score,
         reasons: cleanReasons,
         explanation: majorThreatExplanation(mon, cleanReasons, filled),
-        advice: majorThreatAdvice(mon, cleanReasons, filled),
+        advice: majorThreatAdvice(mon, cleanReasons, filled, targetSlot, advanced),
+        targetSlot,
+        advanced,
       };
     })
     .sort((a, b) => b.score - a.score);
@@ -2919,8 +3171,8 @@ function majorThreatExplanation(mon, reasons, filled) {
   return `${attackLine}${coverage}${speed}`;
 }
 
-function majorThreatAdvice(mon, reasons, filled) {
-  const answers = teamAnswersTo(mon, filled);
+function majorThreatAdvice(mon, reasons, filled, targetSlot = null, advanced = false) {
+  const answers = teamAnswersTo(mon, filled, targetSlot, advanced);
   const lines = [];
   if (answers.damage.length) {
     lines.push({ label: selectedLanguage === "es" ? "Cómo frenarlo" : "How to stop it", text: selectedLanguage === "es" ? `${answers.damage.slice(0, 2).join(" o ")} son tus líneas de daño más claras` : `${answers.damage.slice(0, 2).join(" or ")} are your clearest damage lines` });
@@ -2948,9 +3200,8 @@ function majorThreatReasonLabel(reason) {
   return translated ? translated[selectedLanguage === "es" ? 0 : 1] : sentenceCase(reason);
 }
 
-function teamAnswersTo(target, slots) {
-  const targetStats = calculateStats(target, { nature: target.nature, sp: target.spread });
-  const damage = teamDamageAnswersTo(target, slots).map((answer) => selectedLanguage === "es"
+function teamAnswersTo(target, slots, targetSlot = null, advanced = false) {
+  const damage = teamDamageAnswersTo(target, slots, targetSlot, { advanced }).map((answer) => selectedLanguage === "es"
     ? `${answer.mon.name} con ${moveUiName(answer.move)} (${damageSummary(answer.calc)}${answer.speedText ? `, ${answer.speedText}` : ""})`
     : `${answer.mon.name} with ${moveUiName(answer.move)} (${damageSummary(answer.calc)}${answer.speedText ? `, ${answer.speedText}` : ""})`);
   const utility = [];
@@ -2971,13 +3222,16 @@ function teamAnswersTo(target, slots) {
   return { damage: unique(damage), utility: unique(utility) };
 }
 
-function teamDamageAnswersTo(target, slots) {
-  const targetStats = calculateStats(target, { nature: target.nature, sp: target.spread });
+function teamDamageAnswersTo(target, slots, targetSlot = null, options = {}) {
+  const advanced = Boolean(options.advanced);
+  const defensiveSlot = advanced ? targetSlot : null;
+  const targetStats = defensiveSlot ? calculateStats(target, defensiveSlot) : neutralStats(target);
   return slots
     .flatMap((slot) => {
-      const stats = calculateStats(slot.pokemon, slot);
+      const attackingSlot = advanced ? slot : null;
+      const stats = attackingSlot ? calculateStats(slot.pokemon, attackingSlot) : neutralStats(slot.pokemon);
       return slot.moves.filter(Boolean).map((move) => {
-        const calc = estimateNeutralDamage(slot.pokemon, move, target);
+        const calc = estimateNeutralDamage(slot.pokemon, move, target, attackingSlot, defensiveSlot);
         if (!calc || calc.multiplier <= 1) return null;
         const speedText = stats.spe >= targetStats.spe
           ? (selectedLanguage === "es" ? "antes" : "moves first")
@@ -3009,7 +3263,7 @@ function calculateStats(mon, slot) {
   return Object.fromEntries(
     STAT_KEYS.map((key) => {
       const sp = Number(slot.sp?.[key] || 0);
-      const ev = clamp(sp, 0, MAX_SP_STAT);
+      const ev = championsSpToEffectiveEv(sp);
       const base = mon.baseStats[key];
       if (key === "hp") {
         return [key, Math.floor(((2 * base + IV + Math.floor(ev / 4)) * LEVEL) / 100) + LEVEL + 10];
@@ -3022,28 +3276,34 @@ function calculateStats(mon, slot) {
   );
 }
 
+function championsSpToEffectiveEv(sp) {
+  const points = clamp(Number(sp || 0), 0, MAX_SP_STAT);
+  return points >= MAX_SP_STAT ? 252 : Math.round(points * 8);
+}
+
 function neutralStats(mon) {
   return calculateStats(mon, { nature: "Hardy", sp: { hp: 0, atk: 0, def: 0, spa: 0, spd: 0, spe: 0 } });
 }
 
-function estimateNeutralDamage(attacker, move, defender) {
+function estimateNeutralDamage(attacker, move, defender, attackerSlot = null, defenderSlot = null) {
   const info = moveInfo(move);
   const data = getMoveData(move) || {};
   if (!info || info.category === "Status") return null;
   const power = calcBasePower(move, data);
   if (!power) return null;
 
-  const attackerStats = neutralStats(attacker);
-  const defenderStats = neutralStats(defender);
+  const attackerStats = attackerSlot ? calculateStats(attacker, attackerSlot) : neutralStats(attacker);
+  const defenderStats = defenderSlot ? calculateStats(defender, defenderSlot) : neutralStats(defender);
+  const calcMode = attackerSlot || defenderSlot ? "advanced" : "neutral";
   const atkStat = info.category === "Special" ? attackerStats.spa : attackerStats.atk;
   const defStat = info.category === "Special" ? defenderStats.spd : defenderStats.def;
-  const attackerAbility = attacker.popularAbility || attacker.abilities?.[0] || "";
-  const defenderAbility = defender.popularAbility || defender.abilities?.[0] || "";
+  const attackerAbility = attackerSlot?.ability || attacker.popularAbility || attacker.abilities?.[0] || "";
+  const defenderAbility = defenderSlot?.ability || defender.popularAbility || defender.abilities?.[0] || "";
   const attackerEntity = { ...attacker, ability: attackerAbility };
   const defenderEntity = { ...defender, ability: defenderAbility };
   const multiplier = battleMultiplier(info.type, defenderEntity, attackerEntity);
   if (multiplier === 0) {
-    return { min: 0, max: 0, minPercent: 0, maxPercent: 0, hp: defenderStats.hp, multiplier: 0, ko: "inmune", koTurns: Infinity };
+    return { min: 0, max: 0, minPercent: 0, maxPercent: 0, hp: defenderStats.hp, multiplier: 0, ko: "inmune", koTurns: Infinity, mode: calcMode };
   }
 
   const hits = moveHits(data);
@@ -3057,7 +3317,7 @@ function estimateNeutralDamage(attacker, move, defender) {
   const hp = defenderStats.hp;
   const minPercent = Math.min(999, (min / hp) * 100);
   const maxPercent = Math.min(999, (max / hp) * 100);
-  return { min, max, minPercent, maxPercent, hp, multiplier, ko: koLabel(minPercent, maxPercent), koTurns: koTurns(maxPercent) };
+  return { min, max, minPercent, maxPercent, hp, multiplier, ko: koLabel(minPercent, maxPercent), koTurns: koTurns(maxPercent), mode: calcMode };
 }
 
 function calcBasePower(move, data) {
@@ -3111,7 +3371,10 @@ function koLabel(minPercent, maxPercent) {
 function damageSummary(calc) {
   if (!calc) return selectedLanguage === "es" ? "daño sin calcular" : "damage not calculated";
   if (calc.multiplier === 0) return selectedLanguage === "es" ? "0% (inmune)" : "0% (immune)";
-  return `${formatDamagePercent(calc.minPercent)}-${formatDamagePercent(calc.maxPercent)}% (${calc.ko}, ${selectedLanguage === "es" ? "calc neutro" : "neutral calc"})`;
+  const mode = calc.mode === "advanced"
+    ? (selectedLanguage === "es" ? "calc avanzado" : "advanced calc")
+    : (selectedLanguage === "es" ? "calc neutro" : "neutral calc");
+  return `${formatDamagePercent(calc.minPercent)}-${formatDamagePercent(calc.maxPercent)}% (${calc.ko}, ${mode})`;
 }
 
 function formatDamagePercent(value) {

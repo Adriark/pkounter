@@ -16,7 +16,7 @@
   <body>
     <header class="topbar">
       <div class="brand-block">
-        <h1><a class="brand-link" href="index.html" aria-label="Pkounter"><img class="brand-logo" src="assets/Pkounter_logo.png" alt="Pkounter" /></a></h1>
+        <h1><a class="brand-link" href="index.html" aria-label="Pkounter"><img class="brand-logo" src="assets/Pkounter_logo_cropped.png?v=1" alt="Pkounter" /></a></h1>
       </div>
       <div class="rules">
         <a class="top-link" href="about.html" data-i18n="aboutButton">About</a>
@@ -98,40 +98,48 @@
         <div id="editor"></div>
       </section>
 
-      <section class="panel suggestions-panel" aria-labelledby="suggestions-title">
-        <div class="section-head">
-          <div>
-            <h2 id="suggestions-title">Sugerencias en tiempo real</h2>
-            <p id="suggestionHint">Partners, roles y amenazas del meta</p>
+      <section class="panel side-panel" aria-label="Herramientas de teambuilding">
+        <div class="side-tabs" role="tablist" aria-label="Herramientas">
+          <button class="side-tab active" id="tab-suggestions" type="button" role="tab" aria-selected="true" aria-controls="panel-suggestions" data-side-tab="suggestions" data-i18n="suggestionsTab">Teambuilding</button>
+          <button class="side-tab" id="tab-counters" type="button" role="tab" aria-selected="false" aria-controls="panel-counters" data-side-tab="counters" data-i18n="teamCountersTab">Counters del equipo</button>
+          <button class="side-tab" id="tab-threat" type="button" role="tab" aria-selected="false" aria-controls="panel-threat" data-side-tab="threat" data-i18n="singleCounterTab">Counter individual</button>
+        </div>
+
+        <section class="side-tab-panel suggestions-panel active" id="panel-suggestions" role="tabpanel" aria-labelledby="tab-suggestions" data-tab-panel="suggestions">
+          <div class="section-head">
+            <div>
+              <h2 id="suggestions-title">Sugerencias en tiempo real</h2>
+              <p id="suggestionHint">Partners, roles y amenazas del meta</p>
+            </div>
           </div>
-        </div>
 
-        <div id="suggestions" class="suggestions"></div>
-        <div id="suggestionControls" class="suggestion-more"></div>
-      </section>
+          <div id="suggestions" class="suggestions"></div>
+          <div id="suggestionControls" class="suggestion-more"></div>
+        </section>
 
-      <section class="panel counters-panel" aria-labelledby="counters-title">
-        <div class="section-head">
-          <div>
-            <h2 id="counters-title">Mayores counters</h2>
-            <p data-i18n="majorCountersHint">Se activa al completar 6 Pokémon</p>
+        <section class="side-tab-panel counters-panel" id="panel-counters" role="tabpanel" aria-labelledby="tab-counters" data-tab-panel="counters" hidden>
+          <div class="section-head">
+            <div>
+              <h2 id="counters-title">Mayores counters</h2>
+              <p data-i18n="majorCountersHint">Se activa al completar 6 Pokémon</p>
+            </div>
           </div>
-        </div>
-        <div id="counters" class="counters"></div>
-      </section>
+          <div id="counters" class="counters"></div>
+        </section>
 
-      <section class="panel threat-panel" aria-labelledby="threat-title">
-        <div class="section-head">
-          <div>
-            <h2 id="threat-title">Buscar counters</h2>
-            <p data-i18n="threatHint">Respuestas directas contra una amenaza</p>
+        <section class="side-tab-panel threat-panel" id="panel-threat" role="tabpanel" aria-labelledby="tab-threat" data-tab-panel="threat" hidden>
+          <div class="section-head">
+            <div>
+              <h2 id="threat-title">Buscar counters</h2>
+              <p data-i18n="threatHint">Respuestas directas contra una amenaza</p>
+            </div>
           </div>
-        </div>
 
-        <div class="threat-search">
-          <input id="threatSearch" list="pokemonList" placeholder="Ej. Archaludon..." autocomplete="off" />
-        </div>
-        <div id="threatResults" class="counters"></div>
+          <div class="threat-search">
+            <input id="threatSearch" list="pokemonList" placeholder="Ej. Archaludon..." autocomplete="off" />
+          </div>
+          <div id="threatResults" class="counters"></div>
+        </section>
       </section>
     </main>
 
