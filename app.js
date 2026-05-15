@@ -3,6 +3,8 @@ const IV = 31;
 const MAX_TEAM = 6;
 const MAX_SP = 66;
 const MAX_SP_STAT = 32;
+const COUNTER_MOVE_USAGE_MIN = 5;
+const COUNTER_MOVE_FALLBACK_USAGE_MIN = 1;
 const STAT_KEYS = ["hp", "atk", "def", "spa", "spd", "spe"];
 const STAT_LABELS = { hp: "HP", atk: "Atk", def: "Def", spa: "SpA", spd: "SpD", spe: "Spe" };
 const TYPE_COLORS = {
@@ -1675,6 +1677,147 @@ function moveOptionStyle(move) {
   return `style="background:#10161a;color:${color};"`;
 }
 
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#39;",
+  }[char]));
+}
+
+function pickerBaseText(value) {
+  return String(value || "").split("·")[0].trim();
+}
+
+function comboOptionButtonsHtml(options, labelFor, aliasesFor = () => [], optionClassFor = () => "") {
+  return options
+    .map((option, index) => {
+      const label = labelFor(option);
+      const search = [label, ...(aliasesFor(option) || [])].filter(Boolean).join(" ");
+      return `<button class="combo-option ${optionClassFor(option)}" type="button" data-combo-option="${index}" data-combo-search="${escapeHtml(search)}">${escapeHtml(label)}</button>`;
+    })
+    .join("");
+}
+
+function comboInputHtml({ listId, value, options, labelFor, aliasesFor = () => [], optionClassFor = () => "", field = "", moveIndex = null, className = "", placeholder = "" }) {
+  const dataAttr = field ? `data-field="${field}"` : `data-move="${moveIndex}"`;
+  const emptyText = selectedLanguage === "es" ? "Sin resultados" : "No results";
+  return `<div class="combo-picker" data-combo-list="${escapeHtml(listId)}">
+    <input class="combo-input ${className}" ${dataAttr} value="${escapeHtml(value)}" placeholder="${escapeHtml(placeholder)}" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false">
+    <button class="combo-toggle" type="button" aria-label="${selectedLanguage === "es" ? "Abrir opciones" : "Open options"}"></button>
+    <div class="combo-menu" hidden>
+      ${comboOptionButtonsHtml(options, labelFor, aliasesFor, optionClassFor)}
+      <span class="combo-empty" hidden>${emptyText}</span>
+    </div>
+  </div>`;
+}
+
+function resolvePickerChoice(rawValue, options, labelFor, aliasesFor = () => []) {
+  const value = String(rawValue || "").trim();
+  if (!value) return "";
+  const baseId = toId(pickerBaseText(value));
+  const fullId = toId(value);
+  const labelsFor = (option) => [labelFor(option), ...(aliasesFor(option) || [])].filter(Boolean);
+  const exact = options.find((option) => {
+    const labels = labelsFor(option);
+    return labels.some((label) => {
+      const text = String(label || "").trim();
+      return text === value || toId(text) === fullId || toId(pickerBaseText(text)) === baseId;
+    });
+  });
+  if (exact) return exact;
+  return options.find((option) => {
+    const labels = labelsFor(option);
+    return labels.some((label) => {
+      const text = String(label || "").trim();
+      const labelBaseId = toId(pickerBaseText(text));
+      const labelFullId = toId(text);
+      return labelBaseId.startsWith(baseId) || labelBaseId.includes(baseId) || labelFullId.includes(fullId);
+    });
+  }) || null;
+}
+
+function wireComboPicker(input) {
+  const picker = input.closest(".combo-picker");
+  if (!picker) return;
+  const menu = picker.querySelector(".combo-menu");
+  const toggle = picker.querySelector(".combo-toggle");
+  const options = [...picker.querySelectorAll("[data-combo-option]")];
+  const close = () => {
+    menu.hidden = true;
+    input.setAttribute("aria-expanded", "false");
+  };
+  const open = (showAll = true) => {
+    filterComboOptions(input, showAll);
+    menu.hidden = false;
+    input.setAttribute("aria-expanded", "true");
+  };
+  const choose = (button) => {
+    input.value = button.textContent.trim();
+    close();
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  };
+
+  input.addEventListener("focus", () => {
+    input.select();
+    open(true);
+  });
+  input.addEventListener("click", () => open(true));
+  input.addEventListener("input", () => open(false));
+  input.addEventListener("blur", () => {
+    window.setTimeout(close, 120);
+  });
+  input.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      open(true);
+      const first = options.find((button) => !button.hidden);
+      if (first) first.focus();
+    }
+    if (event.key === "Enter" && !menu.hidden) {
+      const first = options.find((button) => !button.hidden);
+      if (first) {
+        event.preventDefault();
+        choose(first);
+      }
+    }
+    if (event.key === "Escape") close();
+  });
+  toggle?.addEventListener("mousedown", (event) => event.preventDefault());
+  toggle?.addEventListener("click", () => {
+    input.focus();
+    open(true);
+  });
+  menu.addEventListener("mousedown", (event) => event.preventDefault());
+  options.forEach((button) => {
+    button.addEventListener("click", () => choose(button));
+    button.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") choose(button);
+      if (event.key === "Escape") {
+        close();
+        input.focus();
+      }
+    });
+  });
+}
+
+function filterComboOptions(input, showAll = false) {
+  const picker = input.closest(".combo-picker");
+  if (!picker) return;
+  const query = showAll ? "" : toId(input.value);
+  const options = [...picker.querySelectorAll("[data-combo-option]")];
+  let visible = 0;
+  for (const option of options) {
+    const matches = !query || toId(option.dataset.comboSearch).includes(query);
+    option.hidden = !matches;
+    if (matches) visible += 1;
+  }
+  const empty = picker.querySelector(".combo-empty");
+  if (empty) empty.hidden = visible > 0;
+}
+
 function usageFromMap(map, name) {
   const key = Object.keys(map || {}).find((candidate) => toId(candidate) === toId(name));
   return key ? Number(map[key] || 0) : 0;
@@ -1724,7 +1867,15 @@ function abilityOptionLabel(mon, ability) {
 function natureOptionLabel(mon, nature) {
   const usage = natureUsageFor(mon, nature);
   const name = natureUiName(nature);
-  return usage > 0 ? `${name} · ${formatUsagePercent(usage)}%` : name;
+  const modifier = natureModifierLabel(nature);
+  const usageText = usage > 0 ? ` · ${formatUsagePercent(usage)}%` : "";
+  return `${name} · ${modifier}${usageText}`;
+}
+
+function natureModifierLabel(nature) {
+  const modifier = NATURES[nature] || {};
+  if (!modifier.up || !modifier.down) return selectedLanguage === "es" ? "neutral" : "neutral";
+  return `+${STAT_LABELS[modifier.up]} / -${STAT_LABELS[modifier.down]}`;
 }
 
 function formatUsagePercent(value) {
@@ -1935,6 +2086,11 @@ function renderEditor() {
   const itemOptions = itemOptionsFor(mon, slot);
   const abilityOptions = abilityOptionsFor(mon, slot);
   const natureOptions = natureOptionsFor(mon, slot);
+  const pokemonOptions = sortedPokedex().filter((pmon) => pmon.id === mon.id || !isPokemonSelected(pmon, selectedSlot));
+  const pokemonListId = `config-pokemon-options-${selectedSlot}`;
+  const natureListId = `config-nature-options-${selectedSlot}`;
+  const itemListId = `config-item-options-${selectedSlot}`;
+  const abilityListId = `config-ability-options-${selectedSlot}`;
   const spTotal = totalSp(slot);
   const stats = calculateStats(mon, slot);
   const strategy = editorStrategy(mon, slot, stats);
@@ -1944,39 +2100,72 @@ function renderEditor() {
         <label>Pokémon</label>
         <div class="select-with-art">
           <span class="select-art pokemon-art"><img src="${pokemonSprite(mon)}" alt="" data-fallback="${plannerSprite(mon)}"></span>
-          <select class="has-art" data-field="pokemon">
-            ${sortedPokedex().filter((pmon) => pmon.id === mon.id || !isPokemonSelected(pmon, selectedSlot)).map((pmon) => `<option value="${pmon.name}" ${pmon.id === mon.id ? "selected" : ""}>${pokemonOptionLabel(pmon)}</option>`).join("")}
-          </select>
+          ${comboInputHtml({
+            listId: pokemonListId,
+            value: pokemonOptionLabel(mon),
+            options: pokemonOptions,
+            labelFor: (pmon) => pokemonOptionLabel(pmon),
+            aliasesFor: (pmon) => [pmon.name],
+            field: "pokemon",
+            className: "has-art",
+            placeholder: selectedLanguage === "es" ? "Buscar Pokémon..." : "Search Pokémon...",
+          })}
         </div>
       </div>
       <div>
         <label>${selectedLanguage === "es" ? "Naturaleza" : "Nature"}</label>
-        <select data-field="nature">
-          ${natureOptions.map((nature) => `<option value="${nature}" ${nature === slot.nature ? "selected" : ""}>${natureOptionLabel(mon, nature)}</option>`).join("")}
-        </select>
+        ${comboInputHtml({
+          listId: natureListId,
+          value: natureOptionLabel(mon, slot.nature),
+          options: natureOptions,
+          labelFor: (nature) => natureOptionLabel(mon, nature),
+          aliasesFor: (nature) => [nature, natureUiName(nature), natureModifierLabel(nature)],
+          field: "nature",
+          placeholder: selectedLanguage === "es" ? "Buscar naturaleza..." : "Search nature...",
+        })}
       </div>
       <div>
         <label>${selectedLanguage === "es" ? "Objeto" : "Item"}</label>
         <div class="select-with-art">
           <span class="select-art item-art">${slot.item ? itemIconHtml(slot.item) : ""}</span>
-          <select class="has-art" data-field="item">
-            ${itemOptions.map((item) => `<option value="${item}" ${item === slot.item ? "selected" : ""}>${itemOptionLabel(mon, item)}</option>`).join("")}
-          </select>
+          ${comboInputHtml({
+            listId: itemListId,
+            value: slot.item ? itemOptionLabel(mon, slot.item) : "",
+            options: itemOptions,
+            labelFor: (item) => itemOptionLabel(mon, item),
+            aliasesFor: (item) => [item, displayItemName(item), itemUiName(item)],
+            field: "item",
+            className: "has-art",
+            placeholder: selectedLanguage === "es" ? "Buscar objeto..." : "Search item...",
+          })}
         </div>
       </div>
       <div>
         <label>${selectedLanguage === "es" ? "Habilidad" : "Ability"}</label>
-        <select data-field="ability">
-          ${abilityOptions.map((ability) => `<option value="${ability}" ${ability === slot.ability ? "selected" : ""}>${abilityOptionLabel(mon, ability)}</option>`).join("")}
-        </select>
+        ${comboInputHtml({
+          listId: abilityListId,
+          value: slot.ability ? abilityOptionLabel(mon, slot.ability) : "",
+          options: abilityOptions,
+          labelFor: (ability) => abilityOptionLabel(mon, ability),
+          aliasesFor: (ability) => [ability, abilityUiName(ability)],
+          field: "ability",
+          placeholder: selectedLanguage === "es" ? "Buscar habilidad..." : "Search ability...",
+        })}
       </div>
       <div class="wide">
         <label>${selectedLanguage === "es" ? "Movimientos" : "Moves"}</label>
         <div class="moves-grid">
-          ${slot.moves.map((move, index) => `<select class="move-select ${moveTypeClass(move)}" data-move="${index}">
-            <option value="">${t("movePlaceholder", { n: index + 1 })}</option>
-            ${allMoves.map((candidate) => `<option value="${candidate}" ${moveOptionStyle(candidate)} ${candidate === move ? "selected" : ""}>${moveOptionLabel(mon, candidate)}</option>`).join("")}
-          </select>`).join("")}
+          ${slot.moves.map((move, index) => comboInputHtml({
+            listId: `config-move-options-${selectedSlot}-${index}`,
+            value: move ? moveOptionLabel(mon, move) : "",
+            options: allMoves,
+            labelFor: (candidate) => moveOptionLabel(mon, candidate),
+            aliasesFor: (candidate) => [candidate, moveUiName(candidate)],
+            optionClassFor: (candidate) => moveTypeClass(candidate),
+            moveIndex: index,
+            className: `move-select ${moveTypeClass(move)}`,
+            placeholder: t("movePlaceholder", { n: index + 1 }),
+          })).join("")}
         </div>
         ${spreadRecommendationsHtml(mon)}
       </div>
@@ -1993,16 +2182,46 @@ function renderEditor() {
     </div>
   `;
 
+  const fieldResolvers = {
+    pokemon: {
+      options: pokemonOptions,
+      labelFor: (pmon) => pokemonOptionLabel(pmon),
+      aliasesFor: (pmon) => [pmon.name],
+    },
+    nature: {
+      options: natureOptions,
+      labelFor: (nature) => natureOptionLabel(mon, nature),
+      aliasesFor: (nature) => [nature, natureUiName(nature)],
+    },
+    item: {
+      options: itemOptions,
+      labelFor: (item) => itemOptionLabel(mon, item),
+      aliasesFor: (item) => [item, displayItemName(item), itemUiName(item)],
+    },
+    ability: {
+      options: abilityOptions,
+      labelFor: (ability) => abilityOptionLabel(mon, ability),
+      aliasesFor: (ability) => [ability, abilityUiName(ability)],
+    },
+  };
+
   els.editor.querySelectorAll("[data-field]").forEach((input) => {
+    wireComboPicker(input);
     input.addEventListener("change", () => {
+      const resolver = fieldResolvers[input.dataset.field];
+      const nextValue = resolver
+        ? resolvePickerChoice(input.value, resolver.options, resolver.labelFor, resolver.aliasesFor)
+        : input.value;
       if (input.dataset.field === "pokemon") {
-        const next = findPokemon(input.value);
+        const next = nextValue;
         if (next && !isPokemonSelected(next, selectedSlot)) {
           slot.pokemon = next;
           applyPopularSet(slot, next);
         }
+      } else if (input.dataset.field === "item") {
+        if (nextValue || !slot.pokemon?.isMega) slot.item = nextValue || "";
       } else {
-        slot[input.dataset.field] = input.value;
+        if (nextValue) slot[input.dataset.field] = nextValue;
       }
       renderAll();
     });
@@ -2014,8 +2233,15 @@ function renderEditor() {
     });
   });
   els.editor.querySelectorAll("[data-move]").forEach((input) => {
+    wireComboPicker(input);
     input.addEventListener("change", () => {
-      slot.moves[Number(input.dataset.move)] = input.value;
+      const move = resolvePickerChoice(
+        input.value,
+        allMoves,
+        (candidate) => moveOptionLabel(mon, candidate),
+        (candidate) => [candidate, moveUiName(candidate)],
+      );
+      if (!input.value.trim() || move) slot.moves[Number(input.dataset.move)] = move || "";
       renderAll();
     });
   });
@@ -3023,7 +3249,7 @@ function analyzeThreatCounters(target, targetSlot = null, targetAdvanced = false
       if (weakToThreat.length) add(-weakToThreat.length * 14, `sufre ${formatTypeList(weakToThreat)}`);
 
       if (isDoublesFormat() && candidate.setRoles.has("fakeOut")) add(7, "puede ganar turno con Fake Out");
-      if (candidate.setRoles.has("speedControl") && stats.spe < targetStats.spe) add(8, "puede cambiar quién mueve primero");
+      if (candidateSpeedControlRelevant(candidate, target) && stats.spe < targetStats.spe) add(8, "puede cambiar quién mueve primero");
       if (isDoublesFormat() && candidate.setMoveIds.has("wideguard") && targetPopularMoves.some((entry) => entry.info.role === "spread")) add(10, "puede cubrir daño en área");
 
       if (!counterMove && reasons.length === 0) reasons.push("respuesta situacional");
@@ -3042,7 +3268,7 @@ function analyzeThreatCounters(target, targetSlot = null, targetAdvanced = false
 }
 
 function bestCounterMove(mon, target, preferredCategory = "", attackerSlot = null, defenderSlot = null) {
-  const moves = unique([...(mon.moves || []), ...(mon.learnset || [])]).filter((move) => isLegalMoveForMon(mon, move));
+  const moves = counterMovePool(mon);
   return moves
     .map((move) => {
       const info = moveInfo(move);
@@ -3068,6 +3294,28 @@ function bestCounterMove(mon, target, preferredCategory = "", attackerSlot = nul
     })
     .filter(Boolean)
     .sort((a, b) => b.value - a.value)[0] || null;
+}
+
+function counterMovePool(mon) {
+  const usageData = munchStatsForName(mon?.name)?.moveUsage || mon?.moveUsage || {};
+  const hasUsageData = Object.keys(usageData).length > 0;
+  const legal = (move) => isLegalMoveForMon(mon, move);
+  const damaging = (move) => {
+    const info = moveInfo(move);
+    return info && info.category !== "Status";
+  };
+  const byUsage = Object.keys(usageData)
+    .filter((move) => usageFromMap(usageData, move) >= COUNTER_MOVE_USAGE_MIN)
+    .filter((move) => legal(move) && damaging(move));
+  if (byUsage.length) return unique(byUsage);
+
+  const lowUsage = Object.keys(usageData)
+    .filter((move) => usageFromMap(usageData, move) >= COUNTER_MOVE_FALLBACK_USAGE_MIN)
+    .filter((move) => legal(move) && damaging(move));
+  if (lowUsage.length) return unique(lowUsage);
+
+  if (hasUsageData) return [];
+  return unique(mon.moves || []).filter((move) => legal(move) && damaging(move));
 }
 
 function threatCounterExplanation(mon, target, counterMove, stats, targetStats, reasons) {
@@ -3140,7 +3388,7 @@ function threatCounterAdvice(mon, target, counterMove, stats, targetStats, reaso
 
 function counterGamePlan(mon, target, counterMove, stats, targetStats, candidate) {
   if (isDoublesFormat() && candidate.setMoveIds.has("fakeout")) return selectedLanguage === "es" ? `usa Fake Out para negar el primer turno de ${target.name} o abrir hueco a un doble target` : `use Fake Out to deny ${target.name}'s first turn or create room for a double target`;
-  if (candidate.setMoveIds.has("willowisp") && target.baseStats.atk >= target.baseStats.spa) return selectedLanguage === "es" ? `prioriza Will-O-Wisp si ${target.name} suele pegar físico` : `prioritize Will-O-Wisp if ${target.name} usually attacks physically`;
+  if (candidate.setMoveIds.has("willowisp") && target.baseStats.atk >= target.baseStats.spa && utilityMoveAffectsTarget("Will-O-Wisp", target)) return selectedLanguage === "es" ? `prioriza Will-O-Wisp si ${target.name} suele pegar físico` : `prioritize Will-O-Wisp if ${target.name} usually attacks physically`;
   if (candidate.setMoveIds.has("taunt")) return selectedLanguage === "es" ? `Taunt puede cortar Protect, setup, Trick Room o soporte si ${target.name} depende de utilidad` : `Taunt can stop Protect, setup, Trick Room, or support if ${target.name} relies on utility`;
   if (isDoublesFormat() && candidate.setMoveIds.has("wideguard") && popularMoveDetails(target).some((entry) => entry.info.role === "spread")) return selectedLanguage === "es" ? "Wide Guard obliga al rival a dejar de spamear daño en área" : "Wide Guard forces the opponent to stop freely spamming spread damage";
   if (stats.spe > targetStats.spe && counterMove) return isDoublesFormat()
@@ -3308,9 +3556,9 @@ function teamAnswersTo(target, slots, targetSlot = null, advanced = false) {
     for (const move of slot.moves.filter(Boolean)) {
       const info = moveInfo(move);
       if (!info) continue;
-      if (info.role === "speedControl") utility.push(selectedLanguage === "es" ? `${slot.pokemon.name} puede cambiar el orden de turnos con ${moveUiName(move)}` : `${slot.pokemon.name} can change turn order with ${moveUiName(move)}`);
+      if (info.role === "speedControl" && speedControlMoveUsefulAgainst(move, target, targetSlot, slot)) utility.push(selectedLanguage === "es" ? `${slot.pokemon.name} puede cambiar el orden de turnos con ${moveUiName(move)}` : `${slot.pokemon.name} can change turn order with ${moveUiName(move)}`);
       if (isDoublesFormat() && info.role === "fakeOut") utility.push(selectedLanguage === "es" ? `${slot.pokemon.name} puede comprar un turno con Fake Out` : `${slot.pokemon.name} can buy a turn with Fake Out`);
-      if (toId(move) === "willowisp" && target.baseStats.atk >= target.baseStats.spa) utility.push(selectedLanguage === "es" ? `${slot.pokemon.name} puede quemarlo con ${moveUiName(move)}` : `${slot.pokemon.name} can burn it with ${moveUiName(move)}`);
+      if (toId(move) === "willowisp" && target.baseStats.atk >= target.baseStats.spa && utilityMoveAffectsTarget(move, target, targetSlot, slot)) utility.push(selectedLanguage === "es" ? `${slot.pokemon.name} puede quemarlo con ${moveUiName(move)}` : `${slot.pokemon.name} can burn it with ${moveUiName(move)}`);
       if (isDoublesFormat() && toId(move) === "wideguard" && popularMoveDetails(target).some((entry) => entry.info.role === "spread")) utility.push(selectedLanguage === "es" ? `${slot.pokemon.name} puede negar daño en área con ${moveUiName(move)}` : `${slot.pokemon.name} can block spread damage with ${moveUiName(move)}`);
     }
     if ((slot.ability || slot.pokemon.popularAbility) === "Intimidate" && target.baseStats.atk >= target.baseStats.spa) {
@@ -3318,6 +3566,78 @@ function teamAnswersTo(target, slots, targetSlot = null, advanced = false) {
     }
   }
   return { damage: unique(damage), utility: unique(utility) };
+}
+
+function candidateSpeedControlRelevant(candidate, target) {
+  const moveIds = candidate?.setMoveIds || new Set();
+  if (["tailwind", "trickroom"].some((id) => moveIds.has(id))) return true;
+  return ["icywind", "electroweb", "thunderwave", "glare", "stunspore"].some((id) => moveIds.has(id) && utilityMoveAffectsTarget(id, target));
+}
+
+function speedControlMoveUsefulAgainst(move, target, targetSlot = null, attackerSlot = null) {
+  const id = toId(move);
+  if (["tailwind", "trickroom"].includes(id)) return true;
+  return utilityMoveAffectsTarget(move, target, targetSlot, attackerSlot);
+}
+
+function utilityMoveAffectsTarget(move, target, targetSlot = null, attackerSlot = null) {
+  if (!target) return false;
+  const id = toId(move);
+  const info = moveInfo(move);
+  const targetEntity = {
+    ...target,
+    ability: targetSlot?.ability || target.popularAbility || target.abilities?.[0] || "",
+  };
+  const attackerEntity = attackerSlot?.pokemon
+    ? { ...attackerSlot.pokemon, ability: attackerSlot.ability || attackerSlot.pokemon.popularAbility || attackerSlot.pokemon.abilities?.[0] || "" }
+    : null;
+  const types = new Set(target.types || []);
+  const abilities = new Set(abilityIds(targetEntity));
+  const attackerAbilities = new Set(abilityIds(attackerEntity));
+  const targetItemId = toId(targetSlot?.item || "");
+  const hasAnyAbility = (ids) => ids.some((ability) => abilities.has(ability));
+  const magicBounceMoves = new Set(["willowisp", "thunderwave", "toxic", "spore", "sleeppowder", "stunspore", "leechseed", "taunt", "encore", "disable"]);
+  if (magicBounceMoves.has(id) && abilities.has("magicbounce")) return false;
+  if (info?.category === "Status" && attackerAbilities.has("prankster") && types.has("Dark") && magicBounceMoves.has(id)) return false;
+
+  if (id === "thunderwave") {
+    if (types.has("Ground") || types.has("Electric")) return false;
+    return !hasAnyAbility(["limber", "voltabsorb", "lightningrod", "motordrive"]);
+  }
+  if (id === "glare") {
+    if (types.has("Electric")) return false;
+    return !hasAnyAbility(["limber"]);
+  }
+  if (id === "stunspore") {
+    if (types.has("Electric") || !powderMoveAffectsTarget(types, abilities, targetItemId)) return false;
+    return !hasAnyAbility(["limber"]);
+  }
+  if (id === "willowisp") {
+    if (types.has("Fire")) return false;
+    return !hasAnyAbility(["waterveil", "waterbubble", "thermalexchange", "flashfire"]);
+  }
+  if (["toxic", "toxicthread", "poisonpowder"].includes(id)) {
+    if (types.has("Poison") || types.has("Steel")) return false;
+    return !hasAnyAbility(["immunity", "pastelveil"]);
+  }
+  if (["spore", "sleeppowder"].includes(id)) {
+    if (!powderMoveAffectsTarget(types, abilities, targetItemId)) return false;
+    return !hasAnyAbility(["insomnia", "vitalspirit", "sweetveil"]);
+  }
+  if (id === "leechseed") return !types.has("Grass");
+
+  if (info?.category !== "Status" && info?.role === "speedControl") {
+    if (battleMultiplier(info.type, targetEntity, attackerEntity) === 0) return false;
+    if (hasAnyAbility(["clearbody", "whitesmoke", "fullmetalbody", "mirrorarmor"])) return false;
+    if (targetItemId === "covertcloak") return false;
+  }
+  return true;
+}
+
+function powderMoveAffectsTarget(types, abilities, itemId) {
+  if (types.has("Grass")) return false;
+  if (abilities.has("overcoat") || itemId === "safetygoggles") return false;
+  return true;
 }
 
 function teamDamageAnswersTo(target, slots, targetSlot = null, options = {}) {
@@ -4091,7 +4411,11 @@ function totalSp(slot) {
 }
 
 function toId(text) {
-  return String(text || "").toLowerCase().replace(/[^a-z0-9]+/g, "");
+  return String(text || "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "");
 }
 
 function titleCase(text) {
