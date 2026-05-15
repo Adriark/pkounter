@@ -7,7 +7,7 @@
     },
     en: {
       builderButton: "Builder",
-      aboutButton: "About",
+      aboutButton: "About Pkounter",
       levelRule: "Level 50",
     },
   };

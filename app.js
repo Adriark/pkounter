@@ -95,16 +95,19 @@ const UI_TEXT = {
     teamTitle: "Equipo final",
     threatAdvanced: "Avanzado",
     threatHint: "Respuestas directas contra una amenaza",
+    threatModeAdvanced: "Modo avanzado",
+    threatModeSimple: "Modo simple",
     threatPlaceholder: "Ej. Archaludon...",
     threatSetLabel: "Set objetivo",
     threatSimple: "Simple",
     threatTitle: "Buscar counters",
+    threatTargetLabel: "Pokémon analizado",
     singleCounterTab: "Counter individual",
   },
   en: {
     addButton: "Add",
     addPokemonPlaceholder: "Add Pokémon...",
-    aboutButton: "About",
+    aboutButton: "About Pkounter",
     applyPopularSet: "Apply popular set",
     attributionNotice: "Pkounter is not affiliated with Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown, or MunchStats.",
     clearButton: "Clear",
@@ -145,10 +148,13 @@ const UI_TEXT = {
     teamTitle: "Final team",
     threatAdvanced: "Advanced",
     threatHint: "Direct answers into a threat",
+    threatModeAdvanced: "Advanced mode",
+    threatModeSimple: "Simple mode",
     threatPlaceholder: "Ex. Archaludon...",
     threatSetLabel: "Target set",
     threatSimple: "Simple",
     threatTitle: "Search counters",
+    threatTargetLabel: "Analyzed Pokémon",
     singleCounterTab: "Single counter",
   },
 };
@@ -1837,7 +1843,7 @@ function editorPlanLine(mon, slot, stats, candidate, selectedMoves) {
   const spread = selectedMoves.find((entry) => entry.info.role === "spread" && entry.info.category !== "Status");
   if (spread) return doubles
     ? (selectedLanguage === "es" ? `presiona a los dos rivales con ${formatMoveWithUsage(spread)}, así que obliga a respetar Protect y castiga cambios dobles` : `pressures both foes with ${formatMoveWithUsage(spread)}, forcing respect for Protect and punishing double switches`)
-    : (selectedLanguage === "es" ? `${formatMoveWithUsage(spread)} le da presión directa en singles; úsalo para forzar cambios o rematar después de chip` : `${formatMoveWithUsage(spread)} gives it direct singles pressure; use it to force switches or finish after chip`);
+    : (selectedLanguage === "es" ? `${formatMoveWithUsage(spread)} le da presión directa en singles; úsalo para forzar cambios o rematar tras daño previo` : `${formatMoveWithUsage(spread)} gives it direct singles pressure; use it to force switches or finish after prior damage`);
   const setup = selectedMoves.find((entry) => ["setup"].includes(entry.info.role));
   if (setup) return selectedLanguage === "es" ? `si consigue turno libre para ${formatMoveWithUsage(setup)}, pasa de pieza de presión a win condition` : `if it gets a free turn for ${formatMoveWithUsage(setup)}, it can shift from pressure piece into win condition`;
   if (doubles && candidate.setRoles.has("fakeOut")) return selectedLanguage === "es" ? "Fake Out le permite comprar el primer turno y decidir si presionar, pivotar o proteger a su compañero" : "Fake Out buys the first turn so it can pressure, pivot, or protect its partner";
@@ -1866,7 +1872,7 @@ function editorTeamSupportLine(mon, slot, stats, candidate) {
   if (candidate.bulkScore < 260 && intimidate) return selectedLanguage === "es" ? `Intimidate de ${intimidate.pokemon.name} reduce daño físico y facilita que aguante el intercambio` : `${intimidate.pokemon.name}'s Intimidate softens physical damage and helps it survive trades`;
   return isDoublesFormat()
     ? (selectedLanguage === "es" ? "no necesita una pareja fija, pero mejora mucho si lo colocas con Protects y cambios que eviten doble target" : "it does not need a fixed partner, but improves a lot when placed with Protects and switches that avoid double targets")
-    : (selectedLanguage === "es" ? "no necesita una pareja fija; busca colocarlo con cambios seguros, chip previo o después de forzar un KO" : "it does not need a fixed partner; bring it in through safe switches, chip damage, or after forcing a KO");
+    : (selectedLanguage === "es" ? "no necesita una pareja fija; busca colocarlo con cambios seguros, daño previo o después de forzar un KO" : "it does not need a fixed partner; bring it in through safe switches, prior damage, or after forcing a KO");
 }
 
 function editorCautionLine(mon, slot, stats, candidate) {
@@ -2072,16 +2078,56 @@ function renderSuggestions() {
 }
 
 function needSummary(profile) {
-  const parts = [];
-  if (profile.roleNeeds.length) parts.push(`${selectedLanguage === "es" ? "roles" : "roles"}: ${profile.roleNeeds.map((need) => roleNeedLabel(need.reason)).slice(0, 3).join(", ")}`);
-  if (profile.dangerTypes.length) parts.push(`${selectedLanguage === "es" ? "debilidades" : "weaknesses"}: ${profile.dangerTypes.map((item) => typeLabel(item.type)).slice(0, 3).join(", ")}`);
-  if (profile.missingCoverage.length) parts.push(`${selectedLanguage === "es" ? "cobertura" : "coverage"}: ${profile.missingCoverage.map(typeLabel).slice(0, 3).join(", ")}`);
-  if (profile.weatherNeeds.length) parts.push(`${selectedLanguage === "es" ? "clima" : "weather"}: ${profile.weatherNeeds.map((need) => weatherLabel(need.weather)).join(", ")}`);
-  if (profile.repeatedTypes.length) parts.push(`${selectedLanguage === "es" ? "evitar repetir" : "avoid stacking"}: ${profile.repeatedTypes.map((item) => typeLabel(item.type)).join(", ")}`);
-  if (profile.needsSpecial) parts.push(selectedLanguage === "es" ? "falta daño especial" : "needs special damage");
-  if (profile.needsPhysical) parts.push(selectedLanguage === "es" ? "falta daño físico" : "needs physical damage");
-  if (profile.synergies.length) parts.push(`${selectedLanguage === "es" ? "sinergias" : "synergies"}: ${profile.synergies.map((item) => item.reason).slice(0, 2).join(", ")}`);
-  return parts.join(" · ") || (selectedLanguage === "es" ? "la core ya está bastante equilibrada; priorizo matchups meta y sinergias finas." : "the core is already fairly balanced; prioritizing meta matchups and finer synergies.");
+  const lines = [];
+  if (profile.roleNeeds.length) {
+    const roles = localizedList(profile.roleNeeds.map((need) => roleNeedLabel(need.reason)).slice(0, 3));
+    lines.push(selectedLanguage === "es"
+      ? `Prioridad: añade ${roles} para que la core tenga turnos más cómodos.`
+      : `Priority: add ${roles} so the core gets cleaner turns.`);
+  }
+  if (profile.dangerTypes.length) {
+    const danger = localizedList(profile.dangerTypes.map((item) => typeLabel(item.type)).slice(0, 3));
+    lines.push(selectedLanguage === "es"
+      ? `Cuidado con ${danger}; busca resistencias, inmunidades o presión ofensiva contra esos tipos.`
+      : `Watch ${danger}; look for resistances, immunities, or offensive pressure into those types.`);
+  }
+  if (profile.missingCoverage.length) {
+    const coverage = localizedList(profile.missingCoverage.map(typeLabel).slice(0, 3));
+    lines.push(selectedLanguage === "es"
+      ? `La cobertura ofensiva puede mejorar contra ${coverage}.`
+      : `Offensive coverage can improve into ${coverage}.`);
+  }
+  if (profile.weatherNeeds.length) {
+    const weather = localizedList(profile.weatherNeeds.map((need) => weatherLabel(need.weather)));
+    lines.push(selectedLanguage === "es"
+      ? `El equipo ya tiene piezas que aprovechan ${weather}; un setter fiable puede convertirlo en plan principal.`
+      : `The team already has pieces that benefit from ${weather}; a reliable setter can turn that into a main plan.`);
+  }
+  if (profile.needsSpecial) {
+    lines.push(selectedLanguage === "es"
+      ? "Falta daño especial para no depender tanto de atacantes físicos."
+      : "Add special damage so the team is not too physical-heavy.");
+  }
+  if (profile.needsPhysical) {
+    lines.push(selectedLanguage === "es"
+      ? "Falta daño físico para no depender tanto de atacantes especiales."
+      : "Add physical damage so the team is not too special-heavy.");
+  }
+  if (profile.synergies.length) {
+    const hooks = localizedList(profile.synergies.map(synergySummaryLabel).slice(0, 2));
+    lines.push(selectedLanguage === "es"
+      ? `Encajes naturales: ${hooks}.`
+      : `Natural hooks: ${hooks}.`);
+  }
+  if (profile.repeatedTypes.length) {
+    const repeats = localizedList(profile.repeatedTypes.map((item) => `${typeLabel(item.type)} x${item.count}`));
+    lines.push(selectedLanguage === "es"
+      ? `Evita seguir apilando ${repeats} salvo que el nuevo slot lo compense claramente.`
+      : `Avoid stacking more ${repeats} unless the new slot clearly pays for it.`);
+  }
+  return lines.slice(0, 4).join(" ") || (selectedLanguage === "es"
+    ? "La core ya está bastante equilibrada; priorizo matchups del meta, mejor posicionamiento y sinergias finas."
+    : "The core is already fairly balanced; prioritizing meta matchups, cleaner positioning, and finer synergies.");
 }
 
 function roleNeedLabel(reason) {
@@ -2096,6 +2142,41 @@ function roleNeedLabel(reason) {
   };
   const translated = map[reason];
   return localizeInlineTerms(translated ? translated[selectedLanguage === "es" ? 0 : 1] : reason.replace(/^puede |^aporta /, ""));
+}
+
+function localizedList(items) {
+  const values = unique(items).filter(Boolean);
+  if (values.length <= 1) return values[0] || "";
+  if (values.length === 2) return selectedLanguage === "es" ? `${values[0]} y ${values[1]}` : `${values[0]} and ${values[1]}`;
+  const last = values.at(-1);
+  const rest = values.slice(0, -1).join(", ");
+  return selectedLanguage === "es" ? `${rest} y ${last}` : `${rest}, and ${last}`;
+}
+
+function synergySummaryLabel(synergy) {
+  const labels = {
+    groundImmune: ["inmunidades a Terremoto aliado", "immunity to allied Earthquake"],
+    waterImmune: ["habilidades que absorban Surf o Agua Lodosa aliados", "abilities that absorb allied Surf or Muddy Water"],
+    sun: ["atacantes que aprovechen el sol", "attackers that benefit from sun"],
+    rain: ["atacantes que aprovechen la lluvia", "attackers that benefit from rain"],
+    sand: ["piezas que aprovechen la arena", "pieces that benefit from sand"],
+    setupSupport: ["Fake Out, Intimidate o redirección para proteger turnos de setup", "Fake Out, Intimidate, or redirection to protect setup turns"],
+  };
+  const value = labels[synergy.kind];
+  return value ? value[selectedLanguage === "es" ? 0 : 1] : localizeInlineTerms(synergy.reason);
+}
+
+function synergyReasonLabel(synergy) {
+  const labels = {
+    groundImmune: ["inmune a Terremoto aliado", "immune to allied Earthquake"],
+    waterImmune: ["absorbe ataques de Agua aliados", "absorbs allied Water attacks"],
+    sun: ["aprovecha el sol", "benefits from sun"],
+    rain: ["aprovecha la lluvia", "benefits from rain"],
+    sand: ["aprovecha la arena", "benefits from sand"],
+    setupSupport: ["protege turnos de setup", "protects setup turns"],
+  };
+  const value = labels[synergy.kind];
+  return value ? value[selectedLanguage === "es" ? 0 : 1] : localizeInlineTerms(synergy.reason);
 }
 
 function getSuggestions() {
@@ -2170,7 +2251,7 @@ function getSuggestions() {
 
       for (const synergy of profile.synergies) {
         const points = synergyScore(candidate, synergy);
-        if (points > 0) add(points, synergy.reason);
+        if (points > 0) add(points, synergyReasonLabel(synergy));
       }
 
       if (megaAlready && mon.isMega) {
@@ -2425,6 +2506,12 @@ function suggestionTagLabel(reason) {
   if (reason === "añade Tailwind, Icy Wind o parálisis") return selectedLanguage === "es" ? "Control de velocidad" : "Speed control";
   if (reason === "resistencia para estabilizar la core") return selectedLanguage === "es" ? "Más aguante" : "More bulk";
   if (reason === "protege atacantes frágiles") return selectedLanguage === "es" ? "Protege la core" : "Protects the core";
+  if (reason === "inmune a Terremoto aliado" || reason === "immune to allied Earthquake") return selectedLanguage === "es" ? "Inmune a Terremoto aliado" : "Immune to allied Earthquake";
+  if (reason === "absorbe ataques de Agua aliados" || reason === "absorbs allied Water attacks") return selectedLanguage === "es" ? "Absorbe Agua aliada" : "Absorbs allied Water";
+  if (reason === "aprovecha el sol" || reason === "benefits from sun") return selectedLanguage === "es" ? "Aprovecha sol" : "Benefits from sun";
+  if (reason === "aprovecha la lluvia" || reason === "benefits from rain") return selectedLanguage === "es" ? "Aprovecha lluvia" : "Benefits from rain";
+  if (reason === "aprovecha la arena" || reason === "benefits from sand") return selectedLanguage === "es" ? "Aprovecha arena" : "Benefits from sand";
+  if (reason === "protege turnos de setup" || reason === "protects setup turns") return selectedLanguage === "es" ? "Protege setup" : "Protects setup";
   if (reason === "compite por Mega") return selectedLanguage === "es" ? "Conflicto de Mega" : "Mega conflict";
   if (reason === "usa tu slot Mega") return selectedLanguage === "es" ? "Opción de Mega" : "Mega option";
   if (reason === "pieza flexible") return selectedLanguage === "es" ? "Flexible" : "Flexible";
@@ -2488,7 +2575,7 @@ function suggestionCaution(mon, reasons, candidate, profile) {
   const topDanger = profile.dangerTypes.find((item) => battleMultiplier(item.type, mon) > 1);
   if (topDanger) return isDoublesFormat()
     ? (selectedLanguage === "es" ? `no cubre tu problema de ${typeLabel(topDanger.type)} y puede necesitar apoyo de Protect o posicionamiento` : `does not cover your ${typeLabel(topDanger.type)} issue and may need Protect or positioning support`)
-    : (selectedLanguage === "es" ? `no cubre tu problema de ${typeLabel(topDanger.type)}; úsalo con chip previo, pivot o revenge kill` : `does not cover your ${typeLabel(topDanger.type)} issue; use it with chip, pivots, or revenge-kill lines`);
+    : (selectedLanguage === "es" ? `no cubre tu problema de ${typeLabel(topDanger.type)}; úsalo con daño previo, pivot o revenge kill` : `does not cover your ${typeLabel(topDanger.type)} issue; use it with chip, pivots, or revenge-kill lines`);
   const protectUsage = moveUsageFor(mon, "Protect");
   const choiceItem = (mon.items || []).some((item) => /^Choice /.test(item));
   if (choiceItem && protectUsage < 20) return isDoublesFormat()
@@ -2761,10 +2848,20 @@ function advancedSlotEditorHtml(mon, slot, scope, id, compact = false) {
   </div>`;
 }
 
+function advancedModeSwitchHtml(advanced, dataAttribute, id = "") {
+  const attr = id ? `${dataAttribute}="${id}"` : dataAttribute;
+  const modeText = advanced ? t("threatModeAdvanced") : t("threatModeSimple");
+  const stateText = advanced ? t("threatAdvanced") : t("threatSimple");
+  return `<button class="mode-switch ${advanced ? "active" : ""}" type="button" role="switch" aria-checked="${advanced ? "true" : "false"}" ${attr}>
+    <span class="mode-switch-track" aria-hidden="true"><span></span></span>
+    <span class="mode-switch-text"><strong>${modeText}</strong><small>${stateText}</small></span>
+  </button>`;
+}
+
 function threatSetControlsHtml(target, slot) {
   return `<div class="threat-tools ${threatAdvanced ? "active" : ""}">
-    <button class="ghost-button threat-advanced-toggle ${threatAdvanced ? "active" : ""}" type="button" data-threat-advanced>${threatAdvanced ? t("threatSimple") : t("threatAdvanced")}</button>
-    ${threatAdvanced ? advancedSlotEditorHtml(target, slot, "threatTarget", target.id) : ""}
+    ${advancedModeSwitchHtml(threatAdvanced, "data-threat-advanced")}
+    ${threatAdvanced ? advancedSlotEditorHtml(target, slot, "threatTarget", target.id, true) : ""}
   </div>`;
 }
 
@@ -2772,7 +2869,7 @@ function majorThreatSetControlsHtml(mon) {
   const advanced = majorThreatAdvancedIds.has(mon.id);
   const slot = majorThreatSlot(mon);
   return `<div class="threat-tools counter-threat-tools">
-    <button class="ghost-button threat-advanced-toggle ${advanced ? "active" : ""}" type="button" data-major-advanced="${mon.id}">${advanced ? t("threatSimple") : t("threatAdvanced")}</button>
+    ${advancedModeSwitchHtml(advanced, "data-major-advanced", mon.id)}
     ${advanced ? advancedSlotEditorHtml(mon, slot, "majorThreat", mon.id, true) : ""}
   </div>`;
 }
@@ -2782,7 +2879,7 @@ function threatCounterControlsHtml(mon) {
   const advanced = threatCounterAdvancedIds.has(mon.id);
   const slot = threatCounterSlot(mon);
   return `<div class="threat-tools counter-threat-tools">
-    <button class="ghost-button threat-advanced-toggle ${advanced ? "active" : ""}" type="button" data-threat-counter-advanced="${mon.id}">${advanced ? t("threatSimple") : t("threatAdvanced")}</button>
+    ${advancedModeSwitchHtml(advanced, "data-threat-counter-advanced", mon.id)}
     ${advanced ? advancedSlotEditorHtml(mon, slot, "threatCounter", mon.id, true) : ""}
   </div>`;
 }
@@ -2840,6 +2937,7 @@ function renderThreatCounters() {
   const counters = analyzeThreatCounters(target, targetSlot, threatAdvanced).slice(0, 8);
   els.threatResults.innerHTML = `
     <div class="threat-target">
+      <span class="threat-target-label">${t("threatTargetLabel")}</span>
       <span class="sprite-frame"><img src="${pokemonSprite(target)}" alt="${target.name}" data-fallback="${plannerSprite(target)}"></span>
       <div>
         <div class="threat-target-head">
@@ -3049,11 +3147,11 @@ function counterGamePlan(mon, target, counterMove, stats, targetStats, candidate
     ? (selectedLanguage === "es" ? "entra tras un KO, pivot o Protect aliado y amenaza el KO antes de recibir daño" : "bring it in after a KO, pivot, or allied Protect to threaten the KO before taking damage")
     : (selectedLanguage === "es" ? "entra tras un KO, pivot o cambio forzado y amenaza antes de recibir daño" : "bring it in after a KO, pivot, or forced switch and threaten before taking damage");
   if (counterMove?.calc?.maxPercent < 50) return isDoublesFormat()
-    ? (selectedLanguage === "es" ? "no basta solo: úsalo como chip y acompáñalo de doble target o daño previo" : "not enough alone: use it as chip and pair it with double targets or prior damage")
-    : (selectedLanguage === "es" ? "no basta solo: úsalo como chip y acompáñalo de hazards, daño previo o revenge kill" : "not enough alone: use it as chip with hazards, prior damage, or revenge-kill lines");
+    ? (selectedLanguage === "es" ? "no basta solo: úsalo como daño previo y acompáñalo de doble target o más presión" : "not enough alone: use it as chip and pair it with double targets or prior damage")
+    : (selectedLanguage === "es" ? "no basta solo: úsalo como daño previo y acompáñalo de trampas, presión extra o revenge kill" : "not enough alone: use it as chip with hazards, prior damage, or revenge-kill lines");
   if (counterMove) return isDoublesFormat()
     ? (selectedLanguage === "es" ? "funciona mejor con speed control, Fake Out o redirección para asegurar el golpe" : "works best with speed control, Fake Out, or redirection to secure the hit")
-    : (selectedLanguage === "es" ? "funciona mejor con speed control, chip previo o entrando como revenge killer" : "works best with speed control, prior chip, or as a revenge killer");
+    : (selectedLanguage === "es" ? "funciona mejor con control de velocidad, daño previo o entrando como revenge killer" : "works best with speed control, prior chip, or as a revenge killer");
   return selectedLanguage === "es" ? "úsalo como pieza de posicionamiento, no como switch-in automático" : "use it as a positioning piece, not an automatic switch-in";
 }
 
@@ -3178,8 +3276,8 @@ function majorThreatAdvice(mon, reasons, filled, targetSlot = null, advanced = f
     lines.push({ label: selectedLanguage === "es" ? "Cómo frenarlo" : "How to stop it", text: selectedLanguage === "es" ? `${answers.damage.slice(0, 2).join(" o ")} son tus líneas de daño más claras` : `${answers.damage.slice(0, 2).join(" or ")} are your clearest damage lines` });
   } else {
     lines.push({ label: selectedLanguage === "es" ? "Cómo frenarlo" : "How to stop it", text: isDoublesFormat()
-      ? (selectedLanguage === "es" ? "busca doble target, chip previo o añade cobertura supereficaz en un slot flexible" : "look for a double target, prior chip, or add super-effective coverage in a flexible slot")
-      : (selectedLanguage === "es" ? "busca chip previo, hazards, revenge kill o añade cobertura supereficaz en un slot flexible" : "look for chip, hazards, revenge-kill lines, or add super-effective coverage in a flexible slot"), tone: "warn" });
+      ? (selectedLanguage === "es" ? "busca doble target, daño previo o añade cobertura supereficaz en un slot flexible" : "look for a double target, prior chip, or add super-effective coverage in a flexible slot")
+      : (selectedLanguage === "es" ? "busca daño previo, trampas, revenge kill o añade cobertura supereficaz en un slot flexible" : "look for chip, hazards, revenge-kill lines, or add super-effective coverage in a flexible slot"), tone: "warn" });
   }
   if (answers.utility.length) lines.push({ label: selectedLanguage === "es" ? "Apoyo útil" : "Useful support", text: answers.utility.slice(0, 2).join(". ") });
   const caution = majorThreatCaution(mon, reasons, filled);
@@ -3234,7 +3332,7 @@ function teamDamageAnswersTo(target, slots, targetSlot = null, options = {}) {
         const calc = estimateNeutralDamage(slot.pokemon, move, target, attackingSlot, defensiveSlot);
         if (!calc || calc.multiplier <= 1) return null;
         const speedText = stats.spe >= targetStats.spe
-          ? (selectedLanguage === "es" ? "antes" : "moves first")
+          ? (selectedLanguage === "es" ? "ataca antes" : "moves first")
           : (selectedLanguage === "es" ? "con apoyo de velocidad" : "with speed support");
         return { mon: slot.pokemon, move, calc, speedText, score: calc.maxPercent + (calc.koTurns <= 2 ? 30 : 0) + (stats.spe >= targetStats.spe ? 8 : 0) };
       }).filter(Boolean);
@@ -3254,7 +3352,7 @@ function majorThreatCaution(mon, reasons, filled) {
   if (setup) return selectedLanguage === "es" ? `no le regales turno libre: ${formatMoveWithUsage(setup)} puede cambiar el ritmo` : `do not give it a free turn: ${formatMoveWithUsage(setup)} can change the tempo`;
   if (reasons.includes("poca cobertura directa")) return isDoublesFormat()
     ? (selectedLanguage === "es" ? "si no puedes pegarle supereficaz, juega a negar turnos con Fake Out, Protect y posicionamiento" : "if you cannot hit it super effectively, deny turns with Fake Out, Protect, and positioning")
-    : (selectedLanguage === "es" ? "si no puedes pegarle supereficaz, necesitas chip, hazards o una línea clara de revenge kill" : "if you cannot hit it super effectively, you need chip, hazards, or a clear revenge-kill line");
+    : (selectedLanguage === "es" ? "si no puedes pegarle supereficaz, necesitas daño previo, trampas o una línea clara de revenge kill" : "if you cannot hit it super effectively, you need chip, hazards, or a clear revenge-kill line");
   return "";
 }
 
@@ -3372,8 +3470,8 @@ function damageSummary(calc) {
   if (!calc) return selectedLanguage === "es" ? "daño sin calcular" : "damage not calculated";
   if (calc.multiplier === 0) return selectedLanguage === "es" ? "0% (inmune)" : "0% (immune)";
   const mode = calc.mode === "advanced"
-    ? (selectedLanguage === "es" ? "calc avanzado" : "advanced calc")
-    : (selectedLanguage === "es" ? "calc neutro" : "neutral calc");
+    ? (selectedLanguage === "es" ? "calc. avanzado" : "advanced calc.")
+    : (selectedLanguage === "es" ? "calc. neutro" : "neutral calc.");
   return `${formatDamagePercent(calc.minPercent)}-${formatDamagePercent(calc.maxPercent)}% (${calc.ko}, ${mode})`;
 }
 
