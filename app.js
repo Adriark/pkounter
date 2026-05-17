@@ -87,7 +87,7 @@ const UI_TEXT = {
     randomButton: "Aleatorio",
     readyButton: "Listo",
     selectedHintEmpty: "Elige un slot para editarlo",
-    slotHint: "Añade una pieza a la core",
+    slotHint: "Añade una pieza de equipo",
     slotLabel: "Slot libre",
     spRule: "66 SP · 32/stat",
     suggestionsTitle: "Sugerencias en tiempo real",
@@ -140,7 +140,7 @@ const UI_TEXT = {
     randomButton: "Random",
     readyButton: "Done",
     selectedHintEmpty: "Choose a slot to edit it",
-    slotHint: "Add a core piece",
+    slotHint: "Add a team piece",
     slotLabel: "Empty slot",
     spRule: "66 SP · 32/stat",
     suggestionsTitle: "Real-time suggestions",
@@ -318,7 +318,7 @@ const META_POKEMON = [
   p("Kingambit", ["Dark", "Steel"], [100, 135, 120, 60, 85, 50], 47.7, ["bulkyOffense", "priority"], ["Supreme Overlord", "Defiant"], ["Black Glasses", "Chople Berry", "Lum Berry"], "Adamant", [32, 32, 0, 0, 0, 2], ["Kowtow Cleave", "Sucker Punch", "Iron Head", "Protect"], ["Sneasler", "Basculegion", "Garchomp", "Incineroar", "Sinistcha"], "Condición de victoria para el cierre de partida. Castiga Intimidate con Defiant o limpia con Sucker Punch cuando el rival está debilitado."),
   p("Basculegion", ["Water", "Ghost"], [120, 112, 65, 80, 75, 78], 42.65, ["priority", "rainOffense"], ["Adaptability", "Swift Swim"], ["Choice Scarf", "Focus Sash", "Mystic Water"], "Jolly", [2, 32, 0, 0, 0, 32], ["Last Respects", "Wave Crash", "Aqua Jet", "Protect"], ["Sneasler", "Kingambit", "Incineroar", "Pelipper", "Garchomp"], "Atacante de limpieza. Si el equipo fuerza intercambios o KOs tempranos, Last Respects transforma el cierre de partida."),
   p("Floette-Eternal", ["Fairy"], [74, 65, 67, 125, 128, 92], 29.65, ["specialOffense", "fairyCheck"], ["Flower Veil"], ["Focus Sash", "Choice Specs", "Life Orb"], "Timid", [2, 0, 0, 32, 0, 32], ["Moonblast", "Protect", "Helping Hand", "Stored Power"], ["Sneasler", "Kingambit", "Basculegion", "Incineroar"], "Da presión especial y resistencia a Dark/Fighting. Funciona bien como apoyo ofensivo junto a sweepers físicos."),
-  p("Sinistcha", ["Grass", "Ghost"], [71, 60, 106, 121, 80, 70], 23.97, ["redirection", "support", "specialOffense"], ["Hospitality", "Heatproof"], ["Sitrus Berry", "Mental Herb", "Rocky Helmet"], "Bold", [32, 0, 24, 0, 10, 0], ["Rage Powder", "Matcha Gotcha", "Trick Room", "Protect"], ["Incineroar", "Sneasler", "Kingambit", "Basculegion"], "Aporta redirección, curación al entrar y opción de Trick Room. Excelente para sostener cores agresivas."),
+  p("Sinistcha", ["Grass", "Ghost"], [71, 60, 106, 121, 80, 70], 23.97, ["redirection", "support", "specialOffense"], ["Hospitality", "Heatproof"], ["Sitrus Berry", "Mental Herb", "Rocky Helmet"], "Bold", [32, 0, 24, 0, 10, 0], ["Rage Powder", "Matcha Gotcha", "Trick Room", "Protect"], ["Incineroar", "Sneasler", "Kingambit", "Basculegion"], "Aporta redirección, curación al entrar y opción de Trick Room. Excelente para sostener piezas ofensivas."),
   p("Aerodactyl", ["Rock", "Flying"], [80, 105, 65, 60, 75, 130], 19.98, ["speedControl", "fastOffense"], ["Rock Head", "Unnerve"], ["Focus Sash", "Covert Cloak"], "Jolly", [2, 32, 0, 0, 0, 32], ["Rock Slide", "Tailwind", "Wide Guard", "Protect"], ["Sneasler", "Garchomp", "Kingambit", "Basculegion"], "Control de velocidad inmediato. Wide Guard ayuda contra Earthquake, Heat Wave, Hyper Voice y Rock Slide."),
   p("Rotom-Wash", ["Electric", "Water"], [50, 65, 107, 105, 107, 86], 16.52, ["bulkyPivot", "burn"], ["Levitate"], ["Sitrus Berry", "Leftovers", "Safety Goggles"], "Modest", [32, 0, 0, 32, 0, 2], ["Hydro Pump", "Thunderbolt", "Will-O-Wisp", "Protect"], ["Garchomp", "Incineroar", "Charizard-Mega-Y", "Kingambit"], "Cubre Water/Electric con Levitate, quema atacantes físicos y acompaña muy bien a Earthquake."),
   p("Charizard-Mega-Y", ["Fire", "Flying"], [78, 104, 78, 159, 115, 100], 15.97, ["weather", "spreadDamage", "specialOffense", "mega"], ["Drought"], ["Charizardite Y"], "Timid", [2, 0, 0, 32, 0, 32], ["Heat Wave", "Solar Beam", "Air Slash", "Protect"], ["Sneasler", "Garchomp", "Incineroar", "Whimsicott", "Venusaur"], "Mega de sol: Heat Wave presiona ambos slots y activa compañeros Chlorophyll o daño Fire amplificado."),
@@ -326,7 +326,7 @@ const META_POKEMON = [
   p("Pelipper", ["Water", "Flying"], [60, 50, 100, 95, 70, 65], 11.27, ["weather", "speedControl"], ["Drizzle"], ["Focus Sash", "Damp Rock"], "Modest", [32, 0, 0, 32, 0, 2], ["Muddy Water", "Hurricane", "Tailwind", "Protect"], ["Basculegion", "Archaludon", "Kingambit"], "Setea lluvia, Tailwind y potencia a Swift Swim. También corta el sol de Charizard Y."),
   p("Milotic", ["Water"], [95, 60, 79, 100, 125, 81], 11.05, ["antiIntimidate", "bulkyPivot"], ["Competitive", "Marvel Scale"], ["Leftovers", "Sitrus Berry"], "Modest", [32, 0, 0, 32, 0, 2], ["Muddy Water", "Ice Beam", "Haze", "Protect"], ["Kingambit", "Sneasler", "Incineroar"], "Castiga Intimidate con Competitive y aporta Haze contra boosts. Muy buena en equipos que atraen Parting Shot."),
   p("Farigiraf", ["Normal", "Psychic"], [120, 90, 70, 110, 70, 60], 9.47, ["trickRoom", "priorityBlock"], ["Armor Tail", "Cud Chew"], ["Sitrus Berry", "Mental Herb"], "Quiet", [32, 0, 10, 24, 0, 0], ["Trick Room", "Hyper Voice", "Psychic", "Protect"], ["Kingambit", "Torkoal", "Hatterene"], "Bloquea prioridad y cambia la dimensión de velocidad. Ideal si llevas atacantes lentos como Kingambit o Torkoal."),
-  p("Whimsicott", ["Grass", "Fairy"], [60, 67, 85, 77, 75, 116], 8.24, ["speedControl", "support"], ["Prankster"], ["Focus Sash", "Covert Cloak"], "Timid", [2, 0, 0, 32, 0, 32], ["Tailwind", "Moonblast", "Encore", "Protect"], ["Charizard-Mega-Y", "Garchomp", "Sneasler"], "Tailwind de prioridad y Encore para castigar Protect/setup. Es la forma más directa de convertir una core ofensiva en presión inmediata."),
+  p("Whimsicott", ["Grass", "Fairy"], [60, 67, 85, 77, 75, 116], 8.24, ["speedControl", "support"], ["Prankster"], ["Focus Sash", "Covert Cloak"], "Timid", [2, 0, 0, 32, 0, 32], ["Tailwind", "Moonblast", "Encore", "Protect"], ["Charizard-Mega-Y", "Garchomp", "Sneasler"], "Tailwind de prioridad y Encore para castigar Protect/setup. Es la forma más directa de convertir una pieza ofensiva en presión inmediata."),
   p("Gengar-Mega", ["Ghost", "Poison"], [60, 65, 80, 170, 95, 130], 8.13, ["fastOffense", "mega"], ["Shadow Tag"], ["Gengarite"], "Timid", [2, 0, 0, 32, 0, 32], ["Shadow Ball", "Sludge Bomb", "Icy Wind", "Protect"], ["Incineroar", "Sneasler", "Kingambit"], "Atrapa piezas clave y fuerza KOs con presión especial. Icy Wind cubre speed control mientras hace daño."),
   p("Archaludon", ["Steel", "Dragon"], [90, 105, 130, 125, 65, 85], 7.81, ["rainOffense", "specialOffense"], ["Stamina", "Sturdy"], ["Assault Vest", "White Herb", "Leftovers"], "Modest", [32, 0, 0, 32, 0, 2], ["Draco Meteor", "Flash Cannon", "Thunderbolt", "Body Press"], ["Pelipper", "Basculegion", "Incineroar"], "Balance de lluvia: aguanta daño físico con Stamina y pega por el lado especial. Muy sólido contra Rock/Fairy si se protege de Ground/Fighting."),
   p("Tyranitar-Mega", ["Rock", "Dark"], [100, 164, 150, 95, 120, 71], 7.15, ["weather", "mega", "bulkyOffense"], ["Sand Stream"], ["Tyranitarite"], "Adamant", [32, 32, 0, 0, 0, 2], ["Rock Slide", "Crunch", "Low Kick", "Protect"], ["Excadrill", "Garchomp", "Farigiraf"], "Arena y presión física enorme. Funciona mejor con speed control o Trick Room flexible."),
@@ -334,7 +334,7 @@ const META_POKEMON = [
   p("Maushold", ["Normal"], [74, 75, 70, 65, 75, 111], 7.03, ["support", "redirection"], ["Friend Guard", "Technician"], ["Safety Goggles", "Focus Sash"], "Jolly", [2, 0, 0, 0, 32, 32], ["Follow Me", "Helping Hand", "Feint", "Protect"], ["Sneasler", "Kingambit", "Basculegion"], "Friend Guard y Follow Me protegen sweepers. Feint abre KOs a través de Protect en turnos decisivos."),
   p("Kommo-o", ["Dragon", "Fighting"], [75, 110, 125, 100, 105, 85], 6.55, ["setup", "bulkyOffense"], ["Bulletproof", "Soundproof"], ["Throat Spray", "Leftovers"], "Modest", [32, 0, 0, 32, 0, 2], ["Clanging Scales", "Body Press", "Protect", "Iron Defense"], ["Maushold", "Incineroar", "Whimsicott"], "Puede ganar partidas tras boostearse si recibe redirección o apoyo de Intimidate. Vigila Fairy."),
   p("Corviknight", ["Flying", "Steel"], [98, 87, 105, 53, 85, 67], 6.27, ["tailwind", "bulkyPivot"], ["Mirror Armor", "Pressure"], ["Leftovers", "Sitrus Berry"], "Impish", [32, 0, 24, 0, 10, 0], ["Tailwind", "Brave Bird", "Iron Head", "Roost"], ["Garchomp", "Rotom-Wash", "Kingambit"], "Inmune a Ground y resistente a Fairy/Dragon. Da Tailwind más defensivo que Whimsicott o Talonflame."),
-  p("Ninetales-Alola", ["Ice", "Fairy"], [73, 67, 75, 81, 100, 109], 5.76, ["weather", "support"], ["Snow Warning"], ["Light Clay", "Focus Sash"], "Timid", [2, 0, 0, 32, 0, 32], ["Aurora Veil", "Blizzard", "Moonblast", "Protect"], ["Baxcalibur", "Kingambit", "Milotic"], "Aurora Veil cambia cálculos defensivos del equipo entero. Encaja si tu core necesita sobrevivir turnos de setup."),
+  p("Ninetales-Alola", ["Ice", "Fairy"], [73, 67, 75, 81, 100, 109], 5.76, ["weather", "support"], ["Snow Warning"], ["Light Clay", "Focus Sash"], "Timid", [2, 0, 0, 32, 0, 32], ["Aurora Veil", "Blizzard", "Moonblast", "Protect"], ["Baxcalibur", "Kingambit", "Milotic"], "Aurora Veil cambia cálculos defensivos del equipo entero. Encaja si tu equipo necesita sobrevivir turnos de setup."),
   p("Dragonite-Mega", ["Dragon", "Flying"], [91, 154, 115, 100, 120, 100], 5.56, ["mega", "priority", "bulkyOffense"], ["Multiscale"], ["Dragonitite"], "Adamant", [32, 32, 0, 0, 0, 2], ["Extreme Speed", "Dragon Claw", "Fire Punch", "Protect"], ["Chien-Pao", "Incineroar", "Farigiraf"], "Mega resistente con prioridad potente. Requiere controlar Rock/Ice/Fairy y conservar vida para explotar Multiscale."),
   p("Excadrill", ["Ground", "Steel"], [110, 135, 60, 50, 65, 88], 5.23, ["sandOffense"], ["Sand Rush", "Mold Breaker"], ["Focus Sash", "Life Orb"], "Adamant", [2, 32, 0, 0, 0, 32], ["Earthquake", "Iron Head", "Rock Slide", "Protect"], ["Tyranitar-Mega", "Hippowdon", "Garchomp"], "Atacante de arena. Necesita un setter de arena o Tailwind para no depender de intercambios incómodos."),
   p("Sylveon", ["Fairy"], [95, 65, 65, 110, 130, 60], 3.78, ["spreadDamage", "specialOffense"], ["Pixilate"], ["Throat Spray", "Choice Specs"], "Modest", [32, 0, 10, 24, 0, 0], ["Hyper Voice", "Moonblast", "Protect", "Helping Hand"], ["Incineroar", "Farigiraf", "Garchomp"], "Hyper Voice presiona ambos rivales y castiga Dragons/Darks. Funciona bien bajo Trick Room parcial."),
@@ -364,10 +364,13 @@ let threatSearchMode = "auto";
 let activeSideTab = "suggestions";
 let threatAdvanced = false;
 const majorThreatAdvancedIds = new Set();
+const majorThreatDetailOpenIds = new Set();
 const threatTargetCustomSlots = {};
 const threatCounterAdvancedIds = new Set();
+const threatCounterDetailOpenIds = new Set();
 const threatCounterCustomSlots = {};
 const majorThreatCustomSlots = {};
+const detailsOpenState = new Map();
 
 const els = {
   pokemonSearch: document.querySelector("#pokemonSearch"),
@@ -1037,7 +1040,7 @@ function megaStoneName(name, types = []) {
 
 function genericStrategy(name, roles) {
   const labels = roles.slice(0, 3).map(roleLabel).join(", ") || "pieza flexible";
-  return `${name} entra como ${labels}. Ajusta objeto, SPs y cuatro movimientos según el rol que necesite tu core.`;
+  return `${name} entra como ${labels}. Ajusta objeto, SPs y cuatro movimientos según el rol que necesite tu equipo.`;
 }
 
 function emptySlot() {
@@ -1424,6 +1427,7 @@ function renderAll() {
   renderCounters();
   setActiveSideTab(activeSideTab);
   els.exportBox.value = exportShowdown();
+  wireDetailsPersistence();
   wireSpriteFallbacks();
   persist();
 }
@@ -1542,7 +1546,7 @@ function statPlannerRowHtml(mon, slot, stats, key) {
     <span class="stat-label">${STAT_LABELS[key]}</span>
     <strong class="base-number">${base}</strong>
     <span class="stat-bar base-line"><i class="${tone}" style="width: ${percent}%"></i></span>
-    <span class="points-cell"><input data-sp="${key}" type="number" min="0" max="${MAX_SP_STAT}" value="${slot.sp[key] || 0}">${arrow}</span>
+    <span class="points-cell"><input data-sp="${key}" type="number" inputmode="numeric" min="0" max="${MAX_SP_STAT}" value="${slot.sp[key] || 0}">${arrow}</span>
     <strong class="final-stat">${stats[key]}</strong>
   </div>`;
 }
@@ -1927,18 +1931,17 @@ function finalStatsText(mon, nature, spread) {
 function spreadRecommendationsHtml(mon) {
   const options = spreadOptionsFor(mon);
   if (!options.length) return "";
-  return `<div class="spread-recs">
-    <div class="spread-recs-head">
+  return `<details class="spread-recs" data-detail-key="spread-recs:${mon.id}"${detailsOpenAttr(`spread-recs:${mon.id}`)}>
+    <summary class="spread-recs-head">
       <strong>${selectedLanguage === "es" ? "Repartos más usados" : "Most used spreads"}</strong>
-      <span>${selectedLanguage === "es" ? "según MunchStats" : "from MunchStats"}</span>
-    </div>
+    </summary>
     <div class="spread-recs-list">
       ${options.map((option, index) => `<button class="spread-rec" type="button" data-apply-spread="${index}">
         <span class="spread-title">${natureUiName(option.nature)} · ${spreadText(option.spread)}${option.usage > 0 ? ` · ${formatUsagePercent(option.usage)}%` : ""}</span>
         <span class="spread-finals">${finalStatsText(mon, option.nature, option.spread)}</span>
       </button>`).join("")}
     </div>
-  </div>`;
+  </details>`;
 }
 
 function editorStrategy(mon, slot, stats) {
@@ -2047,7 +2050,7 @@ function editorCautionLine(mon, slot, stats, candidate) {
 
 function speedControlSummary() {
   const filled = team.filter((slot) => slot.pokemon);
-  if (!filled.length) return selectedLanguage === "es" ? "Sin core" : "No core";
+  if (!filled.length) return selectedLanguage === "es" ? "Sin piezas" : "No team pieces";
   const labels = [];
   const hasMove = (ids) => filled.some((slot) => slot.moves.some((move) => ids.includes(toId(move))));
   const priorityCount = priorityMoveCount();
@@ -2153,7 +2156,7 @@ function renderEditor() {
         })}
       </div>
       <div class="wide">
-        <label>${selectedLanguage === "es" ? "Movimientos" : "Moves"}</label>
+        <label class="inline-label">${selectedLanguage === "es" ? "Movimientos" : "Moves"} <span class="move-order-note">${selectedLanguage === "es" ? "(ordenados por uso)" : "(sorted by usage)"}</span></label>
         <div class="moves-grid">
           ${slot.moves.map((move, index) => comboInputHtml({
             listId: `config-move-options-${selectedSlot}-${index}`,
@@ -2175,11 +2178,12 @@ function renderEditor() {
         <div class="sp-total ${spTotal > MAX_SP ? "bad" : ""}">${selectedLanguage === "es" ? "Restantes" : "Remaining"}: ${MAX_SP - spTotal} · ${selectedLanguage === "es" ? "usados" : "used"} ${spTotal}/${MAX_SP} · ${selectedLanguage === "es" ? "máximo" : "max"} ${MAX_SP_STAT} ${selectedLanguage === "es" ? "por stat" : "per stat"}</div>
       </div>
     </div>
-    <div class="strategy-box">
-      <strong>${selectedLanguage === "es" ? "Estrategia sugerida" : "Suggested strategy"}:</strong> ${localizeInlineTerms(strategy.summary)}
-      ${insightListHtml(strategy.lines)}
-      <div class="tag-row">${mon.roles.map((role) => `<span class="role-pill">${roleLabel(role)}</span>`).join("")}</div>
-    </div>
+    ${collapsibleDetailsHtml(
+      selectedLanguage === "es" ? "Estrategia sugerida" : "Suggested strategy",
+      `<p>${localizeInlineTerms(strategy.summary)}</p>${insightListHtml(strategy.lines)}<div class="tag-row">${mon.roles.map((role) => `<span class="role-pill">${roleLabel(role)}</span>`).join("")}</div>`,
+      "strategy-box editor-strategy-details",
+      { detailKey: `editor-strategy:${mon.id}` }
+    )}
   `;
 
   const fieldResolvers = {
@@ -2227,7 +2231,7 @@ function renderEditor() {
     });
   });
   els.editor.querySelectorAll("[data-sp]").forEach((input) => {
-    input.addEventListener("input", () => {
+    input.addEventListener("change", () => {
       slot.sp[input.dataset.sp] = clamp(Number(input.value || 0), 0, MAX_SP_STAT);
       renderAll();
     });
@@ -2260,7 +2264,7 @@ function renderEditor() {
 function renderSuggestions() {
   const filled = team.filter((slot) => slot.pokemon);
   if (filled.length === 0) {
-    els.suggestions.innerHTML = `<div class="editor-empty">${selectedLanguage === "es" ? "Empieza añadiendo 1-2 Pokémon de tu core. Las sugerencias cambiarán al instante." : "Start by adding 1-2 Pokémon from your core. Suggestions update instantly."}</div>`;
+    els.suggestions.innerHTML = `<div class="editor-empty">${selectedLanguage === "es" ? "Empieza añadiendo 1-2 piezas de equipo. Las sugerencias cambiarán al instante." : "Start by adding 1-2 team pieces. Suggestions update instantly."}</div>`;
     els.suggestionControls.innerHTML = "";
     return;
   }
@@ -2268,15 +2272,19 @@ function renderSuggestions() {
   const suggestions = allSuggestions.slice(0, suggestionLimit);
   const profile = analyzeTeamNeeds(filled);
   const teamFull = filled.length >= MAX_TEAM;
-  els.suggestions.innerHTML = `<div class="strategy-box"><strong>${selectedLanguage === "es" ? "Lectura de la core" : "Core read"}:</strong> ${needSummary(profile)}</div>` + suggestions
+  els.suggestions.innerHTML = collapsibleDetailsHtml(
+    selectedLanguage === "es" ? "Lectura del equipo" : "Team read",
+    `<p>${needSummary(profile)}</p>`,
+    "strategy-box team-read-details",
+    { detailKey: "suggestions:team-read" }
+  ) + suggestions
     .map(({ mon, score, reasons, explanation, advice, fit }) => `<article class="suggestion-card">
       <span class="sprite-frame"><img src="${pokemonSprite(mon)}" alt="${mon.name}" data-fallback="${plannerSprite(mon)}"></span>
       <div>
         <span class="suggestion-name">${mon.name}</span>
         <span class="mini">${typeIconRow(mon.types)} · ${selectedLanguage === "es" ? "uso" : "usage"} ${pokemonUsage(mon).toFixed(2)}%</span>
         ${baseStatsHtml(mon)}
-        <p class="suggestion-explain">${localizeInlineTerms(explanation)}</p>
-        ${insightListHtml(advice)}
+        ${collapsibleDetailsHtml(selectedLanguage === "es" ? "Por qué se sugiere" : "Why this is suggested", `<p class="suggestion-explain">${localizeInlineTerms(explanation)}</p>${insightListHtml(advice)}`, "card-details", { detailKey: `suggestion:${mon.id}` })}
         <div class="tag-row">${suggestionReasonChips(reasons).slice(0, 4).map((reason) => `<span class="tag">${localizeInlineTerms(reason)}</span>`).join("")}</div>
         <div class="suggestion-actions">
           <span class="score">${fit} · ${Math.round(score)} pts</span>
@@ -2300,6 +2308,7 @@ function renderSuggestions() {
     suggestionLimit = 8;
     renderSuggestions();
   });
+  wireDetailsPersistence(els.suggestions);
   wireSpriteFallbacks(els.suggestions);
 }
 
@@ -2308,8 +2317,8 @@ function needSummary(profile) {
   if (profile.roleNeeds.length) {
     const roles = localizedList(profile.roleNeeds.map((need) => roleNeedLabel(need.reason)).slice(0, 3));
     lines.push(selectedLanguage === "es"
-      ? `Prioridad: añade ${roles} para que la core tenga turnos más cómodos.`
-      : `Priority: add ${roles} so the core gets cleaner turns.`);
+      ? `Prioridad: añade ${roles} para que el equipo tenga turnos más cómodos.`
+      : `Priority: add ${roles} so the team gets cleaner turns.`);
   }
   if (profile.dangerTypes.length) {
     const danger = localizedList(profile.dangerTypes.map((item) => typeLabel(item.type)).slice(0, 3));
@@ -2352,8 +2361,8 @@ function needSummary(profile) {
       : `Avoid stacking more ${repeats} unless the new slot clearly pays for it.`);
   }
   return lines.slice(0, 4).join(" ") || (selectedLanguage === "es"
-    ? "La core ya está bastante equilibrada; priorizo matchups del meta, mejor posicionamiento y sinergias finas."
-    : "The core is already fairly balanced; prioritizing meta matchups, cleaner positioning, and finer synergies.");
+    ? "El equipo ya está bastante equilibrado; priorizo matchups del meta, mejor posicionamiento y sinergias finas."
+    : "The team is already fairly balanced; prioritizing meta matchups, cleaner positioning, and finer synergies.");
 }
 
 function roleNeedLabel(reason) {
@@ -2464,7 +2473,7 @@ function getSuggestions() {
       if (profile.needsSpecial && candidate.specialDamage) add(12, "atacante especial necesario");
       if (profile.needsPhysical && candidate.physicalDamage) add(12, "atacante físico necesario");
       if (profile.needsSpeed && (candidate.fast || candidate.setRoles.has("speedControl") || candidate.setRoles.has("priority"))) add(10, "ayuda a mover primero");
-      if (profile.needsBulk && candidate.bulkScore >= 300) add(8, "resistencia para estabilizar la core");
+      if (profile.needsBulk && candidate.bulkScore >= 300) add(8, "resistencia para estabilizar el equipo");
       if (profile.needsProtection && (candidate.setRoles.has("redirection") || candidate.setRoles.has("fakeOut") || candidate.setRoles.has("intimidate"))) add(10, "protege atacantes frágiles");
       const weatherClash = candidateWeather(candidate).find((weather) => profile.currentWeather.length && !profile.currentWeather.includes(weather));
       if (weatherClash) add(-18, `pisa tu clima con ${weatherLabel(weatherClash)}`);
@@ -2694,12 +2703,12 @@ function suggestionExplanation(mon, reasons, profile, candidate) {
   }
   if (profile.needsSpeed && (candidate.fast || candidate.setRoles?.has("priority"))) {
     return selectedLanguage === "es"
-      ? `${mon.name} ayuda a que la core no dependa tanto de ganar turnos lentos.`
-      : `${mon.name} helps the core rely less on slow turn orders.`;
+      ? `${mon.name} ayuda a que el equipo no dependa tanto de ganar turnos lentos.`
+      : `${mon.name} helps the team rely less on slow turn orders.`;
   }
   return selectedLanguage === "es"
-    ? `${mon.name} es una pieza flexible, pero no cubre una carencia urgente de la core.`
-    : `${mon.name} is a flexible piece, but does not cover an urgent core weakness.`;
+    ? `${mon.name} es una pieza flexible, pero no cubre una carencia urgente del equipo.`
+    : `${mon.name} is a flexible piece, but does not cover an urgent team weakness.`;
 }
 
 function isWarningReason(reason) {
@@ -2730,8 +2739,8 @@ function suggestionTagLabel(reason) {
   if (reason === "ayuda a mover primero") return selectedLanguage === "es" ? "Control de velocidad" : "Speed control";
   if (reason === "puede activar Trick Room o Tailwind") return selectedLanguage === "es" ? "Control de velocidad" : "Speed control";
   if (reason === "añade Tailwind, Icy Wind o parálisis") return selectedLanguage === "es" ? "Control de velocidad" : "Speed control";
-  if (reason === "resistencia para estabilizar la core") return selectedLanguage === "es" ? "Más aguante" : "More bulk";
-  if (reason === "protege atacantes frágiles") return selectedLanguage === "es" ? "Protege la core" : "Protects the core";
+  if (reason === "resistencia para estabilizar el equipo") return selectedLanguage === "es" ? "Más aguante" : "More bulk";
+  if (reason === "protege atacantes frágiles") return selectedLanguage === "es" ? "Protege el equipo" : "Protects the team";
   if (reason === "inmune a Terremoto aliado" || reason === "immune to allied Earthquake") return selectedLanguage === "es" ? "Inmune a Terremoto aliado" : "Immune to allied Earthquake";
   if (reason === "absorbe ataques de Agua aliados" || reason === "absorbs allied Water attacks") return selectedLanguage === "es" ? "Absorbe Agua aliada" : "Absorbs allied Water";
   if (reason === "aprovecha el sol" || reason === "benefits from sun") return selectedLanguage === "es" ? "Aprovecha sol" : "Benefits from sun";
@@ -2785,7 +2794,7 @@ function suggestionFitPhrases(reasons) {
   const coverage = reasons.find((reason) => /^abre cobertura /.test(reason));
   if (coverage) phrases.push(selectedLanguage === "es" ? `añade presión ofensiva contra ${coverage.replace(/^abre cobertura /, "")}` : `adds offensive pressure into ${coverage.replace(/^abre cobertura /, "")}`);
   const pressure = reasons.find((reason) => /^presiona amenazas /.test(reason));
-  if (pressure) phrases.push(selectedLanguage === "es" ? "castiga amenazas populares que tu core no estaba presionando" : "punishes popular threats your core was not pressuring");
+  if (pressure) phrases.push(selectedLanguage === "es" ? "castiga amenazas populares que tu equipo no estaba presionando" : "punishes popular threats your team was not pressuring");
   if (reasons.includes("atacante especial necesario")) phrases.push(selectedLanguage === "es" ? "equilibra el daño especial del equipo" : "balances the team's special damage");
   if (reasons.includes("atacante físico necesario")) phrases.push(selectedLanguage === "es" ? "equilibra el daño físico del equipo" : "balances the team's physical damage");
   if (reasons.includes("ayuda a mover primero")) phrases.push(selectedLanguage === "es" ? "reduce la dependencia de ganar speed ties" : "reduces reliance on winning speed ties");
@@ -2830,7 +2839,7 @@ function candidateCapabilityPhrases(mon, candidate) {
   if (candidate.setRoles?.has("intimidate") || candidate.abilities.has("Intimidate")) phrases.push(selectedLanguage === "es" ? "reduce el daño físico rival con Intimidate" : "cuts opposing physical damage with Intimidate");
   if (moveIds.has("willowisp")) phrases.push(selectedLanguage === "es" ? `puede quemar atacantes físicos${firstMove(["willowisp"]) ? ` con ${firstMove(["willowisp"])}` : ""}` : `can burn physical attackers${firstMove(["willowisp"]) ? ` with ${firstMove(["willowisp"])}` : ""}`);
   if (moveIds.has("tailwind")) phrases.push(doubles
-    ? (selectedLanguage === "es" ? "puede acelerar la core con Tailwind" : "can speed the core up with Tailwind")
+    ? (selectedLanguage === "es" ? "puede acelerar el equipo con Tailwind" : "can speed the team up with Tailwind")
     : (selectedLanguage === "es" ? "puede ganar ventaja de velocidad con Tailwind" : "can gain speed advantage with Tailwind"));
   if (moveIds.has("trickroom")) phrases.push(doubles
     ? (selectedLanguage === "es" ? "puede setear Trick Room para cambiar el ritmo" : "can set Trick Room to flip the turn order")
@@ -2883,6 +2892,46 @@ function insightListHtml(lines) {
       <span>${line.label}</span>
       <p>${sentenceCase(localizeInlineTerms(line.text))}</p>
     </div>`).join("")}</div>`;
+}
+
+function collapsibleDetailsHtml(summary, bodyHtml, className = "", options = {}) {
+  const detailKey = options.detailKey || (options.detailScope && options.detailId ? `${options.detailScope}:${options.detailId}` : "");
+  const isOpen = detailKey ? (detailsOpenState.has(detailKey) ? detailsOpenState.get(detailKey) : Boolean(options.open)) : Boolean(options.open);
+  const detailAttrs = [
+    isOpen ? "open" : "",
+    detailKey ? `data-detail-key="${escapeHtml(detailKey)}"` : "",
+    options.detailScope ? `data-detail-scope="${escapeHtml(options.detailScope)}"` : "",
+    options.detailId ? `data-detail-id="${escapeHtml(options.detailId)}"` : "",
+  ].filter(Boolean).join(" ");
+  return `<details class="info-collapse ${className}" ${detailAttrs}>
+    <summary>${summary}</summary>
+    <div class="info-collapse-body">${bodyHtml}</div>
+  </details>`;
+}
+
+function detailsOpenAttr(key, defaultOpen = false) {
+  return (detailsOpenState.has(key) ? detailsOpenState.get(key) : defaultOpen) ? " open" : "";
+}
+
+function wireDetailsPersistence(root = document) {
+  root.querySelectorAll("details[data-detail-key]").forEach((details) => {
+    if (details.dataset.detailPersistenceWired) return;
+    details.dataset.detailPersistenceWired = "true";
+    details.addEventListener("toggle", () => {
+      detailsOpenState.set(details.dataset.detailKey, details.open);
+    });
+  });
+}
+
+function wireDetailOpenState(root, scope, stateSet) {
+  root.querySelectorAll(`details[data-detail-scope="${scope}"][data-detail-id]`).forEach((details) => {
+    details.addEventListener("toggle", () => {
+      const id = details.dataset.detailId;
+      if (!id) return;
+      if (details.open) stateSet.add(id);
+      else stateSet.delete(id);
+    });
+  });
 }
 
 function uniqueMonsForDisplay(mons) {
@@ -3044,12 +3093,13 @@ function threatCounterSlot(mon) {
 }
 
 function targetSetSummaryHtml(mon, slot, advanced) {
+  if (!advanced) return "";
   const label = advanced
     ? (selectedLanguage === "es" ? "Set editado" : "Edited set")
     : (selectedLanguage === "es" ? "Cálculo neutro" : "Neutral calc");
   const setText = advanced ? `${natureUiName(slot.nature)} · ${spreadText(slot.sp)}` : `${natureUiName("Hardy")} · ${spreadText(slot.sp)}`;
   return `<span class="mini threat-set-summary">${label}: ${setText}</span>
-    <span class="mini threat-final-stats">${selectedLanguage === "es" ? "Stats finales" : "Final stats"}: ${finalStatsText(mon, slot.nature, slot.sp)}</span>`;
+    ${advanced ? `<span class="mini threat-final-stats">${selectedLanguage === "es" ? "Stats finales" : "Final stats"}: ${finalStatsText(mon, slot.nature, slot.sp)}</span>` : ""}`;
 }
 
 function advancedSlotEditorHtml(mon, slot, scope, id, compact = false) {
@@ -3057,6 +3107,10 @@ function advancedSlotEditorHtml(mon, slot, scope, id, compact = false) {
   const total = totalSp(slot);
   const natureOptions = natureOptionsFor(mon, slot);
   return `<div class="mini-sp-editor ${compact ? "compact" : ""}">
+    <div class="mini-sp-editor-head">
+      <strong>${selectedLanguage === "es" ? "Stats finales" : "Final stats"}</strong>
+      <span>${selectedLanguage === "es" ? "Puntos Champions" : "Champions points"}</span>
+    </div>
     <label class="mini-nature">
       <span>${selectedLanguage === "es" ? "Naturaleza" : "Nature"}</span>
       <select data-advanced-nature data-advanced-scope="${scope}" data-advanced-id="${id}">
@@ -3066,11 +3120,11 @@ function advancedSlotEditorHtml(mon, slot, scope, id, compact = false) {
     <div class="mini-sp-grid">
       ${STAT_KEYS.map((key) => `<label>
         <span>${STAT_LABELS[key]}</span>
-        <input type="number" min="0" max="${MAX_SP_STAT}" value="${slot.sp[key] || 0}" data-advanced-sp="${key}" data-advanced-scope="${scope}" data-advanced-id="${id}">
+        <input type="number" inputmode="numeric" min="0" max="${MAX_SP_STAT}" value="${slot.sp[key] || 0}" data-advanced-sp="${key}" data-advanced-scope="${scope}" data-advanced-id="${id}">
         <b>${stats[key]}</b>
       </label>`).join("")}
     </div>
-    <div class="mini-sp-total ${total > MAX_SP ? "bad" : ""}">${selectedLanguage === "es" ? "Restantes" : "Remaining"} ${MAX_SP - total} · ${selectedLanguage === "es" ? "final" : "final"} ${STAT_KEYS.map((key) => `${STAT_LABELS[key]} ${stats[key]}`).join(" · ")}</div>
+    <div class="mini-sp-total ${total > MAX_SP ? "bad" : ""}">${selectedLanguage === "es" ? "Restantes" : "Remaining"} ${MAX_SP - total} · ${selectedLanguage === "es" ? "usados" : "used"} ${total}/${MAX_SP}</div>
   </div>`;
 }
 
@@ -3168,10 +3222,11 @@ function renderThreatCounters() {
       <div>
         <div class="threat-target-head">
           <strong>${target.name}</strong>
+          <span class="mini threat-usage">${selectedLanguage === "es" ? "uso" : "usage"} ${pokemonUsage(target).toFixed(2)}%</span>
           ${typeIconRow(target.types)}
         </div>
+        ${baseStatsHtml(target, true)}
         ${targetSetSummaryHtml(target, targetSlot, threatAdvanced)}
-        ${baseStatsHtml(target)}
         ${threatSetControlsHtml(target, targetSlot)}
       </div>
     </div>
@@ -3179,12 +3234,11 @@ function renderThreatCounters() {
       <span class="sprite-frame"><img src="${pokemonSprite(mon)}" alt="${mon.name}" data-fallback="${plannerSprite(mon)}"></span>
       <div>
         <span class="suggestion-name">${mon.name}</span>
-        <span class="mini">${typeIconRow(mon.types)} · ${Math.round(score)} pts</span>
+        <span class="mini">${typeIconRow(mon.types)} · ${Math.round(score)} pts · ${selectedLanguage === "es" ? "uso" : "usage"} ${pokemonUsage(mon).toFixed(2)}%</span>
+        ${baseStatsHtml(mon, true)}
         ${targetSetSummaryHtml(mon, counterSlot, counterAdvanced)}
-        ${baseStatsHtml(mon)}
         ${threatCounterControlsHtml(mon)}
-        <p class="suggestion-explain">${localizeInlineTerms(explanation)}</p>
-        ${insightListHtml(advice)}
+        ${collapsibleDetailsHtml(selectedLanguage === "es" ? "Análisis del counter" : "Counter analysis", `<p class="suggestion-explain">${localizeInlineTerms(explanation)}</p>${insightListHtml(advice)}`, "card-details", { detailScope: "threatCounter", detailId: mon.id, open: threatCounterDetailOpenIds.has(mon.id) })}
         <div class="tag-row">${reasons.slice(0, 4).map((reason) => `<span class="tag">${localizeInlineTerms(counterReasonLabel(reason))}</span>`).join("")}</div>
       </div>
     </article>`).join("")}
@@ -3201,6 +3255,8 @@ function renderThreatCounters() {
       renderThreatCounters();
     });
   });
+  wireDetailOpenState(els.threatResults, "threatCounter", threatCounterDetailOpenIds);
+  wireDetailsPersistence(els.threatResults);
   wireAdvancedSlotControls(els.threatResults);
   wireSpriteFallbacks(els.threatResults);
 }
@@ -3430,11 +3486,10 @@ function renderCounters() {
       <div>
         <span class="suggestion-name">${mon.name}</span>
         <span class="mini">${typeIconRow(mon.types)} · ${selectedLanguage === "es" ? "riesgo" : "risk"} ${Math.round(score)} · ${selectedLanguage === "es" ? "uso" : "usage"} ${pokemonUsage(mon).toFixed(2)}%</span>
+        ${baseStatsHtml(mon, true)}
         ${targetSetSummaryHtml(mon, targetSlot, advanced)}
-        ${baseStatsHtml(mon)}
         ${majorThreatSetControlsHtml(mon)}
-        <p class="suggestion-explain">${localizeInlineTerms(explanation)}</p>
-        ${insightListHtml(advice)}
+        ${collapsibleDetailsHtml(selectedLanguage === "es" ? "Análisis de amenaza" : "Threat analysis", `<p class="suggestion-explain">${localizeInlineTerms(explanation)}</p>${insightListHtml(advice)}`, "card-details", { detailScope: "majorThreat", detailId: mon.id, open: majorThreatDetailOpenIds.has(mon.id) })}
         <div class="tag-row">${reasons.slice(0, 4).map((reason) => `<span class="tag">${localizeInlineTerms(majorThreatReasonLabel(reason))}</span>`).join("")}</div>
       </div>
     </article>`)
@@ -3447,6 +3502,8 @@ function renderCounters() {
       renderCounters();
     });
   });
+  wireDetailOpenState(els.counters, "majorThreat", majorThreatDetailOpenIds);
+  wireDetailsPersistence(els.counters);
   wireAdvancedSlotControls(els.counters);
 }
 
@@ -4059,16 +4116,18 @@ function typePlannerHtml() {
     b.resist - a.resist ||
     a.type.localeCompare(b.type)
   );
-  return `<div class="type-planner">
-    <div class="type-planner-head">
+  return `<details class="type-planner type-planner-collapse" data-detail-key="team:type-analysis"${detailsOpenAttr("team:type-analysis")}>
+    <summary class="type-planner-head">
       <strong>${selectedLanguage === "es" ? "Análisis de tipos" : "Type analysis"}</strong>
       <span><b>${selectedLanguage === "es" ? "D" : "W"}</b> ${selectedLanguage === "es" ? "débiles" : "weak"} · <b>R</b> ${selectedLanguage === "es" ? "resisten" : "resist"} · <b>I</b> ${selectedLanguage === "es" ? "inmunes" : "immune"}</span>
+    </summary>
+    <div class="type-planner-body">
+      ${typeBalanceSummaryHtml(sortedRows)}
+      <div class="type-balance-grid">
+        ${sortedRows.map(typeBalanceCardHtml).join("")}
+      </div>
     </div>
-    ${typeBalanceSummaryHtml(sortedRows)}
-    <div class="type-balance-grid">
-      ${sortedRows.map(typeBalanceCardHtml).join("")}
-    </div>
-  </div>`;
+  </details>`;
 }
 
 function typeBalanceSummaryHtml(rows) {
@@ -4149,7 +4208,7 @@ function typeIconRow(types) {
   return `<span class="type-icon-row">${types.map((type) => typeIconHtml(type)).join("")}</span>`;
 }
 
-function baseStatsHtml(mon) {
+function baseStatsHtml(mon, labeled = false) {
   if (!mon?.baseStats) return "";
   const stats = [
     ["HP", mon.baseStats.hp],
@@ -4159,7 +4218,7 @@ function baseStatsHtml(mon) {
     ["SpD", mon.baseStats.spd],
     ["Spe", mon.baseStats.spe],
   ];
-  return `<span class="base-stats-line">${stats.map(([label, value]) => `<span><b>${label}</b> ${value}</span>`).join("")}</span>`;
+  return `<span class="base-stats-line">${labeled ? `<span class="base-stats-label">${selectedLanguage === "es" ? "Stats base" : "Base stats"}</span>` : ""}${stats.map(([label, value]) => `<span><b>${label}</b> ${value}</span>`).join("")}</span>`;
 }
 
 function typeLabel(type) {

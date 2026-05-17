@@ -13,154 +13,57 @@
 
   <link rel="stylesheet" href="styles.css" />
 </head>
-  <body>
-    <header class="topbar">
-      <div class="brand-block">
-        <h1><a class="brand-link" href="index.html" aria-label="Pkounter"><img class="brand-logo" src="assets/Pkounter_logo_cropped.png?v=2" alt="Pkounter" /></a></h1>
+<body class="landing-page">
+  <main class="landing-shell">
+    <div class="landing-frame">
+      <div class="landing-language" aria-label="Idioma">
+        <span data-landing-i18n="languageLabel">Idioma</span>
+        <button type="button" data-landing-language="es" aria-pressed="true">Español</button>
+        <button type="button" data-landing-language="en" aria-pressed="false">English</button>
       </div>
-      <div class="rules">
-        <div class="format-control">
-          <span class="format-label" data-i18n="formatLabel">Formato</span>
-          <button id="formatButton" class="format-button" type="button" aria-haspopup="listbox" aria-expanded="false"></button>
-          <div id="formatMenu" class="format-menu" role="listbox" hidden></div>
-          <select id="formatSelect" hidden aria-label="Formato"></select>
+      <section class="landing-hero" aria-labelledby="landing-title">
+        <figure class="landing-banner-wrap">
+          <img id="landing-banner" class="landing-banner" src="assets/Banner-Pkounter-inicio-ESP.jpg?v=1" alt="Pkounter: Construye tus equipos, estudia la sinergia, elimina tus counters" />
+        </figure>
+        <p class="landing-kicker" data-landing-i18n="kicker">Teambuilding asistido para Champions</p>
+        <h1 id="landing-title" data-landing-i18n="title">Construye equipos con contexto real del meta.</h1>
+        <p class="landing-copy" data-landing-i18n="copy">
+          Pkounter te ayuda a montar equipos, revisar amenazas, importar y exportar sets en formato Showdown y tomar decisiones con datos de uso, roles, tipos, movimientos y objetos del formato seleccionado.
+        </p>
+        <div class="landing-actions">
+          <a class="landing-button" href="building.html" data-landing-i18n="startButton">Empezar a construir</a>
+          <a class="landing-link" href="about.html" data-landing-i18n="aboutButton">Sobre Pkounter</a>
         </div>
-        <div class="format-control language-control">
-          <span class="format-label" data-i18n="languageLabel">Idioma</span>
-          <button id="languageButton" class="format-button" type="button" aria-haspopup="listbox" aria-expanded="false"></button>
-          <div id="languageMenu" class="format-menu" role="listbox" hidden></div>
-          <select id="languageSelect" hidden aria-label="Idioma"></select>
-        </div>
-        <div class="rule-group" aria-label="Reglas del formato">
-        <span class="rule-badge" data-i18n="levelRule">Nivel 50</span>
-        <span id="formatMode">6 → 4 dobles</span>
-        <span data-i18n="spRule">66 SP · 32/stat</span>
-        <span class="rule-badge" data-i18n="megaRule">1 Mega</span>
-        </div>
-        <a class="top-link" href="about.html" data-i18n="aboutButton">About</a>
-        <a class="top-link coffee-link" href="https://ko-fi.com/Y8Y61ZFSF0#" target="_blank" rel="noreferrer">Buy me a coffee &hearts;</a>
-      </div>
-    </header>
-
-    <main class="app-shell">
-      <section class="panel team-panel" aria-labelledby="team-title">
-        <div class="section-head">
-          <div>
-            <h2 id="team-title">Equipo final</h2>
-            <p id="teamStatus">0/6 Pokémon</p>
-          </div>
-          <div class="team-actions">
-            <button id="showImport" class="ghost-button" type="button" data-i18n="importButton">Importar</button>
-            <button id="copyExport" class="ghost-button" type="button" data-i18n="exportButton">Exportar</button>
-            <button id="randomTeam" class="random-button" type="button" data-i18n="randomButton">Aleatorio</button>
-            <button id="clearTeam" class="ghost-button" type="button" data-i18n="clearButton">Limpiar</button>
-          </div>
-        </div>
-
-        <div id="importTray" class="import-tray" role="dialog" aria-modal="true" aria-labelledby="import-title" hidden>
-          <div class="import-dialog">
-            <div class="import-dialog-head">
-              <div>
-                <h2 id="import-title" data-i18n="importDialogTitle">Importar equipo</h2>
-                <p data-i18n="importDialogHint">Pega tu equipo en formato Showdown sin mover el builder de sitio.</p>
-              </div>
-            </div>
-          <label for="importBox" data-i18n="importLabel">Pega tu equipo en formato Showdown</label>
-          <textarea id="importBox" placeholder="Pega aquí un equipo en formato Showdown..."></textarea>
-          <div class="import-actions">
-            <button id="importTeam" type="button" data-i18n="importTeamButton">Importar equipo</button>
-            <button id="cancelImport" class="ghost-button" type="button" data-i18n="closeButton">Cerrar</button>
-          </div>
-          </div>
-        </div>
-        <textarea id="exportBox" class="sr-only" readonly></textarea>
-
-        <div class="quick-add">
-          <input id="pokemonSearch" list="pokemonList" placeholder="Añadir Pokémon..." autocomplete="off" />
-          <datalist id="pokemonList"></datalist>
-          <button id="addPokemon" type="button" data-i18n="addButton">Añadir</button>
-        </div>
-
-        <div id="teamSlots" class="team-slots"></div>
-
-        <div id="teamSummary" class="summary-grid"></div>
       </section>
+    </div>
+  </main>
 
-      <section class="panel editor-panel" aria-labelledby="editor-title">
-        <div class="section-head">
-          <div>
-            <h2 id="editor-title">Configuración</h2>
-            <p id="selectedHint">Elige un slot para editarlo</p>
-          </div>
-          <button id="applyPopularSet" class="accent-button" type="button" data-i18n="applyPopularSet">Aplicar set popular</button>
-        </div>
-
-        <div id="editor"></div>
-      </section>
-
-      <section class="panel side-panel" aria-label="Herramientas de teambuilding">
-        <div class="side-tabs" role="tablist" aria-label="Herramientas">
-          <button class="side-tab active" id="tab-suggestions" type="button" role="tab" aria-selected="true" aria-controls="panel-suggestions" data-side-tab="suggestions" data-i18n="suggestionsTab">Teambuilding</button>
-          <button class="side-tab" id="tab-counters" type="button" role="tab" aria-selected="false" aria-controls="panel-counters" data-side-tab="counters" data-i18n="teamCountersTab">Counters del equipo</button>
-          <button class="side-tab" id="tab-threat" type="button" role="tab" aria-selected="false" aria-controls="panel-threat" data-side-tab="threat" data-i18n="singleCounterTab">Counter individual</button>
-        </div>
-
-        <section class="side-tab-panel suggestions-panel active" id="panel-suggestions" role="tabpanel" aria-labelledby="tab-suggestions" data-tab-panel="suggestions">
-          <div class="section-head">
-            <div>
-              <h2 id="suggestions-title">Sugerencias en tiempo real</h2>
-              <p id="suggestionHint">Partners, roles y amenazas del meta</p>
-            </div>
-          </div>
-
-          <div id="suggestions" class="suggestions"></div>
-          <div id="suggestionControls" class="suggestion-more"></div>
-        </section>
-
-        <section class="side-tab-panel counters-panel" id="panel-counters" role="tabpanel" aria-labelledby="tab-counters" data-tab-panel="counters" hidden>
-          <div class="section-head">
-            <div>
-              <h2 id="counters-title">Mayores counters</h2>
-              <p data-i18n="majorCountersHint">Se activa al completar 6 Pokémon</p>
-            </div>
-          </div>
-          <div id="counters" class="counters"></div>
-        </section>
-
-        <section class="side-tab-panel threat-panel" id="panel-threat" role="tabpanel" aria-labelledby="tab-threat" data-tab-panel="threat" hidden>
-          <div class="section-head">
-            <div>
-              <h2 id="threat-title">Buscar counters</h2>
-              <p data-i18n="threatHint">Respuestas directas contra una amenaza</p>
-            </div>
-          </div>
-
-          <div class="threat-search">
-            <input id="threatSearch" list="pokemonList" placeholder="Ej. Archaludon..." autocomplete="off" />
-          </div>
-          <div id="threatResults" class="counters"></div>
-        </section>
-      </section>
-    </main>
-
-	<footer class="site-footer">
-		<span data-i18n="trademarkNotice">Pokémon y todos sus nombres respectivos son marcas registradas y &copy; de Nintendo 1996-2026.</span>
-		<span data-i18n="attributionNotice">Pkounter no está afiliado a Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown ni MunchStats.</span>
-		<span>
-			<span data-i18n="dataSources">Datos y recursos:</span>
-			<a href="https://munchstats.com/" target="_blank" rel="noreferrer">MunchStats</a>,
-			<a href="https://pokemonshowdown.com/" target="_blank" rel="noreferrer">Pokémon Showdown</a>,
-			<a href="https://www.smogon.com/stats/" target="_blank" rel="noreferrer">Smogon</a>,
-			<a href="https://pokeapi.co/" target="_blank" rel="noreferrer">PokéAPI</a>.
-		</span>
-		<span data-i18n="madeBy">Hecho por Adriark.</span>
-	</footer>
-
-    <script src="champions-data.js"></script>
-    <script src="champions-moves.js"></script>
-    <script src="champions-items.js"></script>
-    <script src="munchstats-data.js"></script>
-    <script src="locales-data.js"></script>
-    <script src="app.js"></script>
-  </body>
+  <footer class="site-footer landing-footer">
+    <div class="landing-footer-set" data-landing-lang="es">
+      <span>Pok&eacute;mon y todos sus nombres respectivos son marcas registradas y &copy; de Nintendo 1996-2026.</span>
+      <span>Pkounter no est&aacute; afiliado a Nintendo, Game Freak, The Pok&eacute;mon Company, Smogon, Pok&eacute;mon Showdown ni MunchStats.</span>
+      <span>
+        Datos y recursos:
+        <a href="https://munchstats.com/" target="_blank" rel="noreferrer">MunchStats</a>,
+        <a href="https://pokemonshowdown.com/" target="_blank" rel="noreferrer">Pok&eacute;mon Showdown</a>,
+        <a href="https://www.smogon.com/stats/" target="_blank" rel="noreferrer">Smogon</a>,
+        <a href="https://pokeapi.co/" target="_blank" rel="noreferrer">Pok&eacute;API</a>.
+      </span>
+      <span>Hecho por Adriark.</span>
+    </div>
+    <div class="landing-footer-set" data-landing-lang="en" hidden>
+      <span>Pok&eacute;mon and all respective names are trademarks and &copy; of Nintendo 1996-2026.</span>
+      <span>Pkounter is not affiliated with Nintendo, Game Freak, The Pok&eacute;mon Company, Smogon, Pok&eacute;mon Showdown, or MunchStats.</span>
+      <span>
+        Data and resources:
+        <a href="https://munchstats.com/" target="_blank" rel="noreferrer">MunchStats</a>,
+        <a href="https://pokemonshowdown.com/" target="_blank" rel="noreferrer">Pok&eacute;mon Showdown</a>,
+        <a href="https://www.smogon.com/stats/" target="_blank" rel="noreferrer">Smogon</a>,
+        <a href="https://pokeapi.co/" target="_blank" rel="noreferrer">Pok&eacute;API</a>.
+      </span>
+      <span>Made by Adriark.</span>
+    </div>
+  </footer>
+  <script src="landing.js"></script>
+</body>
 </html>
