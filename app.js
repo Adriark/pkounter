@@ -458,11 +458,14 @@ function bindEvents() {
     closeImportModal();
   });
   els.importTeam.addEventListener("click", () => {
-    importShowdown(els.importBox.value);
-    els.importBox.value = "";
-    closeImportModal();
-    persist();
-    renderAll();
+    try {
+      importShowdown(els.importBox.value);
+      els.importBox.value = "";
+      persist();
+      renderAll();
+    } finally {
+      closeImportModal();
+    }
   });
   els.importTray?.addEventListener("click", (event) => {
     if (event.target === els.importTray) closeImportModal();
@@ -529,9 +532,9 @@ function openImportModal() {
 }
 
 function closeImportModal() {
-  if (!els.importTray || els.importTray.hidden) return;
-  els.importTray.hidden = true;
   document.body.classList.remove("modal-open");
+  if (!els.importTray) return;
+  els.importTray.hidden = true;
 }
 
 function setActiveSideTab(tabName) {
@@ -1518,9 +1521,11 @@ function statBarHtml(key, value) {
 }
 
 function statTone(percent) {
-  if (percent >= 78) return "stat-high";
-  if (percent >= 52) return "stat-mid";
-  return "stat-low";
+  if (percent >= 82) return "stat-elite";
+  if (percent >= 66) return "stat-high";
+  if (percent >= 50) return "stat-mid";
+  if (percent >= 34) return "stat-low";
+  return "stat-very-low";
 }
 
 function statPlannerHtml(mon, slot, stats) {
@@ -3130,8 +3135,8 @@ function advancedSlotEditorHtml(mon, slot, scope, id, compact = false) {
 
 function advancedModeSwitchHtml(advanced, dataAttribute, id = "") {
   const attr = id ? `${dataAttribute}="${id}"` : dataAttribute;
-  const modeText = advanced ? t("threatModeAdvanced") : t("threatModeSimple");
-  const stateText = advanced ? t("threatAdvanced") : t("threatSimple");
+  const modeText = advanced ? t("threatModeSimple") : t("threatModeAdvanced");
+  const stateText = advanced ? t("threatSimple") : t("threatAdvanced");
   return `<button class="mode-switch ${advanced ? "active" : ""}" type="button" role="switch" aria-checked="${advanced ? "true" : "false"}" ${attr}>
     <span class="mode-switch-track" aria-hidden="true"><span></span></span>
     <span class="mode-switch-text"><strong>${modeText}</strong><small>${stateText}</small></span>

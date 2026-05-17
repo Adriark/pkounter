@@ -4580,15 +4580,19 @@ body {
   object-fit: contain;
 }
 
-.top-link[href="about.html"],
-.top-link[href$="about.html"] {
+.top-link[href="/about/"],
+.top-link[href$="/about/"],
+.top-link[data-i18n="aboutButton"],
+.top-link[data-about-i18n="aboutButton"] {
   border-color: rgba(63, 181, 138, 0.72);
   background: rgba(63, 181, 138, 0.18);
   color: #eafff5;
 }
 
-.top-link[href="about.html"]:hover,
-.top-link[href$="about.html"]:hover {
+.top-link[href="/about/"]:hover,
+.top-link[href$="/about/"]:hover,
+.top-link[data-i18n="aboutButton"]:hover,
+.top-link[data-about-i18n="aboutButton"]:hover {
   border-color: rgba(52, 157, 118, 0.88);
   background: rgba(52, 157, 118, 0.28);
   color: #ffffff;
@@ -4811,8 +4815,10 @@ body {
     padding-inline: 14px;
   }
 
-  .top-link[href="about.html"],
-  .top-link[href$="about.html"],
+  .top-link[href="/about/"],
+  .top-link[href$="/about/"],
+  .top-link[data-i18n="aboutButton"],
+  .top-link[data-about-i18n="aboutButton"],
   .top-link.active {
     justify-self: center !important;
     width: max-content !important;
@@ -5732,5 +5738,332 @@ body {
 
   .team-panel .team-actions button {
     padding-inline: 5px !important;
+  }
+}
+
+/* =========================
+   Final GitHub Pages / mobile UX fixes
+   ========================= */
+
+.stat-very-low { background: #d85f5b; }
+.stat-low { background: #e07a4f; }
+.stat-mid { background: #e6c84a; }
+.stat-high { background: #65ca6d; }
+.stat-elite { background: #45c6d9; }
+
+.spread-recs-head {
+  align-items: center;
+  color: #eaf3f7;
+  font-weight: 900;
+}
+
+.spread-recs-head strong {
+  color: #eaf3f7;
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1.1;
+}
+
+.top-link[href="/about/"],
+.top-link[href$="/about/"],
+.top-link[data-i18n="aboutButton"],
+.top-link[data-about-i18n="aboutButton"] {
+  border-color: rgba(63, 181, 138, 0.72);
+  background: rgba(63, 181, 138, 0.18);
+  color: #eafff5;
+}
+
+.top-link[href="/about/"]:hover,
+.top-link[href$="/about/"]:hover,
+.top-link[data-i18n="aboutButton"]:hover,
+.top-link[data-about-i18n="aboutButton"]:hover {
+  border-color: rgba(52, 157, 118, 0.88);
+  background: rgba(52, 157, 118, 0.28);
+}
+
+body.modal-open::before {
+  z-index: 19000 !important;
+}
+
+.import-tray {
+  z-index: 19100 !important;
+}
+
+@media (max-width: 760px) {
+  :root {
+    --topbar-height: 64px !important;
+  }
+
+  body:not(.landing-page) .topbar {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    height: var(--topbar-height) !important;
+    min-height: var(--topbar-height) !important;
+    padding: 6px 8px !important;
+    overflow: hidden !important;
+  }
+
+  body:not(.landing-page) .brand-block {
+    flex: 0 0 104px !important;
+    width: 104px !important;
+    min-width: 104px !important;
+    max-width: 104px !important;
+    height: 52px !important;
+    justify-content: flex-start !important;
+    overflow: hidden !important;
+  }
+
+  body:not(.landing-page) .brand-link {
+    width: 104px !important;
+    max-width: 104px !important;
+  }
+
+  body:not(.landing-page) .brand-logo {
+    width: 104px !important;
+    height: auto !important;
+    max-width: 104px !important;
+    max-height: 52px !important;
+    object-position: left center !important;
+  }
+
+  body:not(.landing-page) .rules {
+    flex: 1 1 auto !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    align-items: center !important;
+    gap: 6px !important;
+    min-width: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 2px 5px !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+
+  body:not(.landing-page) .rules > *,
+  body:not(.landing-page) .rule-group,
+  body:not(.landing-page) .rule-group > * {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: max-content !important;
+    max-width: none !important;
+    grid-column: auto !important;
+    justify-self: auto !important;
+  }
+
+  body:not(.landing-page) .rule-group {
+    display: flex !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    gap: 6px !important;
+  }
+
+  body:not(.landing-page) .format-control,
+  body:not(.landing-page) .top-link,
+  body:not(.landing-page) .rule-badge,
+  body:not(.landing-page) .rule-group > span {
+    min-height: 30px !important;
+    white-space: nowrap !important;
+  }
+
+  body:not(.landing-page) .format-button {
+    width: auto !important;
+    min-width: max-content !important;
+    max-width: none !important;
+    white-space: nowrap !important;
+  }
+
+  body:not(.landing-page) .format-menu {
+    position: fixed !important;
+    left: 8px !important;
+    right: 8px !important;
+    top: calc(var(--topbar-height) + 6px) !important;
+    width: auto !important;
+    max-height: min(360px, calc(100dvh - var(--topbar-height) - 16px)) !important;
+    overflow-y: auto !important;
+  }
+
+  body:not(.landing-page) .app-shell {
+    height: auto !important;
+    min-height: calc(100dvh - var(--topbar-height) - var(--footer-height)) !important;
+  }
+}
+
+@media (max-width: 420px) {
+  :root {
+    --topbar-height: 58px !important;
+  }
+
+  body:not(.landing-page) .brand-block,
+  body:not(.landing-page) .brand-link {
+    flex-basis: 88px !important;
+    width: 88px !important;
+    min-width: 88px !important;
+    max-width: 88px !important;
+  }
+
+  body:not(.landing-page) .brand-logo {
+    width: 88px !important;
+    max-width: 88px !important;
+    max-height: 46px !important;
+  }
+}
+
+/* Mobile header final override: one compact horizontal rail */
+@media (max-width: 760px) {
+  :root {
+    --topbar-height: 62px !important;
+  }
+
+  body:not(.landing-page) .topbar {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 8px !important;
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: var(--topbar-height) !important;
+    min-height: var(--topbar-height) !important;
+    padding: 6px 8px !important;
+    position: relative !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    overscroll-behavior-inline: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  body:not(.landing-page) .topbar::-webkit-scrollbar {
+    height: 4px;
+  }
+
+  body:not(.landing-page) .topbar::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: rgba(118, 144, 158, 0.45);
+  }
+
+  body:not(.landing-page) .brand-block,
+  body:not(.landing-page) .brand-link {
+    position: absolute !important;
+    left: 8px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    flex: 0 0 96px !important;
+    width: 96px !important;
+    min-width: 96px !important;
+    max-width: 96px !important;
+    height: 48px !important;
+    margin: 0 !important;
+    overflow: hidden !important;
+  }
+
+  body:not(.landing-page) .brand-link {
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    transform: none !important;
+  }
+
+  body:not(.landing-page) .brand-block {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+  }
+
+  body:not(.landing-page) .brand-logo {
+    width: 96px !important;
+    height: auto !important;
+    max-width: 96px !important;
+    max-height: 48px !important;
+    object-position: left center !important;
+  }
+
+  body:not(.landing-page) .rules {
+    position: absolute !important;
+    left: 112px !important;
+    right: 8px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    flex: 0 0 auto !important;
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    align-content: center !important;
+    gap: 6px !important;
+    width: auto !important;
+    min-width: max-content !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 8px 0 0 !important;
+    overflow: visible !important;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+  }
+
+  body:not(.landing-page) .rules > *,
+  body:not(.landing-page) .rule-group,
+  body:not(.landing-page) .rule-group > * {
+    flex: 0 0 auto !important;
+    width: auto !important;
+    min-width: max-content !important;
+    max-width: none !important;
+  }
+
+  body:not(.landing-page) .rule-group {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+
+  body:not(.landing-page) .app-shell {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-inline: 8px !important;
+    overflow-x: hidden !important;
+  }
+
+  body:not(.landing-page) .panel,
+  body:not(.landing-page) .team-panel,
+  body:not(.landing-page) .editor-panel,
+  body:not(.landing-page) .side-panel {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  body:not(.landing-page) .team-panel .team-actions {
+    width: 100% !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  body:not(.landing-page) .team-panel .team-actions button {
+    min-width: 0 !important;
+  }
+}
+
+@media (max-width: 420px) {
+  body:not(.landing-page) .brand-block,
+  body:not(.landing-page) .brand-link {
+    flex-basis: 84px !important;
+    width: 84px !important;
+    min-width: 84px !important;
+    max-width: 84px !important;
+  }
+
+  body:not(.landing-page) .brand-logo {
+    width: 84px !important;
+    max-width: 84px !important;
+  }
+
+  body:not(.landing-page) .rules {
+    left: 98px !important;
   }
 }

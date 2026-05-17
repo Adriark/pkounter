@@ -7,10 +7,18 @@ Pkounter is a free, fan-made static web application for building Pokémon Champi
 ## Pages
 
 - Home: https://pkounter.com/
-- Builder: https://pkounter.com/building.html
-- About / FAQ: https://pkounter.com/about.html
+- Builder: https://pkounter.com/building/
+- About / FAQ: https://pkounter.com/about/
 
 If any public route or link does not load correctly, please report it at `contactpkounter@gmail.com`.
+
+The GitHub Pages structure uses folder-based routes:
+
+- `/index.html` -> `https://pkounter.com/`
+- `/building/index.html` -> `https://pkounter.com/building/`
+- `/about/index.html` -> `https://pkounter.com/about/`
+
+Legacy `/building.html` and `/about.html` are kept as lightweight redirect pages during the transition.
 
 ## Features
 
