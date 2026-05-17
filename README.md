@@ -25,8 +25,8 @@ Legacy `/building.html` and `/about.html` are kept as lightweight redirect pages
 - Full 6-Pokémon team builder with quick import from suggestions.
 - Complete Pokémon Champions Pokédex powered by `champions-data.js`, including stats, typings, abilities, Megas, and learnsets.
 - Editor for items, abilities, natures, moves, and Stat Points.
-- Final stat calculation at level 50 using 31 IVs and Champions SP values.
-- Pokémon Champions Showdown-style import/export support with `EVs:` lines using Champions SP values from 0 to 32.
+- Final stat calculation at level 50 using 31 IVs and Champions EV values.
+- Pokémon Champions Showdown-style import/export support with `EVs:` lines using Champions EV values from 0 to 32.
 - Real-time suggestions based on usage data, common partners, roles, and defensive coverage.
 - Counter analysis for individual Pokémon and completed teams.
 - About/FAQ page with sources, update cadence, credits, and contact information.
@@ -36,7 +36,7 @@ Legacy `/building.html` and `/about.html` are kept as lightweight redirect pages
 
 - Champions roster, stats, Megas, and learnsets: local Champions data files.
 - Move data: Pokémon Showdown move data.
-- Format rules and Champions SP system: Champions resources and format guides.
+- Format rules and Champions EV system: Champions resources and format guides.
 - Competitive usage stats, partners, items, abilities, moves, natures, and spreads: MunchStats, based on Smogon monthly usage stats.
 - Teambuilding principles: VGC Guide and competitive Pokémon resources.
 

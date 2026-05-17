@@ -66,7 +66,7 @@ const UI_TEXT = {
     countersTitle: "Mayores counters",
     dataSources: "Datos y recursos:",
     trademarkNotice: "Pokémon y todos sus nombres respectivos son marcas registradas y \u00a9 de Nintendo 1996-2026.",
-    editorEmpty: "Añade o selecciona un Pokémon para editar SPs, movimientos, objeto y habilidad.",
+    editorEmpty: "Añade o selecciona un Pokémon para editar EVs, movimientos, objeto y habilidad.",
     exportButton: "Exportar",
     formatLabel: "Formato",
     importButton: "Importar",
@@ -87,9 +87,9 @@ const UI_TEXT = {
     randomButton: "Aleatorio",
     readyButton: "Listo",
     selectedHintEmpty: "Elige un slot para editarlo",
-    slotHint: "Añade una pieza de equipo",
+    slotHint: "Añade un Pokémon",
     slotLabel: "Slot libre",
-    spRule: "66 SP · 32/stat",
+    spRule: "66 EVs · 32/stat",
     suggestionsTitle: "Sugerencias en tiempo real",
     suggestionsTab: "Teambuilding",
     teamFull: "Equipo lleno",
@@ -119,7 +119,7 @@ const UI_TEXT = {
     countersTitle: "Biggest counters",
     dataSources: "Data and resources:",
     trademarkNotice: "Pokémon and all respective names are trademarks and \u00a9 of Nintendo 1996-2026.",
-    editorEmpty: "Add or select a Pokémon to edit SPs, moves, item, and ability.",
+    editorEmpty: "Add or select a Pokémon to edit EVs, moves, item, and ability.",
     exportButton: "Export",
     formatLabel: "Format",
     importButton: "Import",
@@ -140,9 +140,9 @@ const UI_TEXT = {
     randomButton: "Random",
     readyButton: "Done",
     selectedHintEmpty: "Choose a slot to edit it",
-    slotHint: "Add a team piece",
+    slotHint: "Add a Pokémon",
     slotLabel: "Empty slot",
-    spRule: "66 SP · 32/stat",
+    spRule: "66 EVs · 32/stat",
     suggestionsTitle: "Real-time suggestions",
     suggestionsTab: "Teambuilding",
     teamFull: "Team full",
@@ -318,7 +318,7 @@ const META_POKEMON = [
   p("Kingambit", ["Dark", "Steel"], [100, 135, 120, 60, 85, 50], 47.7, ["bulkyOffense", "priority"], ["Supreme Overlord", "Defiant"], ["Black Glasses", "Chople Berry", "Lum Berry"], "Adamant", [32, 32, 0, 0, 0, 2], ["Kowtow Cleave", "Sucker Punch", "Iron Head", "Protect"], ["Sneasler", "Basculegion", "Garchomp", "Incineroar", "Sinistcha"], "Condición de victoria para el cierre de partida. Castiga Intimidate con Defiant o limpia con Sucker Punch cuando el rival está debilitado."),
   p("Basculegion", ["Water", "Ghost"], [120, 112, 65, 80, 75, 78], 42.65, ["priority", "rainOffense"], ["Adaptability", "Swift Swim"], ["Choice Scarf", "Focus Sash", "Mystic Water"], "Jolly", [2, 32, 0, 0, 0, 32], ["Last Respects", "Wave Crash", "Aqua Jet", "Protect"], ["Sneasler", "Kingambit", "Incineroar", "Pelipper", "Garchomp"], "Atacante de limpieza. Si el equipo fuerza intercambios o KOs tempranos, Last Respects transforma el cierre de partida."),
   p("Floette-Eternal", ["Fairy"], [74, 65, 67, 125, 128, 92], 29.65, ["specialOffense", "fairyCheck"], ["Flower Veil"], ["Focus Sash", "Choice Specs", "Life Orb"], "Timid", [2, 0, 0, 32, 0, 32], ["Moonblast", "Protect", "Helping Hand", "Stored Power"], ["Sneasler", "Kingambit", "Basculegion", "Incineroar"], "Da presión especial y resistencia a Dark/Fighting. Funciona bien como apoyo ofensivo junto a sweepers físicos."),
-  p("Sinistcha", ["Grass", "Ghost"], [71, 60, 106, 121, 80, 70], 23.97, ["redirection", "support", "specialOffense"], ["Hospitality", "Heatproof"], ["Sitrus Berry", "Mental Herb", "Rocky Helmet"], "Bold", [32, 0, 24, 0, 10, 0], ["Rage Powder", "Matcha Gotcha", "Trick Room", "Protect"], ["Incineroar", "Sneasler", "Kingambit", "Basculegion"], "Aporta redirección, curación al entrar y opción de Trick Room. Excelente para sostener piezas ofensivas."),
+  p("Sinistcha", ["Grass", "Ghost"], [71, 60, 106, 121, 80, 70], 23.97, ["redirection", "support", "specialOffense"], ["Hospitality", "Heatproof"], ["Sitrus Berry", "Mental Herb", "Rocky Helmet"], "Bold", [32, 0, 24, 0, 10, 0], ["Rage Powder", "Matcha Gotcha", "Trick Room", "Protect"], ["Incineroar", "Sneasler", "Kingambit", "Basculegion"], "Aporta redirección, curación al entrar y opción de Trick Room. Excelente para sostener Pokémon ofensivos."),
   p("Aerodactyl", ["Rock", "Flying"], [80, 105, 65, 60, 75, 130], 19.98, ["speedControl", "fastOffense"], ["Rock Head", "Unnerve"], ["Focus Sash", "Covert Cloak"], "Jolly", [2, 32, 0, 0, 0, 32], ["Rock Slide", "Tailwind", "Wide Guard", "Protect"], ["Sneasler", "Garchomp", "Kingambit", "Basculegion"], "Control de velocidad inmediato. Wide Guard ayuda contra Earthquake, Heat Wave, Hyper Voice y Rock Slide."),
   p("Rotom-Wash", ["Electric", "Water"], [50, 65, 107, 105, 107, 86], 16.52, ["bulkyPivot", "burn"], ["Levitate"], ["Sitrus Berry", "Leftovers", "Safety Goggles"], "Modest", [32, 0, 0, 32, 0, 2], ["Hydro Pump", "Thunderbolt", "Will-O-Wisp", "Protect"], ["Garchomp", "Incineroar", "Charizard-Mega-Y", "Kingambit"], "Cubre Water/Electric con Levitate, quema atacantes físicos y acompaña muy bien a Earthquake."),
   p("Charizard-Mega-Y", ["Fire", "Flying"], [78, 104, 78, 159, 115, 100], 15.97, ["weather", "spreadDamage", "specialOffense", "mega"], ["Drought"], ["Charizardite Y"], "Timid", [2, 0, 0, 32, 0, 32], ["Heat Wave", "Solar Beam", "Air Slash", "Protect"], ["Sneasler", "Garchomp", "Incineroar", "Whimsicott", "Venusaur"], "Mega de sol: Heat Wave presiona ambos slots y activa compañeros Chlorophyll o daño Fire amplificado."),
@@ -326,8 +326,8 @@ const META_POKEMON = [
   p("Pelipper", ["Water", "Flying"], [60, 50, 100, 95, 70, 65], 11.27, ["weather", "speedControl"], ["Drizzle"], ["Focus Sash", "Damp Rock"], "Modest", [32, 0, 0, 32, 0, 2], ["Muddy Water", "Hurricane", "Tailwind", "Protect"], ["Basculegion", "Archaludon", "Kingambit"], "Setea lluvia, Tailwind y potencia a Swift Swim. También corta el sol de Charizard Y."),
   p("Milotic", ["Water"], [95, 60, 79, 100, 125, 81], 11.05, ["antiIntimidate", "bulkyPivot"], ["Competitive", "Marvel Scale"], ["Leftovers", "Sitrus Berry"], "Modest", [32, 0, 0, 32, 0, 2], ["Muddy Water", "Ice Beam", "Haze", "Protect"], ["Kingambit", "Sneasler", "Incineroar"], "Castiga Intimidate con Competitive y aporta Haze contra boosts. Muy buena en equipos que atraen Parting Shot."),
   p("Farigiraf", ["Normal", "Psychic"], [120, 90, 70, 110, 70, 60], 9.47, ["trickRoom", "priorityBlock"], ["Armor Tail", "Cud Chew"], ["Sitrus Berry", "Mental Herb"], "Quiet", [32, 0, 10, 24, 0, 0], ["Trick Room", "Hyper Voice", "Psychic", "Protect"], ["Kingambit", "Torkoal", "Hatterene"], "Bloquea prioridad y cambia la dimensión de velocidad. Ideal si llevas atacantes lentos como Kingambit o Torkoal."),
-  p("Whimsicott", ["Grass", "Fairy"], [60, 67, 85, 77, 75, 116], 8.24, ["speedControl", "support"], ["Prankster"], ["Focus Sash", "Covert Cloak"], "Timid", [2, 0, 0, 32, 0, 32], ["Tailwind", "Moonblast", "Encore", "Protect"], ["Charizard-Mega-Y", "Garchomp", "Sneasler"], "Tailwind de prioridad y Encore para castigar Protect/setup. Es la forma más directa de convertir una pieza ofensiva en presión inmediata."),
-  p("Gengar-Mega", ["Ghost", "Poison"], [60, 65, 80, 170, 95, 130], 8.13, ["fastOffense", "mega"], ["Shadow Tag"], ["Gengarite"], "Timid", [2, 0, 0, 32, 0, 32], ["Shadow Ball", "Sludge Bomb", "Icy Wind", "Protect"], ["Incineroar", "Sneasler", "Kingambit"], "Atrapa piezas clave y fuerza KOs con presión especial. Icy Wind cubre speed control mientras hace daño."),
+  p("Whimsicott", ["Grass", "Fairy"], [60, 67, 85, 77, 75, 116], 8.24, ["speedControl", "support"], ["Prankster"], ["Focus Sash", "Covert Cloak"], "Timid", [2, 0, 0, 32, 0, 32], ["Tailwind", "Moonblast", "Encore", "Protect"], ["Charizard-Mega-Y", "Garchomp", "Sneasler"], "Tailwind de prioridad y Encore para castigar Protect/setup. Es la forma más directa de convertir un Pokémon ofensivo en presión inmediata."),
+  p("Gengar-Mega", ["Ghost", "Poison"], [60, 65, 80, 170, 95, 130], 8.13, ["fastOffense", "mega"], ["Shadow Tag"], ["Gengarite"], "Timid", [2, 0, 0, 32, 0, 32], ["Shadow Ball", "Sludge Bomb", "Icy Wind", "Protect"], ["Incineroar", "Sneasler", "Kingambit"], "Atrapa Pokémon clave y fuerza KOs con presión especial. Icy Wind cubre speed control mientras hace daño."),
   p("Archaludon", ["Steel", "Dragon"], [90, 105, 130, 125, 65, 85], 7.81, ["rainOffense", "specialOffense"], ["Stamina", "Sturdy"], ["Assault Vest", "White Herb", "Leftovers"], "Modest", [32, 0, 0, 32, 0, 2], ["Draco Meteor", "Flash Cannon", "Thunderbolt", "Body Press"], ["Pelipper", "Basculegion", "Incineroar"], "Balance de lluvia: aguanta daño físico con Stamina y pega por el lado especial. Muy sólido contra Rock/Fairy si se protege de Ground/Fighting."),
   p("Tyranitar-Mega", ["Rock", "Dark"], [100, 164, 150, 95, 120, 71], 7.15, ["weather", "mega", "bulkyOffense"], ["Sand Stream"], ["Tyranitarite"], "Adamant", [32, 32, 0, 0, 0, 2], ["Rock Slide", "Crunch", "Low Kick", "Protect"], ["Excadrill", "Garchomp", "Farigiraf"], "Arena y presión física enorme. Funciona mejor con speed control o Trick Room flexible."),
   p("Talonflame", ["Fire", "Flying"], [78, 81, 71, 74, 69, 126], 7.06, ["speedControl", "priority"], ["Gale Wings", "Flame Body"], ["Covert Cloak", "Focus Sash"], "Jolly", [2, 32, 0, 0, 0, 32], ["Tailwind", "Brave Bird", "Will-O-Wisp", "Protect"], ["Garchomp", "Kingambit", "Basculegion"], "Tailwind rápido con presión Fire/Flying y Will-O-Wisp. Encaja en equipos que necesitan ritmo sin gastar Mega."),
@@ -343,7 +343,7 @@ const META_POKEMON = [
   p("Primarina", ["Water", "Fairy"], [80, 74, 74, 126, 116, 60], 2.3, ["specialOffense", "fairyCheck"], ["Torrent", "Liquid Voice"], ["Throat Spray", "Sitrus Berry"], "Modest", [32, 0, 0, 32, 0, 2], ["Hyper Voice", "Moonblast", "Muddy Water", "Protect"], ["Incineroar", "Farigiraf", "Amoonguss"], "Da cobertura Water/Fairy y buen bulk especial. Muy útil contra Dragon/Dark/Fire."),
   p("Hatterene", ["Psychic", "Fairy"], [57, 90, 95, 136, 103, 29], 1.27, ["trickRoom", "specialOffense"], ["Magic Bounce"], ["Life Orb", "Focus Sash"], "Quiet", [32, 0, 0, 32, 2, 0], ["Trick Room", "Expanding Force", "Dazzling Gleam", "Protect"], ["Farigiraf", "Torkoal", "Indeedee-F"], "Trick Room ofensivo con Magic Bounce. Agradece redirección o apoyo de Fake Out para asegurar el primer turno."),
   p("Volcarona", ["Bug", "Fire"], [85, 60, 65, 135, 105, 100], 1.09, ["setup", "specialOffense"], ["Flame Body"], ["Sitrus Berry", "Safety Goggles"], "Timid", [2, 0, 0, 32, 0, 32], ["Heat Wave", "Bug Buzz", "Quiver Dance", "Protect"], ["Maushold", "Incineroar", "Whimsicott"], "Amenaza snowball con Quiver Dance. Necesita respetar Rock Slide y prioridad fuerte."),
-  p("Meowscarada", ["Grass", "Dark"], [76, 110, 70, 81, 70, 123], 1.03, ["fastOffense", "pivot"], ["Protean", "Overgrow"], ["Choice Scarf", "Focus Sash"], "Jolly", [2, 32, 0, 0, 0, 32], ["Flower Trick", "Knock Off", "U-turn", "Protect"], ["Sneasler", "Garchomp", "Incineroar"], "Rápido, flexible y molesto con Knock Off/U-turn. Buena pieza para equipos que necesitan tempo."),
+  p("Meowscarada", ["Grass", "Dark"], [76, 110, 70, 81, 70, 123], 1.03, ["fastOffense", "pivot"], ["Protean", "Overgrow"], ["Choice Scarf", "Focus Sash"], "Jolly", [2, 32, 0, 0, 0, 32], ["Flower Trick", "Knock Off", "U-turn", "Protect"], ["Sneasler", "Garchomp", "Incineroar"], "Rápido, flexible y molesto con Knock Off/U-turn. Buen Pokémon para equipos que necesitan tempo."),
   p("Glimmora-Mega", ["Rock", "Poison"], [83, 55, 110, 150, 100, 106], 2.23, ["mega", "specialOffense"], ["Toxic Debris"], ["Glimmorite"], "Timid", [2, 0, 0, 32, 0, 32], ["Power Gem", "Sludge Bomb", "Earth Power", "Protect"], ["Incineroar", "Whimsicott", "Garchomp"], "Mega especial con cobertura incómoda. Amenaza Fire/Flying/Fairy, pero necesita cubrir Ground y Steel."),
 ];
 
@@ -1098,8 +1098,8 @@ function megaStoneName(name, types = []) {
 }
 
 function genericStrategy(name, roles) {
-  const labels = roles.slice(0, 3).map(roleLabel).join(", ") || "pieza flexible";
-  return `${name} entra como ${labels}. Ajusta objeto, SPs y cuatro movimientos según el rol que necesite tu equipo.`;
+  const labels = roles.slice(0, 3).map(roleLabel).join(", ") || "Pokémon flexible";
+  return `${name} entra como ${labels}. Ajusta objeto, EVs y cuatro movimientos según el rol que necesite tu equipo.`;
 }
 
 function emptySlot() {
@@ -2060,7 +2060,7 @@ function editorPlanLine(mon, slot, stats, candidate, selectedMoves) {
     ? (selectedLanguage === "es" ? `presiona a los dos rivales con ${formatMoveWithUsage(spread)}, así que obliga a respetar Protect y castiga cambios dobles` : `pressures both foes with ${formatMoveWithUsage(spread)}, forcing respect for Protect and punishing double switches`)
     : (selectedLanguage === "es" ? `${formatMoveWithUsage(spread)} le da presión directa en singles; úsalo para forzar cambios o rematar tras daño previo` : `${formatMoveWithUsage(spread)} gives it direct singles pressure; use it to force switches or finish after prior damage`);
   const setup = selectedMoves.find((entry) => ["setup"].includes(entry.info.role));
-  if (setup) return selectedLanguage === "es" ? `si consigue turno libre para ${formatMoveWithUsage(setup)}, pasa de pieza de presión a win condition` : `if it gets a free turn for ${formatMoveWithUsage(setup)}, it can shift from pressure piece into win condition`;
+  if (setup) return selectedLanguage === "es" ? `si consigue turno libre para ${formatMoveWithUsage(setup)}, pasa de Pokémon de presión a win condition` : `if it gets a free turn for ${formatMoveWithUsage(setup)}, it can shift from pressure Pokémon into win condition`;
   if (doubles && candidate.setRoles.has("fakeOut")) return selectedLanguage === "es" ? "Fake Out le permite comprar el primer turno y decidir si presionar, pivotar o proteger a su compañero" : "Fake Out buys the first turn so it can pressure, pivot, or protect its partner";
   if (stats.spe >= 150) return doubles
     ? (selectedLanguage === "es" ? "aprovéchalo para actuar antes, rematar KOs y obligar al rival a respetar Protect" : "use its speed to move first, finish KOs, and force the opponent to respect Protect")
@@ -2111,7 +2111,7 @@ function editorCautionLine(mon, slot, stats, candidate) {
 
 function speedControlSummary() {
   const filled = team.filter((slot) => slot.pokemon);
-  if (!filled.length) return selectedLanguage === "es" ? "Sin piezas" : "No team pieces";
+  if (!filled.length) return selectedLanguage === "es" ? "Sin Pokémon" : "No Pokémon";
   const labels = [];
   const hasMove = (ids) => filled.some((slot) => slot.moves.some((move) => ids.includes(toId(move))));
   const priorityCount = priorityMoveCount();
@@ -2325,7 +2325,7 @@ function renderEditor() {
 function renderSuggestions() {
   const filled = team.filter((slot) => slot.pokemon);
   if (filled.length === 0) {
-    els.suggestions.innerHTML = `<div class="editor-empty">${selectedLanguage === "es" ? "Empieza añadiendo 1-2 piezas de equipo. Las sugerencias cambiarán al instante." : "Start by adding 1-2 team pieces. Suggestions update instantly."}</div>`;
+    els.suggestions.innerHTML = `<div class="editor-empty">${selectedLanguage === "es" ? "Empieza añadiendo 1-2 Pokémon. Las sugerencias cambiarán al instante." : "Start by adding 1-2 Pokémon. Suggestions update instantly."}</div>`;
     els.suggestionControls.innerHTML = "";
     return;
   }
@@ -2396,8 +2396,8 @@ function needSummary(profile) {
   if (profile.weatherNeeds.length) {
     const weather = localizedList(profile.weatherNeeds.map((need) => weatherLabel(need.weather)));
     lines.push(selectedLanguage === "es"
-      ? `El equipo ya tiene piezas que aprovechan ${weather}; un setter fiable puede convertirlo en plan principal.`
-      : `The team already has pieces that benefit from ${weather}; a reliable setter can turn that into a main plan.`);
+      ? `El equipo ya tiene Pokémon que aprovechan ${weather}; un setter fiable puede convertirlo en plan principal.`
+      : `The team already has Pokémon that benefit from ${weather}; a reliable setter can turn that into a main plan.`);
   }
   if (profile.needsSpecial) {
     lines.push(selectedLanguage === "es"
@@ -2455,7 +2455,7 @@ function synergySummaryLabel(synergy) {
     waterImmune: ["habilidades que absorban Surf o Agua Lodosa aliados", "abilities that absorb allied Surf or Muddy Water"],
     sun: ["atacantes que aprovechen el sol", "attackers that benefit from sun"],
     rain: ["atacantes que aprovechen la lluvia", "attackers that benefit from rain"],
-    sand: ["piezas que aprovechen la arena", "pieces that benefit from sand"],
+    sand: ["Pokémon que aprovechen la arena", "Pokémon that benefit from sand"],
     setupSupport: ["Fake Out, Intimidate o redirección para proteger turnos de setup", "Fake Out, Intimidate, or redirection to protect setup turns"],
   };
   const value = labels[synergy.kind];
@@ -2560,7 +2560,7 @@ function getSuggestions() {
       if (reasons.length === 0 && usage > 3) {
         reasons.push(`amenaza del meta (${usage.toFixed(1)}%)`);
       } else if (reasons.length === 0) {
-        reasons.push("pieza flexible");
+        reasons.push("Pokémon flexible");
       }
 
       const cleanReasons = unique(reasons).slice(0, 5);
@@ -2768,8 +2768,8 @@ function suggestionExplanation(mon, reasons, profile, candidate) {
       : `${mon.name} helps the team rely less on slow turn orders.`;
   }
   return selectedLanguage === "es"
-    ? `${mon.name} es una pieza flexible, pero no cubre una carencia urgente del equipo.`
-    : `${mon.name} is a flexible piece, but does not cover an urgent team weakness.`;
+    ? `${mon.name} es un Pokémon flexible, pero no cubre una carencia urgente del equipo.`
+    : `${mon.name} is a flexible Pokémon, but does not cover an urgent team weakness.`;
 }
 
 function isWarningReason(reason) {
@@ -2810,7 +2810,7 @@ function suggestionTagLabel(reason) {
   if (reason === "protege turnos de setup" || reason === "protects setup turns") return selectedLanguage === "es" ? "Protege setup" : "Protects setup";
   if (reason === "compite por Mega") return selectedLanguage === "es" ? "Conflicto de Mega" : "Mega conflict";
   if (reason === "usa tu slot Mega") return selectedLanguage === "es" ? "Opción de Mega" : "Mega option";
-  if (reason === "pieza flexible") return selectedLanguage === "es" ? "Flexible" : "Flexible";
+  if (reason === "Pokémon flexible") return selectedLanguage === "es" ? "Flexible" : "Flexible";
   if (/^amenaza del meta/.test(reason)) return selectedLanguage === "es" ? "Amenaza del meta" : "Meta threat";
   return sentenceCase(reason);
 }
@@ -3517,7 +3517,7 @@ function counterGamePlan(mon, target, counterMove, stats, targetStats, candidate
   if (counterMove) return isDoublesFormat()
     ? (selectedLanguage === "es" ? "funciona mejor con speed control, Fake Out o redirección para asegurar el golpe" : "works best with speed control, Fake Out, or redirection to secure the hit")
     : (selectedLanguage === "es" ? "funciona mejor con control de velocidad, daño previo o entrando como revenge killer" : "works best with speed control, prior chip, or as a revenge killer");
-  return selectedLanguage === "es" ? "úsalo como pieza de posicionamiento, no como switch-in automático" : "use it as a positioning piece, not an automatic switch-in";
+  return selectedLanguage === "es" ? "úsalo como Pokémon de posicionamiento, no como switch-in automático" : "use it as a positioning Pokémon, not an automatic switch-in";
 }
 
 function counterCaution(mon, target, stats, targetStats, counterMove, targetPopularMoves) {
