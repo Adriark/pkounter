@@ -411,6 +411,8 @@ const els = {
 init();
 
 function init() {
+  mountImportModal();
+  mountHeaderMenus();
   loadTeam();
   applyStaticTranslations();
   renderFormatSelect();
@@ -418,6 +420,20 @@ function init() {
   renderPokemonList();
   bindEvents();
   renderAll();
+}
+
+function mountImportModal() {
+  if (els.importTray && els.importTray.parentElement !== document.body) {
+    document.body.appendChild(els.importTray);
+  }
+}
+
+function mountHeaderMenus() {
+  [els.formatMenu, els.languageMenu].forEach((menu) => {
+    if (menu && menu.parentElement !== document.body) {
+      document.body.appendChild(menu);
+    }
+  });
 }
 
 function bindEvents() {
@@ -509,10 +525,14 @@ function bindEvents() {
     button.addEventListener("click", () => setActiveSideTab(button.dataset.sideTab));
   });
   document.addEventListener?.("click", (event) => {
-    if (!event.target.closest?.(".format-control")) {
+    if (!event.target.closest?.(".format-control") && !event.target.closest?.(".format-menu")) {
       closeFormatMenu();
       closeLanguageMenu();
     }
+  });
+  window.addEventListener?.("resize", () => {
+    if (!els.formatMenu?.hidden) positionHeaderMenu(els.formatMenu, els.formatButton);
+    if (!els.languageMenu?.hidden) positionHeaderMenu(els.languageMenu, els.languageButton);
   });
   document.addEventListener?.("keydown", (event) => {
     if (event.key === "Escape") {
@@ -526,6 +546,7 @@ function bindEvents() {
 function openImportModal() {
   closeFormatMenu();
   closeLanguageMenu();
+  mountImportModal();
   els.importTray.hidden = false;
   document.body.classList.add("modal-open");
   requestAnimationFrame(() => els.importBox.focus());
@@ -580,12 +601,14 @@ function toggleFormatMenu() {
   closeLanguageMenu();
   const willOpen = els.formatMenu.hidden;
   els.formatMenu.hidden = !willOpen;
+  if (willOpen) positionHeaderMenu(els.formatMenu, els.formatButton);
   els.formatButton.setAttribute("aria-expanded", String(willOpen));
 }
 
 function closeFormatMenu() {
   if (!els.formatMenu || !els.formatButton) return;
   els.formatMenu.hidden = true;
+  clearHeaderMenuPosition(els.formatMenu);
   els.formatButton.setAttribute("aria-expanded", "false");
 }
 
@@ -594,13 +617,46 @@ function toggleLanguageMenu() {
   closeFormatMenu();
   const willOpen = els.languageMenu.hidden;
   els.languageMenu.hidden = !willOpen;
+  if (willOpen) positionHeaderMenu(els.languageMenu, els.languageButton);
   els.languageButton.setAttribute("aria-expanded", String(willOpen));
 }
 
 function closeLanguageMenu() {
   if (!els.languageMenu || !els.languageButton) return;
   els.languageMenu.hidden = true;
+  clearHeaderMenuPosition(els.languageMenu);
   els.languageButton.setAttribute("aria-expanded", "false");
+}
+
+function positionHeaderMenu(menu, button) {
+  if (!menu || !button) return;
+  const rect = button.getBoundingClientRect();
+  const compact = window.matchMedia?.("(max-width: 760px)")?.matches;
+  const top = Math.max(8, Math.min(window.innerHeight - 180, rect.bottom + 8));
+  menu.classList.add("header-menu-floating");
+  menu.style.top = `${top}px`;
+  menu.style.maxHeight = `${Math.max(180, window.innerHeight - top - 12)}px`;
+  if (compact) {
+    menu.style.left = "10px";
+    menu.style.right = "10px";
+    menu.style.width = "auto";
+    return;
+  }
+  const width = Math.min(Math.max(rect.width, 220), window.innerWidth - 20);
+  const left = Math.max(10, Math.min(window.innerWidth - width - 10, rect.right - width));
+  menu.style.left = `${left}px`;
+  menu.style.right = "auto";
+  menu.style.width = `${width}px`;
+}
+
+function clearHeaderMenuPosition(menu) {
+  if (!menu) return;
+  menu.classList.remove("header-menu-floating");
+  menu.style.left = "";
+  menu.style.right = "";
+  menu.style.top = "";
+  menu.style.width = "";
+  menu.style.maxHeight = "";
 }
 
 function initialFormatId() {
