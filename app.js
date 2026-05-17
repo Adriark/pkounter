@@ -1558,7 +1558,7 @@ function renderTeam() {
   els.teamSummary.innerHTML = [
     metric(selectedLanguage === "es" ? "Megas usadas" : "Used Megas", `${megaCount}/1`, megaCount > 1 ? "warning" : ""),
     utilityMetric,
-    metric(selectedLanguage === "es" ? "Ritmo / velocidad" : "Pace / speed", speedControlSummary()),
+    metric(selectedLanguage === "es" ? "Control de velocidad" : "Speed control", speedControlSummary()),
     metric(selectedLanguage === "es" ? "Tipos repetidos" : "Repeated types", repeatedTypeSummary()),
   ].join("") + typePlannerHtml();
 }
@@ -2117,7 +2117,7 @@ function speedControlSummary() {
   const priorityCount = priorityMoveCount();
   if (hasMove(["tailwind"])) labels.push(moveUiName("Tailwind"));
   if (hasMove(["trickroom"])) labels.push(moveUiName("Trick Room"));
-  if (hasMove(["icywind", "electroweb", "thunderwave", "glare"])) labels.push(selectedLanguage === "es" ? "bajadas/parálisis" : "drops/paralysis");
+  if (hasMove(["icywind", "electroweb", "thunderwave", "glare"])) labels.push(selectedLanguage === "es" ? "Bajadas de Velocidad / parálisis" : "Speed drops / paralysis");
   if (priorityCount) labels.push(`${selectedLanguage === "es" ? "prioridad" : "priority"} x${priorityCount}`);
   if (!labels.length) return selectedLanguage === "es" ? `Falta ${moveUiName("Tailwind")}/${moveUiName("Trick Room")}` : "Needs Tailwind/TR";
   return labels.slice(0, 3).join(" · ");
