@@ -1,26 +1,52 @@
 # Pkounter
 
-Static web application for building Pokémon Champions teams across multiple formats, featuring team suggestions, counters, and Showdown export support.
+Live site: https://pkounter.com/
+
+Static web application for building Pokemon Champions teams across multiple formats, featuring team suggestions, counter analysis, defensive coverage, and Showdown-style import/export support.
+
+## Pages
+
+- Home: https://pkounter.com/
+- Builder: https://pkounter.com/building.html
+- About / FAQ: https://pkounter.com/about.html
+
+If any public route or link does not load correctly, report it at `contactpkounter@gmail.com`.
 
 ## Features
 
-- Full 6-Pokémon team builder with quick import from suggestions.
-- Complete Pokémon Champions Pokédex powered by `champions-data.js`, including stats, typings, abilities, Megas, and learnsets.
+- Full 6-Pokemon team builder with quick import from suggestions.
+- Complete Pokemon Champions Pokedex powered by `champions-data.js`, including stats, typings, abilities, Megas, and learnsets.
 - Editor for items, abilities, natures, moves, and Stat Points.
-- Final stat calculation at level 50 using 31 IVs and SP values as equivalents of 8 EVs.
-- Pokémon Champions Showdown-style import/export support with `EVs:` lines using Champions SP values (0–32).
-- Real-time suggestions based on usage data, common partners, VGC roles, and defensive coverage.
-- Counter analysis showing the biggest threats once the 6-Pokémon team is completed.
-- About/FAQ page with sources, update cadence, and contact information.
-- Pokémon and item sprites provided through Pokémon Showdown.
+- Final stat calculation at level 50 using 31 IVs and Champions SP values.
+- Pokemon Champions Showdown-style import/export support with `EVs:` lines using Champions SP values from 0 to 32.
+- Real-time suggestions based on usage data, common partners, roles, and defensive coverage.
+- Counter analysis for individual Pokemon and for completed teams.
+- About/FAQ page with sources, update cadence, official website, and contact information.
+- Pokemon and item sprites provided through Pokemon Showdown resources.
 
 ## Data Sources
 
-- Champions roster, stats, Megas, and learnsets: PikaChampions `data.js`
-- Move data: Pokémon Showdown `moves.json`
-- Format rules and Champions SP system: Champions Builder, ChampDex, and Reg M-A guides
-- Usage stats, partners, items, abilities, and competitive spreads: MunchStats Champions VGC 2026 Reg M-A Bo3
-- Doubles teambuilding principles: VGC Guide
+- Champions roster, stats, Megas, and learnsets: local Champions data files.
+- Move data: Pokemon Showdown move data.
+- Format rules and Champions SP system: Champions resources and format guides.
+- Usage stats, partners, items, abilities, moves, natures, and spreads: MunchStats and Pokemon Showdown/Smogon stats.
+- Teambuilding principles: VGC Guide and competitive Pokemon resources.
 
-The manual competitive database inside `app.js` acts as a curated layer of popular meta sets on top of the complete Pokédex.  
-If a Pokémon does not have a manually curated competitive set, the app automatically generates a legal default set based on its learnset and base stats.
+The competitive logic in `app.js` acts as a curated layer on top of the complete Champions Pokedex. If a Pokemon does not have a manually curated competitive set, the app generates a legal default set based on its learnset, usage data, role, typing, and base stats.
+
+## SEO / Google
+
+The public domain is `https://pkounter.com/`.
+
+The site includes:
+
+- Per-page `<title>` and `<meta name="description">` tags.
+- Canonical URLs for the home, builder, and about pages.
+- `robots.txt` pointing crawlers to the sitemap.
+- `sitemap.xml` listing the public pages.
+
+After deployment, add `https://pkounter.com/` to Google Search Console and submit:
+
+```text
+https://pkounter.com/sitemap.xml
+```
