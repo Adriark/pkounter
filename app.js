@@ -2117,7 +2117,8 @@ function speedControlSummary() {
   const priorityCount = priorityMoveCount();
   if (hasMove(["tailwind"])) labels.push(moveUiName("Tailwind"));
   if (hasMove(["trickroom"])) labels.push(moveUiName("Trick Room"));
-  if (hasMove(["icywind", "electroweb", "thunderwave", "glare"])) labels.push(selectedLanguage === "es" ? "Bajadas de Velocidad / parálisis" : "Speed drops / paralysis");
+  if (hasMove(["icywind", "electroweb"])) labels.push(selectedLanguage === "es" ? "Bajadas de Velocidad" : "Speed drops");
+  if (hasMove(["thunderwave", "glare"])) labels.push(selectedLanguage === "es" ? "Parálisis" : "Paralysis");
   if (priorityCount) labels.push(`${selectedLanguage === "es" ? "prioridad" : "priority"} x${priorityCount}`);
   if (!labels.length) return selectedLanguage === "es" ? `Falta ${moveUiName("Tailwind")}/${moveUiName("Trick Room")}` : "Needs Tailwind/TR";
   return labels.slice(0, 3).join(" · ");
@@ -4468,7 +4469,7 @@ function roleLabel(role) {
       fakeOut: moveUiName("Fake Out"),
       intimidate: abilityUiName("Intimidate"),
       pivot: "pivot",
-      speedControl: "Tailwind / Trick Room / Speed drops",
+      speedControl: "speed control",
       fastOffense: "fast offense",
       bulkyOffense: "bulky offense",
       priority: "priority",
@@ -4503,7 +4504,7 @@ function roleLabel(role) {
     fakeOut: moveUiName("Fake Out"),
     intimidate: abilityUiName("Intimidate"),
     pivot: "pivote",
-    speedControl: `${moveUiName("Tailwind")} / ${moveUiName("Trick Room")} / bajadas de Speed`,
+    speedControl: "control de velocidad",
     fastOffense: "ofensiva rápida",
     bulkyOffense: "ofensiva resistente",
     priority: "prioridad",
