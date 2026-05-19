@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -11,10 +11,10 @@
   <link rel="icon" type="image/png" href="/assets/Pkounter_icon.png?v=2" />
   <link rel="shortcut icon" type="image/png" href="/assets/Pkounter_icon.png?v=2" />
   <link rel="apple-touch-icon" href="/assets/Pkounter_icon.png?v=2" />
-  <link rel="stylesheet" href="/styles.css?v=20260518g" />
+  <link rel="stylesheet" href="/styles.css?v=20260518o" />
 </head>
 
-<body class="about-page" data-language="es">
+<body class="about-page" data-language="en">
 
 <header class="topbar">
   <div class="brand-block">
@@ -23,12 +23,11 @@
 
   <div class="rules">
     <a class="top-link" href="/building/" data-about-i18n="builderButton">Builder</a>
-    <div class="rule-group" aria-label="Reglas del formato">
-      <span class="rule-badge">VGC / BSS / OU</span>
-      <span class="rule-badge" data-about-i18n="levelRule">Nivel 50</span>
+    <div class="landing-language about-language" aria-label="Language">
+      <span data-about-i18n="languageLabel">Language</span>
+      <button type="button" data-about-language="en" aria-pressed="true">English</button>
+      <button type="button" data-about-language="es" aria-pressed="false">Spanish</button>
     </div>
-    <a class="top-link active" href="/about/" data-about-i18n="aboutButton">About</a>
-    <a class="top-link coffee-link" href="https://ko-fi.com/Y8Y61ZFSF0#" target="_blank" rel="noreferrer">Buy me a coffee &hearts;</a>
   </div>
 </header>
 
@@ -74,18 +73,18 @@
     <article class="about-card" data-about-lang="es">
       <h3>¿Cada cuánto se actualizan los datos?</h3>
       <p>
-        La web refresca sus archivos de datos automáticamente con el script programado.
-        Aun así, las estadísticas públicas del metagame deben tratarse como datos de uso
-        con cadencia realista mensual.
+        Los archivos y recursos usados por la web se mantienen actualizados y alineados
+        con las fuentes disponibles más recientes. Los datos del meta y las estadísticas
+        de uso se actualizan periódicamente, manteniéndose lo más al día posible.
       </p>
     </article>
 
     <article class="about-card" data-about-lang="en" lang="en" hidden>
       <h3>How often is the data updated?</h3>
       <p>
-        The site refreshes its local data files automatically through the scheduled script.
-        Still, public metagame usage stats should be treated as usage data with a realistic
-        monthly cadence.
+        The files and resources used by the website are kept updated and aligned with the
+        most recent available sources. Meta data and usage statistics are refreshed
+        periodically, staying as up to date as possible.
       </p>
     </article>
 
@@ -144,46 +143,38 @@
 
 </main>
 
-<footer class="site-footer">
-
-  <span data-about-lang="es">
-    Pokémon y todos sus nombres respectivos son marcas registradas y &copy; de Nintendo 1996-2026.
-  </span>
-
-  <span data-about-lang="en" lang="en" hidden>
-    Pokémon and all respective names are trademarks and &copy; of Nintendo 1996-2026.
-  </span>
-
-  <span data-about-lang="es">
-    Pkounter no está afiliado a Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown ni MunchStats.
-  </span>
-
-  <span data-about-lang="en" lang="en" hidden>
-    Pkounter is not affiliated with Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown, or MunchStats.
-  </span>
-
-  <span data-about-lang="es">
-    Datos y recursos:
-    <a href="https://munchstats.com/" target="_blank" rel="noreferrer">MunchStats</a>,
-    <a href="https://pokemonshowdown.com/" target="_blank" rel="noreferrer">Pokémon Showdown</a>,
-    <a href="https://www.smogon.com/stats/" target="_blank" rel="noreferrer">Smogon</a>,
-    <a href="https://pokeapi.co/" target="_blank" rel="noreferrer">PokéAPI</a>.
-  </span>
-
-  <span data-about-lang="en" lang="en" hidden>
-    Data and resources:
-    <a href="https://munchstats.com/" target="_blank" rel="noreferrer">MunchStats</a>,
-    <a href="https://pokemonshowdown.com/" target="_blank" rel="noreferrer">Pokémon Showdown</a>,
-    <a href="https://www.smogon.com/stats/" target="_blank" rel="noreferrer">Smogon</a>,
-    <a href="https://pokeapi.co/" target="_blank" rel="noreferrer">PokéAPI</a>.
-  </span>
-
-  <span data-about-lang="es">Hecho por Adriark.</span>
-  <span data-about-lang="en" lang="en" hidden>Made by Adriark.</span>
-
+<footer class="site-footer landing-footer">
+  <div class="landing-footer-set" data-about-lang="es">
+    <div class="footer-main">
+      <a class="footer-brand" href="/">Pkounter.com</a>
+      <span>&copy; 2026 by Adriark</span>
+    </div>
+    <nav class="footer-links" aria-label="Enlaces de Pkounter">
+      <a href="/building/">Builder</a>
+      <a href="mailto:contact@pkounter.com">Contacto</a>
+    </nav>
+    <p class="footer-disclaimer">
+      Proyecto fan-made. No afiliado a Nintendo, Game Freak, The Pok&eacute;mon Company,
+      Smogon, Pok&eacute;mon Showdown, MunchStats ni Pok&eacute;API.
+    </p>
+  </div>
+  <div class="landing-footer-set" data-about-lang="en" lang="en" hidden>
+    <div class="footer-main">
+      <a class="footer-brand" href="/">Pkounter.com</a>
+      <span>&copy; 2026 by Adriark</span>
+    </div>
+    <nav class="footer-links" aria-label="Pkounter links">
+      <a href="/building/">Builder</a>
+      <a href="mailto:contact@pkounter.com">Contact</a>
+    </nav>
+    <p class="footer-disclaimer">
+      Fan-made project. Not affiliated with Nintendo, Game Freak, The Pok&eacute;mon Company,
+      Smogon, Pok&eacute;mon Showdown, MunchStats or Pok&eacute;API.
+    </p>
+  </div>
 </footer>
 
-<script src="/about.js?v=20260518g"></script>
+<script src="/about.js?v=20260518o"></script>
 
 </body>
 </html>

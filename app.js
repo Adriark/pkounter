@@ -29,8 +29,12 @@ const TYPE_COLORS = {
 };
 
 const LANGUAGES = {
-  es: "Español",
   en: "English",
+  es: "Español",
+};
+const LANGUAGE_OPTION_LABELS = {
+  en: "English",
+  es: "Español",
 };
 
 const CHOICE_ITEM_IDS = new Set(["choiceband", "choicescarf", "choicespecs"]);
@@ -58,7 +62,7 @@ const UI_TEXT = {
     addPokemonPlaceholder: "Añadir Pokémon...",
     aboutButton: "Sobre Pkounter",
     applyPopularSet: "Aplicar set popular",
-    attributionNotice: "Pkounter no está afiliado a Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown ni MunchStats.",
+    attributionNotice: "Pkounter no está afiliado a Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown, MunchStats ni PokéAPI.",
     clearButton: "Limpiar",
     closeButton: "Cerrar",
     configTitle: "Configuración",
@@ -79,10 +83,16 @@ const UI_TEXT = {
     levelRule: "Nivel 50",
     majorCountersHint: "Se activa al completar 6 Pokémon",
     madeBy: "Hecho por Adriark.",
+    megaAlreadyUsed: "Mega ya usada",
     megaConflict: "Conflicto de Mega",
+    megaFormLabel: "Forma Mega",
     megaRule: "1 Mega",
+    megaToggle: "Megaevolucionar",
+    duplicateItemNotice: "Ese objeto ya lo lleva otro Pokémon del equipo. En este formato no puedes repetir objeto.",
+    megaTeamMetric: "Megas llevadas",
     movePlaceholder: "Movimiento {n}",
     noItem: "Sin objeto",
+    noItemDescription: "No se ha seleccionado un objeto.",
     pokemonCount: "{count}/6 Pokémon",
     randomButton: "Aleatorio",
     readyButton: "Listo",
@@ -111,7 +121,7 @@ const UI_TEXT = {
     addPokemonPlaceholder: "Add Pokémon...",
     aboutButton: "About Pkounter",
     applyPopularSet: "Apply popular set",
-    attributionNotice: "Pkounter is not affiliated with Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown, or MunchStats.",
+    attributionNotice: "Pkounter is not affiliated with Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown, MunchStats, or PokéAPI.",
     clearButton: "Clear",
     closeButton: "Close",
     configTitle: "Configuration",
@@ -132,10 +142,16 @@ const UI_TEXT = {
     levelRule: "Level 50",
     majorCountersHint: "Active after filling all 6 Pokémon",
     madeBy: "Made by Adriark.",
+    megaAlreadyUsed: "Mega already used",
     megaConflict: "Mega conflict",
+    megaFormLabel: "Mega form",
     megaRule: "1 Mega",
+    megaToggle: "Mega evolve",
+    duplicateItemNotice: "Another teammate is already holding that item. This format does not allow duplicate items.",
+    megaTeamMetric: "Held Megas",
     movePlaceholder: "Move {n}",
     noItem: "No item",
+    noItemDescription: "No item has been selected.",
     pokemonCount: "{count}/6 Pokémon",
     randomButton: "Random",
     readyButton: "Done",
@@ -204,6 +220,246 @@ const LOCALE_OVERRIDES = {
     abilities: {
       intimidate: "Intimidación",
     },
+  },
+};
+
+const MECHANIC_DESCRIPTION_ES = {
+  item: {
+    choicescarf: "Aumenta la Velocidad x1.5, pero bloquea al Pokémon en el primer movimiento que use.",
+    choiceband: "Aumenta el Ataque x1.5, pero bloquea al Pokémon en el primer movimiento que use.",
+    choicespecs: "Aumenta el Ataque Especial x1.5, pero bloquea al Pokémon en el primer movimiento que use.",
+    focussash: "Si tiene la vida al máximo, aguanta un golpe que le dejaría debilitado y se queda con 1 PS. Se consume.",
+    sitrusberry: "Restaura 1/4 de los PS máximos cuando baja a la mitad o menos. Se consume.",
+    leftovers: "Restaura 1/16 de los PS máximos al final de cada turno.",
+    lifeorb: "Aumenta el daño de los ataques x1.3, pero el portador pierde 1/10 de sus PS al golpear.",
+    whiteherb: "Restaura todas las bajadas de estadísticas del portador una vez. Se consume.",
+    mentalherb: "Cura efectos como Mofa, Otra Vez, Anulación, Tormento, Atracción y Anulación Cura. Se consume.",
+    assaultvest: "Aumenta la Defensa Especial x1.5, pero solo permite usar movimientos de daño.",
+    safetygoggles: "Protege de daño de clima y movimientos de polvo como Polvo Ira o Espora.",
+    covertcloak: "Evita los efectos secundarios adicionales de los movimientos recibidos.",
+    clearamulet: "Evita que otros Pokémon bajen las estadísticas del portador.",
+    rockyhelmet: "Si el portador recibe un movimiento de contacto, el atacante pierde 1/6 de sus PS máximos.",
+    quickclaw: "Puede permitir que el portador se mueva primero. Su activación no es fiable.",
+    kingsrock: "Los ataques de daño del portador pueden hacer retroceder al objetivo.",
+    focusband: "Puede permitir que el portador aguante un golpe que le dejaría debilitado y se quede con 1 PS.",
+    shellbell: "Restaura PS al portador según el daño que inflige con sus ataques.",
+    lightball: "Duplica el Ataque y el Ataque Especial de Pikachu.",
+    lumberry: "Cura cualquier problema de estado principal del portador. Se consume.",
+    oranberry: "Restaura 10 PS cuando el portador baja a la mitad de sus PS o menos. Se consume.",
+    leppaberry: "Restaura 10 PP del primer movimiento que se quede sin PP. Se consume.",
+    blacksludge: "Si el portador es de tipo Veneno, restaura 1/16 de sus PS al final de cada turno; si no lo es, pierde PS.",
+    weaknesspolicy: "Si recibe un golpe supereficaz, sube dos niveles el Ataque y el Ataque Especial. Se consume.",
+    airballoon: "Hace inmune al portador a ataques de tipo Tierra hasta que recibe daño.",
+    ejectbutton: "Si el portador recibe daño de un ataque, sale del campo y permite elegir un sustituto. Se consume.",
+    ejectpack: "Si al portador le bajan una estadística, cambia automáticamente. Se consume.",
+    expertbelt: "Aumenta x1.2 el daño de los ataques supereficaces.",
+    muscleband: "Aumenta x1.1 la potencia de los ataques físicos.",
+    wiseglasses: "Aumenta x1.1 la potencia de los ataques especiales.",
+    scopelens: "Aumenta la probabilidad de golpe crítico.",
+    widelens: "Aumenta x1.1 la precisión de los movimientos del portador.",
+    zoomlens: "Aumenta x1.2 la precisión si el portador se mueve después del objetivo.",
+  },
+  ability: {
+    intimidate: "Al entrar al campo, baja un nivel el Ataque de los rivales.",
+    levitate: "Es inmune a los ataques de tipo Tierra.",
+    prankster: "Da prioridad +1 a los movimientos de estado.",
+    drought: "Invoca sol al entrar al campo.",
+    drizzle: "Invoca lluvia al entrar al campo.",
+    sandstream: "Invoca tormenta de arena al entrar al campo.",
+    snowwarning: "Invoca nieve al entrar al campo.",
+    swiftswim: "Duplica la Velocidad bajo lluvia.",
+    chlorophyll: "Duplica la Velocidad bajo sol.",
+    sandrush: "Duplica la Velocidad en tormenta de arena.",
+    galewings: "Da prioridad a los movimientos de tipo Volador cuando tiene los PS al máximo.",
+    defiant: "Si le bajan una estadística, sube dos niveles su Ataque.",
+    competitive: "Si le bajan una estadística, sube dos niveles su Ataque Especial.",
+    unburden: "Duplica la Velocidad cuando consume o pierde su objeto.",
+    magicbounce: "Refleja la mayoría de movimientos de estado hacia quien los usa.",
+    friendguard: "Reduce el daño que reciben sus aliados.",
+    shadowtag: "Impide que los rivales puedan cambiar salvo excepciones.",
+    stamina: "Sube un nivel la Defensa cada vez que recibe un golpe.",
+    scrappy: "Permite golpear a Pokémon Fantasma con movimientos Normal y Lucha, e ignora Intimidación.",
+    toughclaws: "Aumenta la potencia de los movimientos de contacto.",
+    adaptability: "Aumenta el bonus por STAB: los ataques de su mismo tipo pasan de x1.5 a x2.",
+    blaze: "Potencia los movimientos de tipo Fuego cuando tiene pocos PS.",
+    torrent: "Potencia los movimientos de tipo Agua cuando tiene pocos PS.",
+    overgrow: "Potencia los movimientos de tipo Planta cuando tiene pocos PS.",
+    pressure: "Hace que el rival gaste más PP al usar movimientos que le apuntan.",
+    magicguard: "Evita el daño indirecto que no provenga de ataques directos.",
+    innerfocus: "Evita el retroceso y también ignora Intimidación.",
+    moldbreaker: "Sus movimientos ignoran habilidades defensivas relevantes del objetivo.",
+    waterabsorb: "Es inmune a movimientos de tipo Agua y recupera PS si recibe uno.",
+    stormdrain: "Redirige movimientos de tipo Agua, es inmune a ellos y sube el Ataque Especial.",
+    flashfire: "Es inmune a movimientos de tipo Fuego y potencia sus ataques de Fuego si recibe uno.",
+    lightningrod: "Redirige movimientos de tipo Eléctrico, es inmune a ellos y sube el Ataque Especial.",
+    naturalcure: "Cura los problemas de estado al cambiar.",
+    regenerator: "Recupera parte de sus PS al cambiar.",
+    sturdy: "Si tiene los PS al máximo, aguanta un golpe que le dejaría debilitado y se queda con 1 PS.",
+    guts: "Si tiene un problema de estado, aumenta su Ataque y la quemadura no reduce su daño físico.",
+    moxie: "Sube un nivel el Ataque cada vez que debilita a un Pokémon.",
+    justified: "Sube un nivel el Ataque si recibe un movimiento de tipo Siniestro.",
+    unaware: "Ignora los cambios de estadísticas del objetivo al atacar o recibir daño.",
+    sandforce: "Bajo tormenta de arena, potencia x1.3 sus ataques de tipo Tierra, Roca y Acero y no recibe daño de la arena.",
+    sandveil: "Bajo tormenta de arena, aumenta su evasión y no recibe daño de la arena.",
+    roughskin: "Si recibe un movimiento de contacto, el atacante pierde PS.",
+    static: "Si recibe un movimiento de contacto, puede paralizar al atacante.",
+    flamebody: "Si recibe un movimiento de contacto, puede quemar al atacante.",
+    cursedbody: "Si recibe un ataque, puede anular el movimiento usado por el atacante.",
+    poisontouch: "Sus movimientos de contacto pueden envenenar al objetivo.",
+    sheerforce: "Potencia los movimientos con efectos secundarios, pero elimina esos efectos.",
+    noguard: "Los movimientos usados por y contra este Pokémon no fallan por precisión o evasión.",
+    solarpower: "Bajo sol, aumenta su Ataque Especial, pero pierde PS al final del turno.",
+    raindish: "Bajo lluvia, recupera PS al final de cada turno.",
+    hydration: "Bajo lluvia, cura sus problemas de estado al final del turno.",
+    dryskin: "Recupera PS con ataques de Agua y lluvia, pero recibe más daño de Fuego y pierde PS bajo sol.",
+    thickfat: "Reduce a la mitad el daño recibido de ataques de tipo Fuego y Hielo.",
+    heatproof: "Reduce el daño de ataques de tipo Fuego y de la quemadura.",
+    overcoat: "Protege del daño de clima y de movimientos de polvo como Espora o Polvo Ira.",
+    bulletproof: "Es inmune a movimientos de bala y bomba.",
+    soundproof: "Es inmune a movimientos de sonido.",
+    shellarmor: "Evita recibir golpes críticos.",
+    battlearmor: "Evita recibir golpes críticos.",
+    hypercutter: "Evita que otros Pokémon bajen su Ataque.",
+    clearbody: "Evita que otros Pokémon bajen sus estadísticas.",
+    mirrorarmor: "Refleja las bajadas de estadísticas recibidas hacia quien las provoca.",
+    bigpecks: "Evita que otros Pokémon bajen su Defensa.",
+    keeneye: "Evita que otros Pokémon bajen su precisión e ignora subidas de evasión del objetivo.",
+    owntempo: "Evita la confusión e ignora Intimidación.",
+    oblivious: "Evita enamoramiento, Mofa e Intimidación.",
+    steadfast: "Sube su Velocidad si retrocede.",
+    sniper: "Aumenta el daño de los golpes críticos.",
+    superluck: "Aumenta la probabilidad de golpe crítico.",
+    technician: "Potencia los movimientos de baja potencia.",
+    strongjaw: "Potencia los movimientos de mordisco.",
+    reckless: "Potencia los movimientos con daño de retroceso.",
+    rockhead: "Evita el daño de retroceso de sus propios movimientos.",
+    magiclauncher: "Potencia movimientos de pulso y aura.",
+    megalauncher: "Potencia movimientos de pulso y aura.",
+    parentalbond: "Permite que algunos ataques golpeen dos veces, con el segundo golpe reducido.",
+    hugepower: "Duplica su Ataque.",
+    purepower: "Duplica su Ataque.",
+    pixilate: "Convierte movimientos de tipo Normal en tipo Hada y los potencia.",
+    aerilate: "Convierte movimientos de tipo Normal en tipo Volador y los potencia.",
+    galvanize: "Convierte movimientos de tipo Normal en tipo Eléctrico y los potencia.",
+    liquidvoice: "Convierte movimientos de sonido en tipo Agua.",
+    protean: "Cambia su tipo al del movimiento que usa.",
+    libero: "Cambia su tipo al del movimiento que usa.",
+    illusion: "Entra al campo disfrazado como el último Pokémon del equipo hasta recibir daño directo.",
+    trace: "Copia una habilidad útil de un rival al entrar al campo.",
+    download: "Sube Ataque o Ataque Especial según la defensa más baja del rival.",
+    analytic: "Potencia sus ataques si se mueve el último en el turno.",
+    tintedlens: "Duplica el daño de los ataques poco eficaces.",
+    serenegrace: "Duplica la probabilidad de efectos secundarios de sus movimientos.",
+    shielddust: "Evita los efectos secundarios de los movimientos recibidos.",
+    aromaveil: "Protege al usuario y aliados de Mofa, Otra Vez, Anulación, Atracción, Tormento y Anulación Cura.",
+    flowerveil: "Protege a aliados de tipo Planta de bajadas de estadísticas y problemas de estado.",
+    armortail: "Evita que movimientos de prioridad rivales afecten a este Pokémon o sus aliados.",
+    dazzling: "Evita que movimientos de prioridad rivales afecten a este Pokémon o sus aliados.",
+    queenlymajesty: "Evita que movimientos de prioridad rivales afecten a este Pokémon o sus aliados.",
+    toxicdebris: "Al recibir daño físico, coloca Púas Tóxicas en el campo rival.",
+    hospitality: "Al entrar al campo, cura PS de su aliado.",
+    innardsout: "Al debilitarse por un ataque, daña al atacante según los PS que le quedaban.",
+    surgesurfer: "Duplica la Velocidad en Campo Eléctrico.",
+    slushrush: "Duplica la Velocidad bajo nieve.",
+    snowcloak: "Bajo nieve, aumenta su evasión.",
+    quickdraw: "Puede permitir que se mueva primero.",
+    unnerve: "Impide que los rivales consuman bayas.",
+    rattled: "Sube su Velocidad si recibe ataques de tipo Siniestro, Fantasma o Bicho, o si le intimidan.",
+    synchronize: "Si le queman, paralizan o envenenan, transmite el mismo estado al atacante.",
+    swarm: "Potencia movimientos de tipo Bicho cuando tiene pocos PS.",
+    cutecharm: "Si recibe contacto, puede enamorar al atacante.",
+    gluttony: "Consume ciertas bayas antes de lo normal.",
+    harvest: "Puede recuperar una baya consumida al final del turno, especialmente bajo sol.",
+    frisk: "Revela el objeto del rival al entrar.",
+    aftermath: "Si cae debilitado por un movimiento de contacto, daña al atacante.",
+    angerpoint: "Si recibe un golpe crítico, maximiza su Ataque.",
+    anticipation: "Al entrar, avisa si algún rival tiene un movimiento supereficaz u OHKO.",
+    berserk: "Cuando baja a la mitad de PS o menos por un ataque, sube su Ataque Especial.",
+    cheekpouch: "Al consumir una baya, también recupera PS.",
+    cloudnine: "Anula los efectos del clima mientras está en el campo.",
+    compoundeyes: "Aumenta la precisión de sus movimientos.",
+    contrary: "Invierte las subidas y bajadas de estadísticas.",
+    corrosion: "Puede envenenar incluso a Pokémon de tipo Acero o Veneno.",
+    cudchew: "Vuelve a consumir su baya al final del siguiente turno.",
+    curiousmedicine: "Al entrar, elimina los cambios de estadísticas de sus aliados.",
+    damp: "Evita movimientos y efectos de explosión.",
+    disguise: "La primera vez que recibe daño directo, lo reduce gracias al disfraz.",
+    dragonize: "Convierte movimientos de tipo Normal en tipo Dragón y los potencia.",
+    earlybird: "Se despierta del sueño más rápido.",
+    eartheater: "Es inmune a movimientos de tipo Tierra y recupera PS si recibe uno.",
+    electromorphosis: "Carga su siguiente ataque Eléctrico al recibir daño.",
+    fairyaura: "Potencia los movimientos de tipo Hada de todos los Pokémon.",
+    filter: "Reduce el daño recibido de ataques supereficaces.",
+    forecast: "Cambia de forma y tipo según el clima.",
+    furcoat: "Reduce mucho el daño físico recibido.",
+    gooey: "Baja la Velocidad del atacante si recibe un movimiento de contacto.",
+    healer: "Puede curar problemas de estado de sus aliados al final del turno.",
+    heavymetal: "Duplica el peso del Pokémon.",
+    hungerswitch: "Cambia de forma al final de cada turno.",
+    hustle: "Aumenta el Ataque, pero reduce la precisión de movimientos físicos.",
+    icebody: "Recupera PS bajo nieve.",
+    illuminate: "No tiene efecto competitivo relevante.",
+    immunity: "Evita el envenenamiento.",
+    imposter: "Al entrar, se transforma en el Pokémon que tiene enfrente.",
+    infiltrator: "Ignora Sustituto, Pantalla Luz, Reflejo y Velo Aurora al atacar.",
+    insomnia: "Evita quedarse dormido.",
+    ironfist: "Potencia los movimientos de puño.",
+    klutz: "Ignora el efecto de su propio objeto.",
+    leafguard: "Bajo sol, evita problemas de estado.",
+    lightmetal: "Reduce a la mitad el peso del Pokémon.",
+    limber: "Evita la parálisis.",
+    longreach: "Sus movimientos no hacen contacto.",
+    magician: "Roba el objeto del objetivo al golpear si no lleva objeto.",
+    magmaarmor: "Evita la congelación.",
+    marvelscale: "Si tiene un problema de estado, aumenta su Defensa.",
+    megasol: "Invoca un sol muy fuerte al entrar.",
+    merciless: "Sus ataques siempre son críticos contra objetivos envenenados.",
+    mimicry: "Cambia su tipo según el campo activo.",
+    minus: "Potencia su Ataque Especial si un aliado tiene Más o Menos.",
+    moody: "Al final del turno, sube mucho una estadística aleatoria y baja otra.",
+    motordrive: "Es inmune a movimientos Eléctricos y sube su Velocidad si recibe uno.",
+    multiscale: "Con los PS al máximo, reduce a la mitad el daño recibido.",
+    mummy: "Al recibir contacto, cambia la habilidad del atacante a Momia.",
+    opportunist: "Copia las subidas de estadísticas del rival.",
+    pickpocket: "Roba el objeto del atacante si recibe contacto y no lleva objeto.",
+    pickup: "Puede recuperar objetos consumidos.",
+    piercingdrill: "Sus ataques atraviesan ciertas protecciones defensivas.",
+    plus: "Potencia su Ataque Especial si un aliado tiene Más o Menos.",
+    poisonheal: "Si está envenenado, recupera PS en vez de perderlos.",
+    poisonpoint: "Si recibe contacto, puede envenenar al atacante.",
+    purifyingsalt: "Reduce el daño de ataques Fantasma y evita problemas de estado.",
+    quickfeet: "Si tiene un problema de estado, aumenta su Velocidad.",
+    receiver: "Copia la habilidad de un aliado debilitado.",
+    refrigerate: "Convierte movimientos de tipo Normal en tipo Hielo y los potencia.",
+    ripen: "Duplica el efecto de las bayas que consume.",
+    rivalry: "Hace más daño a rivales del mismo sexo y menos a rivales del sexo contrario.",
+    sandspit: "Invoca tormenta de arena cuando recibe daño.",
+    sapsipper: "Es inmune a movimientos de tipo Planta y sube su Ataque si recibe uno.",
+    screencleaner: "Al entrar, elimina Pantalla Luz, Reflejo y Velo Aurora de ambos campos.",
+    sharpness: "Potencia movimientos cortantes.",
+    shedskin: "Puede curar sus problemas de estado al final del turno.",
+    skilllink: "Los movimientos multigolpe siempre golpean el máximo de veces.",
+    solidrock: "Reduce el daño recibido de ataques supereficaces.",
+    speedboost: "Sube su Velocidad al final de cada turno.",
+    spicyspray: "Al entrar, baja defensas rivales o potencia presión ofensiva según el formato.",
+    stall: "Hace que se mueva el último dentro de su prioridad.",
+    stalwart: "Ignora redirección de movimientos.",
+    stancechange: "Cambia de forma según use movimientos ofensivos o Escudo Real.",
+    stench: "Sus ataques pueden hacer retroceder al objetivo.",
+    stickyhold: "Evita que le retiren el objeto.",
+    supersweetsyrup: "Al entrar, baja la evasión de los rivales.",
+    supremeoverlord: "Aumenta su daño por cada aliado debilitado.",
+    sweetveil: "Evita que el usuario y sus aliados se duerman.",
+    symbiosis: "Puede pasar su objeto a un aliado que haya consumido el suyo.",
+    tangledfeet: "Si está confundido, aumenta su evasión.",
+    telepathy: "Evita recibir daño de los movimientos de sus aliados.",
+    unseenfist: "Sus movimientos de contacto golpean incluso si el objetivo usa Protección.",
+    voltabsorb: "Es inmune a movimientos Eléctricos y recupera PS si recibe uno.",
+    wanderingspirit: "Intercambia habilidad con quien le golpee con contacto.",
+    waterbubble: "Potencia ataques de Agua, reduce daño de Fuego y evita quemaduras.",
+    weakarmor: "Si recibe un golpe físico, baja su Defensa y sube mucho su Velocidad.",
+    whitesmoke: "Evita que otros Pokémon bajen sus estadísticas.",
+    zerotohero: "Cambia a su forma heroica al salir y volver al campo.",
   },
 };
 
@@ -355,6 +611,55 @@ const FALLBACK_FORMATS = [
 
 let selectedFormat = initialFormatId();
 let selectedLanguage = initialLanguage();
+let quickPokemonMenuKey = "";
+let staticTranslationKey = "";
+let formatControlKey = "";
+let languageControlKey = "";
+const performanceCaches = {
+  sortedPokedex: new Map(),
+  munchStats: new Map(),
+  popularMoves: new Map(),
+  candidates: new Map(),
+  teamNeeds: new Map(),
+  suggestions: new Map(),
+};
+
+function cacheSet(map, key, value, limit = 80) {
+  if (map.has(key)) map.delete(key);
+  map.set(key, value);
+  while (map.size > limit) map.delete(map.keys().next().value);
+  return value;
+}
+
+function clearPerformanceCaches(scope = "all") {
+  if (scope === "all" || scope === "format") {
+    performanceCaches.sortedPokedex.clear();
+    performanceCaches.munchStats.clear();
+    performanceCaches.popularMoves.clear();
+    performanceCaches.candidates.clear();
+  }
+  performanceCaches.teamNeeds.clear();
+  performanceCaches.suggestions.clear();
+  quickPokemonMenuKey = "";
+}
+
+function teamStateSignature(slots = team.filter((slot) => slot.pokemon)) {
+  return slots
+    .map((slot, index) => {
+      const sp = STAT_KEYS.map((key) => Number(slot.sp?.[key] || 0)).join(",");
+      const moves = (slot.moves || []).map(toId).join(",");
+      return [
+        index,
+        slot.pokemon?.id || "",
+        toId(slot.item),
+        toId(slot.ability),
+        toId(slot.nature),
+        sp,
+        moves,
+      ].join(":");
+    })
+    .join("|");
+}
 const POKEDEX = buildChampionsDex();
 
 const team = Array.from({ length: MAX_TEAM }, () => emptySlot());
@@ -371,10 +676,12 @@ const threatCounterDetailOpenIds = new Set();
 const threatCounterCustomSlots = {};
 const majorThreatCustomSlots = {};
 const detailsOpenState = new Map();
+let editorNotice = "";
 
 const els = {
   pokemonSearch: document.querySelector("#pokemonSearch"),
   pokemonList: document.querySelector("#pokemonList"),
+  quickPokemonMenu: document.querySelector("#quickPokemonMenu"),
   addPokemon: document.querySelector("#addPokemon"),
   clearTeam: document.querySelector("#clearTeam"),
   randomTeam: document.querySelector("#randomTeam"),
@@ -451,6 +758,7 @@ function bindEvents() {
     for (let i = 0; i < MAX_TEAM; i++) team[i] = emptySlot();
     selectedSlot = 0;
     threatSearchMode = "auto";
+    editorNotice = "";
     els.threatSearch.value = "";
     persist();
     renderAll();
@@ -463,6 +771,7 @@ function bindEvents() {
   els.applyPopularSet.addEventListener("click", () => {
     const slot = team[selectedSlot];
     if (!slot.pokemon) return;
+    editorNotice = "";
     applyPopularSet(slot, slot.pokemon);
     persist();
     renderAll();
@@ -477,6 +786,7 @@ function bindEvents() {
     try {
       importShowdown(els.importBox.value);
       els.importBox.value = "";
+      editorNotice = "";
       persist();
       renderAll();
     } finally {
@@ -558,7 +868,7 @@ function closeImportModal() {
   els.importTray.hidden = true;
 }
 
-function setActiveSideTab(tabName) {
+function setActiveSideTab(tabName, options = {}) {
   activeSideTab = tabName || "suggestions";
   els.sideTabs?.forEach((button) => {
     const active = button.dataset.sideTab === activeSideTab;
@@ -570,6 +880,19 @@ function setActiveSideTab(tabName) {
     panel.classList.toggle("active", active);
     panel.hidden = !active;
   });
+  if (options.render !== false) renderActiveSidePanel();
+}
+
+function renderActiveSidePanel() {
+  if (activeSideTab === "counters") {
+    renderCounters();
+    return;
+  }
+  if (activeSideTab === "threat") {
+    renderThreatCounters();
+    return;
+  }
+  renderSuggestions();
 }
 
 function updateSelectedFormat(formatId) {
@@ -579,6 +902,7 @@ function updateSelectedFormat(formatId) {
   }
   selectedFormat = formatId;
   suggestionLimit = 8;
+  clearPerformanceCaches("format");
   closeFormatMenu();
   renderPokemonList();
   renderAll();
@@ -590,6 +914,7 @@ function updateSelectedLanguage(language) {
     return;
   }
   selectedLanguage = language;
+  clearPerformanceCaches("language");
   closeLanguageMenu();
   applyStaticTranslations();
   renderPokemonList();
@@ -630,33 +955,49 @@ function closeLanguageMenu() {
 
 function positionHeaderMenu(menu, button) {
   if (!menu || !button) return;
+  resetHeaderMenuInlinePosition(menu);
   const rect = button.getBoundingClientRect();
   const compact = window.matchMedia?.("(max-width: 760px)")?.matches;
+  const isLanguageMenu = menu.id === "languageMenu";
   const top = Math.max(8, Math.min(window.innerHeight - 180, rect.bottom + 8));
   menu.classList.add("header-menu-floating");
   menu.style.top = `${top}px`;
   menu.style.maxHeight = `${Math.max(180, window.innerHeight - top - 12)}px`;
+  menu.style.removeProperty("min-width");
+  menu.style.removeProperty("max-width");
   if (compact) {
-    menu.style.left = "10px";
-    menu.style.right = "10px";
-    menu.style.width = "auto";
+    if (isLanguageMenu) {
+      const width = Math.min(Math.max(rect.width, 140), window.innerWidth - 20);
+      const left = Math.max(10, Math.min(window.innerWidth - width - 10, rect.left));
+      menu.style.setProperty("left", `${left}px`, "important");
+      menu.style.setProperty("right", "auto", "important");
+      menu.style.setProperty("width", `${width}px`, "important");
+      menu.style.setProperty("min-width", `${width}px`, "important");
+      menu.style.setProperty("max-width", `${width}px`, "important");
+      return;
+    }
+    menu.style.setProperty("left", "10px", "important");
+    menu.style.setProperty("right", "10px", "important");
+    menu.style.setProperty("width", "auto", "important");
     return;
   }
   const width = Math.min(Math.max(rect.width, 220), window.innerWidth - 20);
   const left = Math.max(10, Math.min(window.innerWidth - width - 10, rect.right - width));
-  menu.style.left = `${left}px`;
-  menu.style.right = "auto";
-  menu.style.width = `${width}px`;
+  menu.style.setProperty("left", `${left}px`);
+  menu.style.setProperty("right", "auto");
+  menu.style.setProperty("width", `${width}px`);
 }
 
 function clearHeaderMenuPosition(menu) {
   if (!menu) return;
   menu.classList.remove("header-menu-floating");
-  menu.style.left = "";
-  menu.style.right = "";
-  menu.style.top = "";
-  menu.style.width = "";
-  menu.style.maxHeight = "";
+  resetHeaderMenuInlinePosition(menu);
+}
+
+function resetHeaderMenuInlinePosition(menu) {
+  ["left", "right", "top", "width", "min-width", "max-width", "max-height"].forEach((property) => {
+    menu.style.removeProperty(property);
+  });
 }
 
 function initialFormatId() {
@@ -666,7 +1007,7 @@ function initialFormatId() {
 }
 
 function initialLanguage() {
-  const fallback = "es";
+  const fallback = "en";
   try {
     const saved = JSON.parse(localStorage.getItem("champions-core-builder") || "{}")?.selectedLanguage;
     if (LANGUAGES[saved]) return saved;
@@ -718,6 +1059,8 @@ function t(key, params = {}) {
 }
 
 function applyStaticTranslations() {
+  if (staticTranslationKey === selectedLanguage) return;
+  staticTranslationKey = selectedLanguage;
   document.documentElement.lang = selectedLanguage;
   document.querySelectorAll("[data-i18n]").forEach((node) => {
     node.textContent = t(node.dataset.i18n);
@@ -754,6 +1097,9 @@ function renderFormatSelect() {
   const options = availableFormats();
   if (!options.some((format) => format.id === selectedFormat)) selectedFormat = options[0]?.id || selectedFormat;
   const current = formatMeta();
+  const key = `${selectedFormat}|${selectedLanguage}|${options.map((format) => `${format.id}:${format.label}:${format.mode}`).join("|")}`;
+  if (formatControlKey === key) return;
+  formatControlKey = key;
   els.formatSelect.innerHTML = options
     .map((format) => `<option value="${format.id}" ${format.id === selectedFormat ? "selected" : ""}>${format.label}</option>`)
     .join("");
@@ -772,31 +1118,109 @@ function renderFormatSelect() {
 
 function renderLanguageSelect() {
   if (!els.languageSelect) return;
-  const options = Object.entries(LANGUAGES);
+  const options = orderedLanguageEntries();
+  const key = `${selectedLanguage}|${options.map(([code, label]) => `${code}:${label}`).join("|")}`;
+  if (languageControlKey === key) return;
+  languageControlKey = key;
   els.languageSelect.innerHTML = options
-    .map(([code, label]) => `<option value="${code}" ${code === selectedLanguage ? "selected" : ""}>${label}</option>`)
+    .map(([code, label]) => `<option value="${code}" ${code === selectedLanguage ? "selected" : ""}>${languageOptionLabel(code) || label}</option>`)
     .join("");
   els.languageSelect.value = selectedLanguage;
-  if (els.languageButton) els.languageButton.textContent = LANGUAGES[selectedLanguage];
+  if (els.languageButton) els.languageButton.textContent = languageOptionLabel(selectedLanguage) || LANGUAGES[selectedLanguage] || selectedLanguage;
   if (els.languageMenu) {
     els.languageMenu.innerHTML = options
-      .map(([code, label]) => `<button class="format-option ${code === selectedLanguage ? "active" : ""}" type="button" role="option" aria-selected="${code === selectedLanguage}" data-language-option="${code}">${label}</button>`)
+      .map(([code, label]) => `<button class="format-option ${code === selectedLanguage ? "active" : ""}" type="button" role="option" aria-selected="${code === selectedLanguage}" data-language-option="${code}">${languageOptionLabel(code) || label}</button>`)
       .join("");
   }
 }
 
+function languageOptionLabel(code) {
+  return LANGUAGE_OPTION_LABELS[code] || LANGUAGES[code];
+}
+
+function orderedLanguageEntries() {
+  return ["en", "es"].map((code) => [code, LANGUAGES[code]]);
+}
+
 function renderPokemonList() {
-  els.pokemonList.innerHTML = sortedPokedex()
+  const options = sortedBasePokedex();
+  els.pokemonList.innerHTML = options
     .map((mon) => `<option value="${mon.name}" label="${pokemonOptionLabel(mon)}"></option>`)
     .join("");
+  wireQuickPokemonPicker();
+}
+
+function renderQuickPokemonMenu(query = "") {
+  if (!els.quickPokemonMenu) return;
+  const normalizedQuery = toId(query);
+  const selectedSpecies = team.filter((slot) => slot.pokemon).map((slot) => speciesClauseKey(slot.pokemon)).join(",");
+  const key = `${selectedFormat}|${selectedLanguage}|${selectedSpecies}|${normalizedQuery}`;
+  if (quickPokemonMenuKey === key && els.quickPokemonMenu.innerHTML) return;
+  const available = sortedBasePokedex()
+    .filter((mon) => !isPokemonSelected(mon))
+    .filter((mon) => !normalizedQuery || toId(pokemonPickerSearchText(mon)).includes(normalizedQuery));
+  const visible = available.slice(0, 80);
+  const more = available.length > visible.length
+    ? `<span class="combo-more">${selectedLanguage === "es" ? `${available.length - visible.length} más: escribe para filtrar` : `${available.length - visible.length} more: type to filter`}</span>`
+    : "";
+  els.quickPokemonMenu.innerHTML = pokemonPickerOptionsHtml(visible) + more;
+  quickPokemonMenuKey = key;
 }
 
 function sortedPokedex() {
-  return [...POKEDEX].sort((a, b) => pokemonUsage(b) - pokemonUsage(a) || a.name.localeCompare(b.name));
+  const key = `${selectedFormat}|all`;
+  const cached = performanceCaches.sortedPokedex.get(key);
+  if (cached) return cached;
+  return cacheSet(
+    performanceCaches.sortedPokedex,
+    key,
+    [...POKEDEX].sort((a, b) => pokemonUsage(b) - pokemonUsage(a) || a.name.localeCompare(b.name)),
+    8,
+  );
+}
+
+function sortedBasePokedex() {
+  const key = `${selectedFormat}|base`;
+  const cached = performanceCaches.sortedPokedex.get(key);
+  if (cached) return cached;
+  return cacheSet(performanceCaches.sortedPokedex, key, sortedPokedex().filter((mon) => !mon.isMega), 8);
+}
+
+function baseSpeciesName(name) {
+  const value = String(name || "").trim();
+  const megaPrefix = value.match(/^Mega (.+?)(?: [XY])?$/);
+  if (megaPrefix) return megaPrefix[1];
+  const megaSuffix = value.match(/^(.+?)-Mega(?:-[XY])?$/);
+  if (megaSuffix) return megaSuffix[1].replace(/-/g, " ");
+  return value;
+}
+
+function speciesClauseKey(monOrName) {
+  const name = typeof monOrName === "string" ? monOrName : monOrName?.name;
+  return toId(baseSpeciesName(name));
+}
+
+function baseFormFor(mon) {
+  if (!mon) return null;
+  const key = speciesClauseKey(mon);
+  return POKEDEX.find((candidate) => !candidate.isMega && speciesClauseKey(candidate) === key) || mon;
+}
+
+function megaFormsFor(mon) {
+  if (!mon) return [];
+  const key = speciesClauseKey(mon);
+  return POKEDEX
+    .filter((candidate) => candidate.isMega && speciesClauseKey(candidate) === key)
+    .sort((a, b) => pokemonUsage(b) - pokemonUsage(a) || a.name.localeCompare(b.name));
+}
+
+function preferredMegaFormFor(mon) {
+  return megaFormsFor(mon)[0] || null;
 }
 
 function isPokemonSelected(mon, exceptIndex = -1) {
-  return team.some((slot, index) => index !== exceptIndex && slot.pokemon?.id === mon?.id);
+  const key = speciesClauseKey(mon);
+  return Boolean(key) && team.some((slot, index) => index !== exceptIndex && speciesClauseKey(slot.pokemon) === key);
 }
 
 function p(name, types, stats, usage, roles, abilities, items, nature, spread, moves, teammates, strategy) {
@@ -911,9 +1335,12 @@ function canonicalPokemonName(raw) {
 }
 
 function munchStatsForName(name) {
+  const key = `${selectedFormat}|${toId(name)}`;
+  if (performanceCaches.munchStats.has(key)) return performanceCaches.munchStats.get(key);
   const stats = activeMunchStats();
   if (!stats) return null;
-  return nameKeys(name).map((key) => stats.pokemon?.[key]).find(Boolean) || null;
+  const result = nameKeys(name).map((entryKey) => stats.pokemon?.[entryKey]).find(Boolean) || null;
+  return cacheSet(performanceCaches.munchStats, key, result, 5000);
 }
 
 function legalPopularMoves(moves, learnset, types, roles, baseStats, options = {}) {
@@ -1116,10 +1543,17 @@ function emptySlot() {
 function addPokemonByName(name) {
   const mon = findPokemon(name);
   if (!mon) return;
-  const duplicateIndex = team.findIndex((slot) => slot.pokemon?.id === mon.id);
+  editorNotice = "";
+  const duplicateIndex = team.findIndex((slot) => speciesClauseKey(slot.pokemon) === speciesClauseKey(mon));
   if (duplicateIndex !== -1) {
     selectedSlot = duplicateIndex;
+    if (mon.isMega) {
+      team[duplicateIndex] = emptySlot();
+      team[duplicateIndex].pokemon = mon;
+      applyPopularSet(team[duplicateIndex], mon);
+    }
     if (threatSearchMode === "auto") syncThreatSearchFromSelected();
+    persist();
     renderAll();
     return;
   }
@@ -1136,6 +1570,7 @@ function addPokemonByName(name) {
 
 function generateRandomTeam() {
   const archetype = randomTeamArchetype();
+  editorNotice = "";
   for (let i = 0; i < MAX_TEAM; i++) team[i] = emptySlot();
 
   const seed = chooseRandomTeamMember(archetype, { seed: true });
@@ -1178,7 +1613,8 @@ function addRandomTeamMember(mon) {
 function usedRandomItems() {
   return new Set(team
     .filter((slot) => slot.pokemon && slot.item)
-    .map((slot) => normalizeItemName(slot.item)));
+    .map((slot) => itemClauseKey(slot.item))
+    .filter(Boolean));
 }
 
 function randomTeamArchetype() {
@@ -1217,11 +1653,11 @@ function chooseRandomTeamMember(archetype, options = {}) {
 }
 
 function randomEligiblePool() {
-  const selectedIds = new Set(team.filter((slot) => slot.pokemon).map((slot) => slot.pokemon.id));
-  const hasMega = team.some((slot) => slot.pokemon?.isMega);
+  const selectedSpecies = new Set(team.filter((slot) => slot.pokemon).map((slot) => speciesClauseKey(slot.pokemon)));
+  const megaCount = team.filter((slot) => slot.pokemon?.isMega).length;
   return POKEDEX.filter((mon) =>
-    !selectedIds.has(mon.id) &&
-    (!hasMega || !mon.isMega) &&
+    !selectedSpecies.has(speciesClauseKey(mon)) &&
+    (!mon.isMega || megaCount < 2) &&
     mon.types?.length &&
     (mon.moves?.length || mon.learnset?.length)
   );
@@ -1343,7 +1779,7 @@ function weatherAbuser(candidate, weather) {
 }
 
 function applyRandomizedSet(slot, mon, usedItems = new Set()) {
-  applyPopularSet(slot, mon);
+  applyPopularSet(slot, mon, { usedItems });
 
   if (!mon.isMega) {
     const allItems = itemOptionsFor(mon, slot);
@@ -1352,7 +1788,10 @@ function applyRandomizedSet(slot, mon, usedItems = new Set()) {
   }
 
   const abilities = abilityOptionsFor(mon, slot);
-  slot.ability = weightedRandomPick(abilities, (ability) => Math.max(1, abilityUsageFor(mon, ability)) + Math.random() * 4) || slot.ability;
+  slot.ability = contextualAbilityFor(
+    mon,
+    weightedRandomPick(abilities, (ability) => Math.max(1, abilityUsageFor(mon, ability)) + Math.random() * 4) || slot.ability,
+  );
 
   const spreads = spreadOptionsFor(mon);
   if (spreads.length && Math.random() < 0.82) {
@@ -1371,10 +1810,10 @@ function applyRandomizedSet(slot, mon, usedItems = new Set()) {
 
 function nonDuplicateRandomItem(mon, picked, options, usedItems) {
   const normalizedPicked = normalizeItemName(picked);
-  if (!normalizedPicked || !usedItems.has(normalizedPicked)) return normalizedPicked;
+  if (!normalizedPicked || !usedItems.has(itemClauseKey(normalizedPicked))) return normalizedPicked;
   const fallback = [...options]
     .map(normalizeItemName)
-    .filter((item) => item && !usedItems.has(item))
+    .filter((item) => item && !usedItems.has(itemClauseKey(item)))
     .sort((a, b) => itemUsageFor(mon, b) - itemUsageFor(mon, a) || a.localeCompare(b))[0];
   return fallback || normalizedPicked;
 }
@@ -1463,14 +1902,113 @@ function findPokemon(name) {
   return POKEDEX.find((mon) => mon.id === id || nameKeys(mon.name).includes(id));
 }
 
-function applyPopularSet(slot, mon) {
+function abilityFromList(abilities, abilityName) {
+  const id = toId(abilityName);
+  return (abilities || []).find((ability) => toId(ability) === id) || "";
+}
+
+function contextualAbilityFor(mon, fallback = "", contextSlots = team.filter((slot) => slot.pokemon)) {
+  const abilities = mon?.abilities || [];
+  const pick = (abilityName) => abilityFromList(abilities, abilityName);
+  const fallbackAbility = pick(fallback) || fallback || abilities[0] || "";
+  const otherSlots = contextSlots.filter((slot) => speciesClauseKey(slot.pokemon) !== speciesClauseKey(mon));
+  const weather = currentWeather(otherSlots);
+
+  if (weather.includes("Rain")) {
+    const swiftSwim = pick("Swift Swim");
+    if (swiftSwim) return swiftSwim;
+  }
+  if (weather.includes("Sun")) {
+    const chlorophyll = pick("Chlorophyll");
+    if (chlorophyll) return chlorophyll;
+    const solarPower = pick("Solar Power");
+    if (solarPower) return solarPower;
+  }
+  if (weather.includes("Sand")) {
+    const sandRush = pick("Sand Rush");
+    if (sandRush) return sandRush;
+    const sandForce = pick("Sand Force");
+    if (sandForce) return sandForce;
+  }
+  if (weather.includes("Snow")) {
+    const slushRush = pick("Slush Rush");
+    if (slushRush) return slushRush;
+  }
+  if (!weather.includes("Rain") && pick("Swift Swim") && pick("Adaptability")) return pick("Adaptability");
+  return fallbackAbility;
+}
+
+function speedPlanForSlots(slots) {
+  const moveIds = new Set((slots || []).flatMap((slot) => (slot.moves || []).map(toId)));
+  return {
+    trickRoom: moveIds.has("trickroom"),
+    tailwind: moveIds.has("tailwind"),
+    speedDrops: ["icywind", "electroweb", "bulldoze"].some((move) => moveIds.has(move)),
+    paralysis: ["thunderwave", "glare", "stunspore"].some((move) => moveIds.has(move)),
+  };
+}
+
+function contextualNatureFor(mon, fallback = "Hardy", contextSlots = team.filter((slot) => slot.pokemon)) {
+  const current = NATURES[fallback] ? fallback : mon?.nature || "Hardy";
+  const otherSlots = contextSlots.filter((slot) => speciesClauseKey(slot.pokemon) !== speciesClauseKey(mon));
+  const speedPlan = speedPlanForSlots(otherSlots);
+  if (speedPlan.trickRoom && Number(mon?.baseStats?.spe || 0) <= 70 && NATURES[current]?.down !== "spe") {
+    if (Number(mon?.baseStats?.spa || 0) >= Number(mon?.baseStats?.atk || 0) + 10) return "Quiet";
+    if (Number(mon?.baseStats?.atk || 0) >= Number(mon?.baseStats?.spa || 0) + 10) return "Brave";
+    return "Sassy";
+  }
+
+  const weather = currentWeather(otherSlots);
+  const hasSpeedWeatherBoost =
+    (weather.includes("Rain") && hasAbilityName(mon, "Swift Swim")) ||
+    (weather.includes("Sun") && hasAbilityName(mon, "Chlorophyll")) ||
+    (weather.includes("Sand") && hasAbilityName(mon, "Sand Rush")) ||
+    (weather.includes("Snow") && hasAbilityName(mon, "Slush Rush"));
+  if (hasSpeedWeatherBoost) return preferredDamageNatureFor(mon, current);
+  return current;
+}
+
+function preferredDamageNatureFor(mon, fallback = "Hardy") {
+  const atk = Number(mon?.baseStats?.atk || 0);
+  const spa = Number(mon?.baseStats?.spa || 0);
+  if (spa >= atk + 10) return "Modest";
+  if (atk >= spa + 10) return "Adamant";
+  return fallback;
+}
+
+function applyPopularSet(slot, mon, options = {}) {
   const live = munchStatsForName(mon.name);
-  slot.item = defaultItemFor(mon);
-  slot.ability = live?.abilities?.find((ability) => mon.abilities?.some((known) => toId(known) === toId(ability))) || mon.popularAbility || mon.abilities[0] || "";
-  slot.nature = live?.nature || mon.nature || "Hardy";
-  slot.sp = { ...(live?.spread || mon.spread) };
+  const popularAbility = live?.abilities?.find((ability) => mon.abilities?.some((known) => toId(known) === toId(ability))) || mon.popularAbility || mon.abilities[0] || "";
+  const contextSlots = options.contextSlots || team.filter((teamSlot) => teamSlot.pokemon);
+  slot.ability = contextualAbilityFor(mon, popularAbility, contextSlots);
+  slot.item = contextualItemFor(mon, slot.ability, { slot, usedItems: options.usedItems, contextSlots });
+  slot.nature = contextualNatureFor(mon, live?.nature || mon.nature || "Hardy", contextSlots);
+  slot.sp = contextualSpreadFor(mon, live?.spread || mon.spread, slot.nature, contextSlots);
   const moves = legalPopularMoves(live?.moves, mon.learnset || [], mon.types || [], mon.roles || [], mon.baseStats || {}, { avoidChoiceLock: isChoiceItem(slot.item) }) || mon.moves || [];
   slot.moves = [...moves.slice(0, 4), "", "", "", ""].slice(0, 4);
+}
+
+function contextualSpreadFor(mon, spread = {}, nature = "Hardy", contextSlots = team.filter((slot) => slot.pokemon)) {
+  const result = { ...blankSp(), ...(spread || {}) };
+  const speedPlan = speedPlanForSlots(contextSlots.filter((slot) => speciesClauseKey(slot.pokemon) !== speciesClauseKey(mon)));
+  const wantsTrickRoom = speedPlan.trickRoom && NATURES[nature]?.down === "spe" && Number(mon?.baseStats?.spe || 0) <= 75;
+  if (!wantsTrickRoom || !result.spe) return result;
+
+  let released = result.spe;
+  result.spe = 0;
+  const primary = Number(mon?.baseStats?.spa || 0) >= Number(mon?.baseStats?.atk || 0) + 10 ? "spa" : "atk";
+  const secondary = Number(mon?.baseStats?.def || 0) <= Number(mon?.baseStats?.spd || 0) ? "def" : "spd";
+  for (const key of [primary, "hp", secondary]) {
+    if (!released) break;
+    const room = MAX_SP_STAT - Number(result[key] || 0);
+    if (room <= 0) continue;
+    const add = Math.min(room, released);
+    result[key] = Number(result[key] || 0) + add;
+    released -= add;
+  }
+  const overflow = Math.max(0, Object.values(result).reduce((sum, value) => sum + Number(value || 0), 0) - MAX_SP);
+  if (overflow > 0) result.hp = Math.max(0, Number(result.hp || 0) - overflow);
+  return result;
 }
 
 function renderAll() {
@@ -1481,13 +2019,9 @@ function renderAll() {
   renderLanguageSelect();
   renderTeam();
   renderEditor();
-  renderSuggestions();
-  renderThreatCounters();
-  renderCounters();
-  setActiveSideTab(activeSideTab);
+  renderActiveSidePanel();
+  setActiveSideTab(activeSideTab, { render: false });
   els.exportBox.value = exportShowdown();
-  wireDetailsPersistence();
-  wireSpriteFallbacks();
   persist();
 }
 
@@ -1499,14 +2033,21 @@ function syncThreatSearchFromSelected() {
 
 function sanitizeTeam() {
   const seen = new Set();
+  const usedItemKeys = new Set();
   for (const slot of team) {
     if (!slot.pokemon) continue;
-    if (seen.has(slot.pokemon.id)) {
+    const speciesKey = speciesClauseKey(slot.pokemon);
+    if (seen.has(speciesKey)) {
       Object.assign(slot, emptySlot());
       continue;
     }
-    seen.add(slot.pokemon.id);
-    if (!isChampionsItem(slot.item, slot.pokemon)) slot.item = defaultItemFor(slot.pokemon);
+    seen.add(speciesKey);
+    slot.item = normalizeItemName(slot.item);
+    if (slot.item && (!isChampionsItem(slot.item, slot.pokemon) || usedItemKeys.has(itemClauseKey(slot.item)))) {
+      slot.item = defaultItemFor(slot.pokemon, { slot, usedItems: usedItemKeys });
+    }
+    const itemKey = itemClauseKey(slot.item);
+    if (itemKey) usedItemKeys.add(itemKey);
     slot.moves = sanitizeMovesForSlot(slot);
   }
 }
@@ -1540,8 +2081,10 @@ function renderTeam() {
       const remove = event.target.closest("[data-remove]");
       if (remove) {
         team[Number(remove.dataset.remove)] = emptySlot();
+        editorNotice = "";
       } else {
         selectedSlot = Number(button.dataset.slot);
+        editorNotice = "";
         syncThreatSearchFromSelected();
       }
       persist();
@@ -1556,11 +2099,13 @@ function renderTeam() {
     ? metric(moveUiName("Fake Out"), formatUsers(moveRoleUserCount(["fakeOut"])))
     : metric(selectedLanguage === "es" ? "Prioridad" : "Priority", formatUsers(moveRoleUserCount(["priority"])));
   els.teamSummary.innerHTML = [
-    metric(selectedLanguage === "es" ? "Megas usadas" : "Used Megas", `${megaCount}/1`, megaCount > 1 ? "warning" : ""),
+    metric(t("megaTeamMetric"), selectedLanguage === "es" ? `${megaCount} · 1 activa` : `${megaCount} · 1 active`),
     utilityMetric,
     metric(selectedLanguage === "es" ? "Control de velocidad" : "Speed control", speedControlSummary()),
     metric(selectedLanguage === "es" ? "Tipos repetidos" : "Repeated types", repeatedTypeSummary()),
   ].join("") + typePlannerHtml();
+  wireDetailsPersistence(els.teamSummary);
+  wireSpriteFallbacks(els.teamSlots);
 }
 
 function metric(label, value, className = "") {
@@ -1655,6 +2200,171 @@ function itemUiName(item) {
 
 function abilityUiName(ability) {
   return localizedName("abilities", ability);
+}
+
+function itemDescriptionText(item) {
+  if (!item) return t("noItemDescription");
+  const data = itemData(item);
+  const text = data?.shortDesc || data?.desc || "";
+  return localizeMechanicDescription(text, "item", item);
+}
+
+function abilityDescriptionText(ability) {
+  const data = globalThis.PS_ABILITIES?.[toId(ability)];
+  const text = data?.shortDesc || data?.desc || "";
+  return localizeMechanicDescription(text, "ability", ability);
+}
+
+function infoButtonHtml(title, description, kind) {
+  if (!description) return "";
+  const label = selectedLanguage === "es"
+    ? `Ver descripción de ${title}`
+    : `View ${title} description`;
+  const heading = kind === "ability"
+    ? (selectedLanguage === "es" ? "Habilidad" : "Ability")
+    : (selectedLanguage === "es" ? "Objeto" : "Item");
+  return `<span class="field-info-wrap">
+    <button class="field-info-button" type="button" aria-label="${escapeHtml(label)}">i</button>
+    <span class="field-info-popover" role="tooltip">
+      <strong>${escapeHtml(heading)}: ${escapeHtml(title)}</strong>
+      <span>${escapeHtml(description)}</span>
+    </span>
+  </span>`;
+}
+
+function localizeMechanicDescription(text, kind, name) {
+  const value = String(text || "").trim();
+  if (!value || selectedLanguage === "en") return value;
+  const id = toId(name);
+  const override = MECHANIC_DESCRIPTION_ES[kind]?.[id];
+  if (override) return override;
+
+  const berryMatch = value.match(/^Halves damage taken from a supereffective ([A-Za-z-]+)-type attack\. Single use\.$/i);
+  if (berryMatch) return `Reduce a la mitad el daño de un ataque de tipo ${typeLabel(berryMatch[1])} supereficaz. Se consume.`;
+
+  const boostTypeMatch = value.match(/^Holder's ([A-Za-z-]+)-type attacks have ([0-9.]+)x power\.$/i);
+  if (boostTypeMatch) return `Potencia los ataques de tipo ${typeLabel(boostTypeMatch[1])} del portador x${boostTypeMatch[2]}.`;
+
+  const megaMatch = value.match(/^If held by an? (.+?), this item allows it to Mega Evolve(?: into .+?)?(?: in battle)?\.$/i);
+  if (megaMatch) return `Si lo lleva ${megaMatch[1]}, permite megaevolucionar en combate.`;
+
+  const restoreBerryMatch = value.match(/^Restores ([0-9/]+) max HP (?:at|when at) ([0-9/]+) max HP or less(?:; confuses if -([A-Za-z. ]+) Nature)?\. Single use\.$/i);
+  if (restoreBerryMatch) {
+    const confuse = restoreBerryMatch[3] ? `; confunde si la naturaleza baja ${statNameEs(restoreBerryMatch[3])}` : "";
+    return `Restaura ${restoreBerryMatch[1]} de los PS máximos cuando baja a ${restoreBerryMatch[2]} o menos${confuse}. Se consume.`;
+  }
+
+  const fixedRestoreMatch = value.match(/^Restores ([0-9]+) HP when at ([0-9/]+) max HP or less\. Single use\.$/i);
+  if (fixedRestoreMatch) return `Restaura ${fixedRestoreMatch[1]} PS cuando baja a ${fixedRestoreMatch[2]} de los PS máximos o menos. Se consume.`;
+
+  const raiseOnHitMatch = value.match(/^Raises holder's (.+?) by ([0-9]+) stage(?:s)? if (?:hit by|it gets affected by) (?:an? )?(.+?)\. Single use\.$/i);
+  if (raiseOnHitMatch) return `Sube ${raiseOnHitMatch[2]} nivel${raiseOnHitMatch[2] === "1" ? "" : "es"} ${statNameEs(raiseOnHitMatch[1])} del portador si recibe ${localizeInlineTerms(raiseOnHitMatch[3])}. Se consume.`;
+
+  const cureStatusMatch = value.match(/^Holder (?:cures itself|is cured) if it is ([a-z]+)\. Single use\.$/i);
+  if (cureStatusMatch) return `Cura al portador si está ${statusNameEs(cureStatusMatch[1])}. Se consume.`;
+
+  const holderGroundImmune = value.match(/^Holder is immune to ([A-Za-z-]+)-type attacks\. Pops when holder is hit\.$/i);
+  if (holderGroundImmune) return `El portador es inmune a ataques de tipo ${typeLabel(holderGroundImmune[1])} hasta recibir daño.`;
+
+  const typePowerInWeather = value.match(/^This Pokemon's ([A-Za-z/\- ]+) attacks do ([0-9.]+)x in Sandstorm; immunity to it\.$/i);
+  if (typePowerInWeather) return `Bajo tormenta de arena, potencia x${typePowerInWeather[2]} sus ataques de tipo ${typePowerInWeather[1].split("/").map((type) => typeLabel(type.trim())).join(", ")} y no recibe daño de la arena.`;
+
+  const speedWeatherMatch = value.match(/^This Pokemon's Speed is doubled in (Rain|Sun|Sandstorm|Snow)\.$/i);
+  if (speedWeatherMatch) return `Duplica su Velocidad bajo ${weatherLabel(speedWeatherMatch[1] === "Sandstorm" ? "Sand" : speedWeatherMatch[1])}.`;
+
+  const normalToTypeMatch = value.match(/^This Pokemon's ([A-Za-z-]+)-type moves become ([A-Za-z-]+) type and have ([0-9.]+)x power\.$/i);
+  if (normalToTypeMatch) return `Convierte sus movimientos de tipo ${typeLabel(normalToTypeMatch[1])} en tipo ${typeLabel(normalToTypeMatch[2])} y los potencia x${normalToTypeMatch[3]}.`;
+
+  const lowHpBoostMatch = value.match(/^At 1\/3 or less of its max HP, this Pokemon's offensive stat is ([0-9.]+)x with ([A-Za-z-]+) attacks\.$/i);
+  if (lowHpBoostMatch) return `Con 1/3 de PS o menos, potencia x${lowHpBoostMatch[1]} sus ataques de tipo ${typeLabel(lowHpBoostMatch[2])}.`;
+
+  const abilityCannotChangeMatch = value.match(/^Holder's Ability cannot be changed, suppressed, or ignored by any effect\.$/i);
+  if (abilityCannotChangeMatch) return "La habilidad del portador no puede cambiarse, anularse ni ignorarse.";
+
+  return translateMechanicPhrases(localizeInlineTerms(value));
+}
+
+function statNameEs(stat) {
+  const id = toId(stat).replace("special", "sp");
+  const map = {
+    atk: "el Ataque",
+    attack: "el Ataque",
+    def: "la Defensa",
+    defense: "la Defensa",
+    spa: "el Ataque Especial",
+    spatk: "el Ataque Especial",
+    spdef: "la Defensa Especial",
+    spd: "la Defensa Especial",
+    speed: "la Velocidad",
+    spe: "la Velocidad",
+    accuracy: "la precisión",
+  };
+  return map[id] || stat;
+}
+
+function statusNameEs(status) {
+  const map = {
+    asleep: "dormido",
+    burned: "quemado",
+    confused: "confundido",
+    frozen: "congelado",
+    paralyzed: "paralizado",
+    poisoned: "envenenado",
+  };
+  return map[String(status || "").toLowerCase()] || status;
+}
+
+function translateMechanicPhrases(text) {
+  return String(text || "")
+    .replaceAll("This Pokémon's", "La estadística de este Pokémon")
+    .replaceAll("This Pokemon's", "La estadística de este Pokémon")
+    .replaceAll("This Pokémon", "Este Pokémon")
+    .replaceAll("This Pokemon", "Este Pokémon")
+    .replaceAll("this Pokémon", "este Pokémon")
+    .replaceAll("this Pokemon", "este Pokémon")
+    .replaceAll("The Pokémon", "El Pokémon")
+    .replaceAll("Holder's", "El portador")
+    .replaceAll("holder's", "del portador")
+    .replaceAll("Holder", "El portador")
+    .replaceAll("holder", "portador")
+    .replaceAll("Single use.", "Se consume.")
+    .replaceAll("on switch-in", "al entrar al campo")
+    .replaceAll("On switch-in", "Al entrar al campo")
+    .replaceAll("is immune to", "es inmune a")
+    .replaceAll("are immune to", "son inmunes a")
+    .replaceAll("cannot be", "no puede ser")
+    .replaceAll("prevents", "evita")
+    .replaceAll("Prevents", "Evita")
+    .replaceAll("raises", "sube")
+    .replaceAll("lowers", "baja")
+    .replaceAll("boosts", "potencia")
+    .replaceAll("restores", "restaura")
+    .replaceAll("Restores", "Restaura")
+    .replaceAll("heals", "cura")
+    .replaceAll("Heals", "Cura")
+    .replaceAll("damage", "daño")
+    .replaceAll("Damage", "Daño")
+    .replaceAll("power", "potencia")
+    .replaceAll("Power", "Potencia")
+    .replaceAll("Speed", "Velocidad")
+    .replaceAll("Attack", "Ataque")
+    .replaceAll("Defense", "Defensa")
+    .replaceAll("Special Ataque", "Ataque Especial")
+    .replaceAll("Special Defensa", "Defensa Especial")
+    .replaceAll("Sp. Atk", "Ataque Especial")
+    .replaceAll("Sp. Def", "Defensa Especial")
+    .replaceAll("status", "estado")
+    .replaceAll("move", "movimiento")
+    .replaceAll("moves", "movimientos")
+    .replaceAll("weather", "clima")
+    .replaceAll("contact", "contacto")
+    .replaceAll("allies", "aliados")
+    .replaceAll("allied", "aliado")
+    .replaceAll("opposing", "rival")
+    .replaceAll("foes", "rivales")
+    .replaceAll("foe", "rival")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function natureUiName(nature) {
@@ -1766,6 +2476,32 @@ function comboOptionButtonsHtml(options, labelFor, aliasesFor = () => [], option
     .join("");
 }
 
+function pokemonPickerOptionsHtml(options) {
+  const megaText = selectedLanguage === "es" ? "Mega disponible" : "Mega available";
+  const emptyText = selectedLanguage === "es" ? "Sin resultados" : "No results";
+  if (!options.length) return `<span class="combo-empty">${emptyText}</span>`;
+  return options
+    .map((mon, index) => {
+      const usage = pokemonUsage(mon);
+      const search = pokemonPickerSearchText(mon);
+      const megaBadge = megaFormsFor(mon).length ? `<span class="pokemon-option-mega">${megaText}</span>` : "";
+      return `<button class="combo-option pokemon-option" type="button" data-combo-option="${index}" data-pokemon-option="${escapeHtml(mon.name)}" data-combo-search="${escapeHtml(search)}" title="${escapeHtml(baseStatsText(mon))}">
+        <span class="sprite-frame"><img src="${pokemonSprite(mon)}" alt="" data-fallback="${plannerSprite(mon)}"></span>
+        <span class="pokemon-option-main">
+          <strong>${escapeHtml(mon.name)}</strong>
+          <span class="pokemon-option-meta">${typeIconRow(mon.types)} <span>${selectedLanguage === "es" ? "uso" : "usage"} ${formatUsagePercent(usage)}%</span></span>
+          ${baseStatsHtml(mon)}
+        </span>
+        ${megaBadge}
+      </button>`;
+    })
+    .join("") + `<span class="combo-empty" hidden>${emptyText}</span>`;
+}
+
+function pokemonPickerSearchText(mon) {
+  return [mon.name, pokemonOptionLabel(mon), ...nameKeys(mon.name), ...(megaFormsFor(mon).map((mega) => mega.name))].join(" ");
+}
+
 function comboInputHtml({ listId, value, options, labelFor, aliasesFor = () => [], optionClassFor = () => "", field = "", moveIndex = null, className = "", placeholder = "" }) {
   const dataAttr = field ? `data-field="${field}"` : `data-move="${moveIndex}"`;
   const emptyText = selectedLanguage === "es" ? "Sin resultados" : "No results";
@@ -1785,15 +2521,15 @@ function resolvePickerChoice(rawValue, options, labelFor, aliasesFor = () => [])
   const baseId = toId(pickerBaseText(value));
   const fullId = toId(value);
   const labelsFor = (option) => [labelFor(option), ...(aliasesFor(option) || [])].filter(Boolean);
-  const exact = options.find((option) => {
+  const exactIndex = options.findIndex((option) => {
     const labels = labelsFor(option);
     return labels.some((label) => {
       const text = String(label || "").trim();
       return text === value || toId(text) === fullId || toId(pickerBaseText(text)) === baseId;
     });
   });
-  if (exact) return exact;
-  return options.find((option) => {
+  if (exactIndex !== -1) return options[exactIndex];
+  const partialIndex = options.findIndex((option) => {
     const labels = labelsFor(option);
     return labels.some((label) => {
       const text = String(label || "").trim();
@@ -1801,7 +2537,8 @@ function resolvePickerChoice(rawValue, options, labelFor, aliasesFor = () => [])
       const labelFullId = toId(text);
       return labelBaseId.startsWith(baseId) || labelBaseId.includes(baseId) || labelFullId.includes(fullId);
     });
-  }) || null;
+  });
+  return partialIndex !== -1 ? options[partialIndex] : null;
 }
 
 function wireComboPicker(input) {
@@ -1868,6 +2605,65 @@ function wireComboPicker(input) {
   });
 }
 
+function wireQuickPokemonPicker() {
+  const input = els.pokemonSearch;
+  const menu = els.quickPokemonMenu;
+  if (!input || !menu) return;
+  const picker = input.closest(".combo-picker");
+  const toggle = picker?.querySelector(".combo-toggle");
+  const close = () => {
+    menu.hidden = true;
+    input.setAttribute("aria-expanded", "false");
+  };
+  const open = (showAll = true) => {
+    renderQuickPokemonMenu(showAll ? "" : input.value);
+    menu.hidden = false;
+    input.setAttribute("aria-expanded", "true");
+  };
+  if (!input.dataset.quickPokemonWired) {
+    input.dataset.quickPokemonWired = "true";
+    input.addEventListener("focus", () => open(true));
+    input.addEventListener("click", () => open(true));
+    input.addEventListener("input", () => open(false));
+    input.addEventListener("blur", () => window.setTimeout(close, 140));
+    input.addEventListener("keydown", (event) => {
+      if (event.key === "ArrowDown") {
+        event.preventDefault();
+        open(true);
+        const first = [...menu.querySelectorAll("[data-pokemon-option]")].find((button) => !button.hidden);
+        if (first) first.focus();
+      }
+      if (event.key === "Escape") close();
+    });
+    toggle?.addEventListener("mousedown", (event) => event.preventDefault());
+    toggle?.addEventListener("click", () => {
+      input.focus();
+      open(true);
+    });
+    menu.addEventListener("mousedown", (event) => event.preventDefault());
+    menu.addEventListener("click", (event) => {
+      const option = event.target.closest("[data-pokemon-option]");
+      if (!option) return;
+      input.value = option.dataset.pokemonOption;
+      close();
+      addPokemonByName(option.dataset.pokemonOption);
+      input.value = "";
+    });
+    menu.addEventListener("keydown", (event) => {
+      const option = event.target.closest("[data-pokemon-option]");
+      if (!option) return;
+      if (event.key === "Enter") {
+        event.preventDefault();
+        option.click();
+      }
+      if (event.key === "Escape") {
+        close();
+        input.focus();
+      }
+    });
+  }
+}
+
 function filterComboOptions(input, showAll = false) {
   const picker = input.closest(".combo-picker");
   if (!picker) return;
@@ -1918,6 +2714,7 @@ function pokemonOptionLabel(mon) {
 }
 
 function itemOptionLabel(mon, item) {
+  if (!item) return t("noItem");
   const usage = itemUsageFor(mon, item);
   const name = itemUiName(item);
   return usage > 0 ? `${name} · ${formatUsagePercent(usage)}%` : name;
@@ -1957,7 +2754,7 @@ function itemOptionsFor(mon, slot) {
   const live = munchStatsForName(mon?.name);
   const options = unique([...(live?.items || []), ...(mon.items || []), slot.item, ...available].map(normalizeItemName))
     .filter((item) => available.includes(item));
-  return sortByUsageThenName(options, (item) => itemUsageFor(mon, item));
+  return ["", ...sortByUsageThenName(options, (item) => itemUsageFor(mon, item))];
 }
 
 function abilityOptionsFor(mon, slot) {
@@ -2003,6 +2800,28 @@ function spreadRecommendationsHtml(mon) {
       </button>`).join("")}
     </div>
   </details>`;
+}
+
+function megaControlHtml(mon) {
+  const forms = megaFormsFor(mon);
+  if (!forms.length) return "";
+  const active = Boolean(mon.isMega);
+  const label = t("megaToggle");
+  const formButtons = active && forms.length > 1
+    ? `<div class="mega-form-picker" aria-label="${t("megaFormLabel")}">
+        ${forms.map((form) => `<button type="button" class="mega-form-button ${form.id === mon.id ? "active" : ""}" data-mega-form="${escapeHtml(form.name)}">
+          <span class="sprite-frame mini-sprite"><img src="${pokemonSprite(form)}" alt="" data-fallback="${plannerSprite(form)}"></span>
+          <span>${escapeHtml(form.name.replace(/^Mega\s+/, "Mega "))}</span>
+        </button>`).join("")}
+      </div>`
+    : "";
+  return `<div class="mega-control">
+    <button class="mode-switch mega-switch ${active ? "active" : ""}" type="button" data-mega-toggle>
+      <span class="mode-switch-track"><span></span></span>
+      <span class="mode-switch-text"><strong>${label}</strong><small>${active ? itemUiName(megaStoneName(mon.name, mon.types)) : forms.map((form) => form.name.replace(/^Mega\s+/, "Mega ")).join(" / ")}</small></span>
+    </button>
+    ${formButtons}
+  </div>`;
 }
 
 function editorStrategy(mon, slot, stats) {
@@ -2144,6 +2963,7 @@ function renderEditor() {
   }
 
   const mon = slot.pokemon;
+  const pickerMon = baseFormFor(mon);
   els.selectedHint.textContent = selectedLanguage === "es"
     ? `${mon.name} · stats finales a nivel 50`
     : `${mon.name} · final stats at level 50`;
@@ -2151,7 +2971,7 @@ function renderEditor() {
   const itemOptions = itemOptionsFor(mon, slot);
   const abilityOptions = abilityOptionsFor(mon, slot);
   const natureOptions = natureOptionsFor(mon, slot);
-  const pokemonOptions = sortedPokedex().filter((pmon) => pmon.id === mon.id || !isPokemonSelected(pmon, selectedSlot));
+  const pokemonOptions = sortedBasePokedex().filter((pmon) => speciesClauseKey(pmon) === speciesClauseKey(mon) || !isPokemonSelected(pmon, selectedSlot));
   const pokemonListId = `config-pokemon-options-${selectedSlot}`;
   const natureListId = `config-nature-options-${selectedSlot}`;
   const itemListId = `config-item-options-${selectedSlot}`;
@@ -2167,7 +2987,7 @@ function renderEditor() {
           <span class="select-art pokemon-art"><img src="${pokemonSprite(mon)}" alt="" data-fallback="${plannerSprite(mon)}"></span>
           ${comboInputHtml({
             listId: pokemonListId,
-            value: pokemonOptionLabel(mon),
+            value: pokemonOptionLabel(pickerMon),
             options: pokemonOptions,
             labelFor: (pmon) => pokemonOptionLabel(pmon),
             aliasesFor: (pmon) => [pmon.name],
@@ -2176,6 +2996,7 @@ function renderEditor() {
             placeholder: selectedLanguage === "es" ? "Buscar Pokémon..." : "Search Pokémon...",
           })}
         </div>
+        ${megaControlHtml(mon)}
       </div>
       <div>
         <label>${selectedLanguage === "es" ? "Naturaleza" : "Nature"}</label>
@@ -2190,12 +3011,15 @@ function renderEditor() {
         })}
       </div>
       <div>
-        <label>${selectedLanguage === "es" ? "Objeto" : "Item"}</label>
+        <label class="label-with-info">
+          <span>${selectedLanguage === "es" ? "Objeto" : "Item"}</span>
+          ${infoButtonHtml(slot.item ? itemUiName(slot.item) : t("noItem"), itemDescriptionText(slot.item), "item")}
+        </label>
         <div class="select-with-art">
           <span class="select-art item-art">${slot.item ? itemIconHtml(slot.item) : ""}</span>
           ${comboInputHtml({
             listId: itemListId,
-            value: slot.item ? itemOptionLabel(mon, slot.item) : "",
+            value: itemOptionLabel(mon, slot.item),
             options: itemOptions,
             labelFor: (item) => itemOptionLabel(mon, item),
             aliasesFor: (item) => [item, displayItemName(item), itemUiName(item)],
@@ -2204,9 +3028,13 @@ function renderEditor() {
             placeholder: selectedLanguage === "es" ? "Buscar objeto..." : "Search item...",
           })}
         </div>
+        ${editorNotice ? `<div class="field-warning">${escapeHtml(editorNotice)}</div>` : ""}
       </div>
       <div>
-        <label>${selectedLanguage === "es" ? "Habilidad" : "Ability"}</label>
+        <label class="label-with-info">
+          <span>${selectedLanguage === "es" ? "Habilidad" : "Ability"}</span>
+          ${infoButtonHtml(abilityUiName(slot.ability), abilityDescriptionText(slot.ability), "ability")}
+        </label>
         ${comboInputHtml({
           listId: abilityListId,
           value: slot.ability ? abilityOptionLabel(mon, slot.ability) : "",
@@ -2281,12 +3109,21 @@ function renderEditor() {
       if (input.dataset.field === "pokemon") {
         const next = nextValue;
         if (next && !isPokemonSelected(next, selectedSlot)) {
+          editorNotice = "";
           slot.pokemon = next;
           applyPopularSet(slot, next);
         }
       } else if (input.dataset.field === "item") {
-        if (nextValue || !slot.pokemon?.isMega) slot.item = nextValue || "";
+        const nextItem = normalizeItemName(nextValue || "");
+        if (nextItem && usedTeamItemKeys(slot).has(itemClauseKey(nextItem))) {
+          editorNotice = t("duplicateItemNotice", { item: itemUiName(nextItem) });
+          renderAll();
+          return;
+        }
+        editorNotice = "";
+        if (nextValue || !slot.pokemon?.isMega) slot.item = nextItem || "";
       } else {
+        editorNotice = "";
         if (nextValue) slot[input.dataset.field] = nextValue;
       }
       renderAll();
@@ -2321,6 +3158,33 @@ function renderEditor() {
       renderAll();
     });
   });
+  els.editor.querySelector("[data-mega-toggle]")?.addEventListener("click", () => {
+    if (!slot.pokemon) return;
+    if (slot.pokemon.isMega) {
+      const base = baseFormFor(slot.pokemon);
+      slot.pokemon = base;
+      applyPopularSet(slot, base);
+    } else {
+      const nextMega = preferredMegaFormFor(slot.pokemon);
+      if (!nextMega) return;
+      slot.pokemon = nextMega;
+      applyPopularSet(slot, nextMega);
+    }
+    persist();
+    renderAll();
+  });
+  els.editor.querySelectorAll("[data-mega-form]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const nextMega = findPokemon(button.dataset.megaForm);
+      if (!nextMega) return;
+      slot.pokemon = nextMega;
+      applyPopularSet(slot, nextMega);
+      persist();
+      renderAll();
+    });
+  });
+  wireDetailsPersistence(els.editor);
+  wireSpriteFallbacks(els.editor);
 }
 
 function renderSuggestions() {
@@ -2332,33 +3196,41 @@ function renderSuggestions() {
   }
   const allSuggestions = getSuggestions();
   const suggestions = allSuggestions.slice(0, suggestionLimit);
-  const profile = analyzeTeamNeeds(filled);
+  const profile = teamNeedsProfile(filled);
   const teamFull = filled.length >= MAX_TEAM;
   els.suggestions.innerHTML = collapsibleDetailsHtml(
     selectedLanguage === "es" ? "Lectura del equipo" : "Team read",
     `<p>${needSummary(profile)}</p>`,
     "strategy-box team-read-details",
     { detailKey: "suggestions:team-read" }
-  ) + suggestions
-    .map(({ mon, score, reasons, explanation, advice, fit }) => `<article class="suggestion-card">
+  ) + `<div class="suggestion-grid">${suggestions
+    .map(({ mon, score, reasons, candidate }) => {
+      const detailKey = `suggestion:${mon.id}`;
+      const expanded = detailsOpenState.get(detailKey) ? " expanded" : "";
+      const explanation = suggestionExplanation(mon, reasons, profile, candidate);
+      const advice = suggestionAdvice(mon, reasons, profile, candidate);
+      const fit = fitLabel(score);
+      return `<article class="suggestion-card${expanded}">
       <span class="sprite-frame"><img src="${pokemonSprite(mon)}" alt="${mon.name}" data-fallback="${plannerSprite(mon)}"></span>
       <div>
         <span class="suggestion-name">${mon.name}</span>
         <span class="mini">${typeIconRow(mon.types)} · ${selectedLanguage === "es" ? "uso" : "usage"} ${pokemonUsage(mon).toFixed(2)}%</span>
         ${baseStatsHtml(mon)}
-        ${collapsibleDetailsHtml(selectedLanguage === "es" ? "Por qué se sugiere" : "Why this is suggested", `<p class="suggestion-explain">${localizeInlineTerms(explanation)}</p>${insightListHtml(advice)}`, "card-details", { detailKey: `suggestion:${mon.id}` })}
+        ${collapsibleDetailsHtml(selectedLanguage === "es" ? "Por qué se sugiere" : "Why this is suggested", `<p class="suggestion-explain">${localizeInlineTerms(explanation)}</p>${insightListHtml(advice)}`, "card-details", { detailKey })}
         <div class="tag-row">${suggestionReasonChips(reasons).slice(0, 4).map((reason) => `<span class="tag">${localizeInlineTerms(reason)}</span>`).join("")}</div>
         <div class="suggestion-actions">
           <span class="score">${fit} · ${Math.round(score)} pts</span>
           <button class="${teamFull ? "team-full-button" : ""}" type="button" data-import="${mon.name}" ${teamFull ? "disabled" : ""}>${teamFull ? t("teamFull") : t("importButton")}</button>
         </div>
       </div>
-    </article>`)
-    .join("");
-  els.suggestionControls.innerHTML = `
-    ${suggestionLimit < allSuggestions.length ? `<button type="button" data-more-suggestions>${selectedLanguage === "es" ? "Ver más sugerencias" : "More suggestions"}</button>` : ""}
-    ${suggestionLimit > 8 ? `<button class="ghost-button" type="button" data-reset-suggestions>${selectedLanguage === "es" ? "Ver menos" : "Show less"}</button>` : ""}
-  `;
+    </article>`;
+    })
+    .join("")}</div>`;
+  const suggestionButtons = [
+    suggestionLimit < allSuggestions.length ? `<button type="button" data-more-suggestions>${selectedLanguage === "es" ? "Ver más sugerencias" : "More suggestions"}</button>` : "",
+    suggestionLimit > 8 ? `<button class="ghost-button" type="button" data-reset-suggestions>${selectedLanguage === "es" ? "Ver menos" : "Show less"}</button>` : "",
+  ].filter(Boolean).join("");
+  els.suggestionControls.innerHTML = suggestionButtons ? `<div class="suggestion-control-row">${suggestionButtons}</div>` : "";
   els.suggestions.querySelectorAll("[data-import]").forEach((button) => {
     button.addEventListener("click", () => addPokemonByName(button.dataset.import));
   });
@@ -2381,6 +3253,21 @@ function needSummary(profile) {
     lines.push(selectedLanguage === "es"
       ? `Prioridad: añade ${roles} para que el equipo tenga turnos más cómodos.`
       : `Priority: add ${roles} so the team gets cleaner turns.`);
+  }
+  if (profile.speedPlan?.trickRoom) {
+    lines.push(selectedLanguage === "es"
+      ? "Ya tienes Espacio Raro; priorizo Pokémon lentos, fuertes o con buen bulk que puedan aprovechar esos turnos."
+      : "You already have Trick Room; prioritizing slower, strong, or bulky Pokémon that can use those turns.");
+  } else if (profile.speedPlan?.tailwind) {
+    lines.push(selectedLanguage === "es"
+      ? "Ya tienes Viento Afín; priorizo atacantes de Velocidad media que se vuelven muy peligrosos con ese apoyo."
+      : "You already have Tailwind; prioritizing medium-Speed attackers that become dangerous with that support.");
+  }
+  if (profile.currentWeather.length) {
+    const weather = localizedList(profile.currentWeather.map(weatherLabel));
+    lines.push(selectedLanguage === "es"
+      ? `Ya tienes ${weather}; suben las piezas que aprovechan ese clima antes que una opción solo popular.`
+      : `You already have ${weather}; Pokémon that exploit that weather rise above merely popular options.`);
   }
   if (profile.dangerTypes.length) {
     const danger = localizedList(profile.dangerTypes.map((item) => typeLabel(item.type)).slice(0, 3));
@@ -2476,18 +3363,28 @@ function synergyReasonLabel(synergy) {
   return value ? value[selectedLanguage === "es" ? 0 : 1] : localizeInlineTerms(synergy.reason);
 }
 
+function teamNeedsProfile(slots) {
+  const key = `${selectedFormat}|${teamStateSignature(slots)}`;
+  const cached = performanceCaches.teamNeeds.get(key);
+  if (cached) return cached;
+  return cacheSet(performanceCaches.teamNeeds, key, analyzeTeamNeeds(slots), 32);
+}
+
 function getSuggestions() {
   const selectedSlots = team.filter((slot) => slot.pokemon);
+  const suggestionKey = `${selectedFormat}|${selectedLanguage}|${teamStateSignature(selectedSlots)}`;
+  const cached = performanceCaches.suggestions.get(suggestionKey);
+  if (cached) return cached;
   const selected = selectedSlots.map((slot) => slot.pokemon);
-  const selectedIds = new Set(selected.map((mon) => mon.id));
-  const profile = analyzeTeamNeeds(selectedSlots);
-  const megaAlready = team.some(isMegaSlot);
+  const selectedSpecies = new Set(selected.map((mon) => speciesClauseKey(mon)));
+  const profile = teamNeedsProfile(selectedSlots);
+  const megaCount = team.filter(isMegaSlot).length;
 
-  return POKEDEX.filter((mon) => !selectedIds.has(mon.id))
+  const result = POKEDEX.filter((mon) => !selectedSpecies.has(speciesClauseKey(mon)))
     .map((mon) => {
       const candidate = analyzeCandidate(mon);
       const usage = pokemonUsage(mon);
-      let score = Math.min(usage, 12) * 0.9;
+      let score = Math.min(Math.sqrt(Math.max(usage, 0)) * 1.15, 7);
       const reasons = [];
 
       const add = (points, reason) => {
@@ -2497,10 +3394,10 @@ function getSuggestions() {
 
       for (const coreMon of selected) {
         if (coreMon.teammates.includes(mon.name)) {
-          add(18, `encaja con ${coreMon.name}`);
+          add(22, `encaja con ${coreMon.name}`);
         }
         if (mon.teammates.includes(coreMon.name)) {
-          add(14, `encaja con ${coreMon.name}`);
+          add(18, `encaja con ${coreMon.name}`);
         }
       }
 
@@ -2540,6 +3437,8 @@ function getSuggestions() {
       const weatherClash = candidateWeather(candidate).find((weather) => profile.currentWeather.length && !profile.currentWeather.includes(weather));
       if (weatherClash) add(-18, `pisa tu clima con ${weatherLabel(weatherClash)}`);
 
+      applyTeamContextScore(mon, candidate, profile, add);
+
       const overlap = typeOverlapPenalty(candidate, profile);
       if (overlap.penalty) add(-overlap.penalty, overlap.reason);
 
@@ -2551,10 +3450,15 @@ function getSuggestions() {
         if (points > 0) add(points, synergyReasonLabel(synergy));
       }
 
-      if (megaAlready && mon.isMega) {
-        add(-22, "compite por Mega");
-      }
-      if (!megaAlready && mon.isMega) {
+      const strategicHits = strategicFitCount(reasons);
+      if (strategicHits >= 3) add(24, "encaje estratégico completo");
+      else if (strategicHits >= 2) add(14, "encaje estratégico claro");
+
+      if (megaCount >= 2 && mon.isMega) {
+        add(-16, "tercera Mega es situacional");
+      } else if (megaCount >= 1 && mon.isMega) {
+        add(-4, "segunda Mega opcional");
+      } else if (mon.isMega) {
         add(6, "usa tu slot Mega");
       }
 
@@ -2564,17 +3468,16 @@ function getSuggestions() {
         reasons.push("Pokémon flexible");
       }
 
-      const cleanReasons = unique(reasons).slice(0, 5);
+      const cleanReasons = prioritizeSuggestionReasons(reasons).slice(0, 6);
       return {
         mon,
         score,
         reasons: cleanReasons,
-        explanation: suggestionExplanation(mon, cleanReasons, profile, candidate),
-        advice: suggestionAdvice(mon, cleanReasons, profile, candidate),
-        fit: fitLabel(score),
+        candidate,
       };
     })
     .sort((a, b) => b.score - a.score);
+  return cacheSet(performanceCaches.suggestions, suggestionKey, result, 24);
 }
 
 function analyzeTeamNeeds(slots) {
@@ -2597,6 +3500,7 @@ function analyzeTeamNeeds(slots) {
     .filter(([, count]) => count >= 2)
     .map(([type, count]) => ({ type, count }));
   const weatherNeeds = desiredWeatherNeeds(slots, moveDetails);
+  const speedPlan = speedPlanForSlots(slots);
   const roleNeeds = [];
   const doubles = isDoublesFormat();
 
@@ -2617,6 +3521,7 @@ function analyzeTeamNeeds(slots) {
     repeatedTypes,
     weatherNeeds,
     roleNeeds,
+    speedPlan,
     needsSpecial: physicalCount >= specialCount + 2,
     needsPhysical: specialCount >= physicalCount + 2,
     needsSpeed: !roles.speedControl && avgSpeed < 100,
@@ -2628,6 +3533,9 @@ function analyzeTeamNeeds(slots) {
 }
 
 function analyzeCandidate(mon) {
+  const key = `${selectedFormat}|${mon?.id || toId(mon?.name)}`;
+  const cached = performanceCaches.candidates.get(key);
+  if (cached) return cached;
   const movePool = unique([...(mon.moves || []), ...(mon.learnset || [])]);
   const popularMoves = popularMoveDetails(mon);
   const setMoveIds = new Set(popularMoves.map((entry) => toId(entry.move)));
@@ -2646,7 +3554,7 @@ function analyzeCandidate(mon) {
   const attackTypes = unique(popularMoves.filter((entry) => relevantAttackMove(entry, mon)).map((entry) => entry.info.type).filter(Boolean));
   const physicalMoves = popularMoves.filter((entry) => entry.info.category === "Physical" && relevantAttackMove(entry, mon));
   const specialMoves = popularMoves.filter((entry) => entry.info.category === "Special" && relevantAttackMove(entry, mon));
-  return {
+  const result = {
     mon,
     roles,
     setRoles,
@@ -2662,6 +3570,7 @@ function analyzeCandidate(mon) {
     setMoveIds,
     moveIds: new Set(movePool.map(toId)),
   };
+  return cacheSet(performanceCaches.candidates, key, result, 5000);
 }
 
 function abilityBasedRoles(mon) {
@@ -2674,6 +3583,9 @@ function abilityBasedRoles(mon) {
 }
 
 function popularMoveDetails(mon) {
+  const key = `${selectedFormat}|${mon?.id || toId(mon?.name)}`;
+  const cached = performanceCaches.popularMoves.get(key);
+  if (cached) return cached;
   const usage = munchStatsForName(mon?.name)?.moveUsage || mon?.moveUsage || {};
   const usageMoves = Object.keys(usage);
   const moves = unique([...(usageMoves.length ? usageMoves : []), ...(mon.moves || [])]);
@@ -2682,9 +3594,10 @@ function popularMoveDetails(mon) {
     .filter((entry) => entry.info && isLegalMoveForMon(mon, entry.move))
     .sort((a, b) => b.usage - a.usage || a.index - b.index || a.move.localeCompare(b.move));
   const hasUsage = entries.some((entry) => entry.usage > 0);
-  return entries
+  const result = entries
     .filter((entry, index) => !hasUsage || entry.usage >= 8 || index < 4)
     .slice(0, 8);
+  return cacheSet(performanceCaches.popularMoves, key, result, 5000);
 }
 
 function relevantAttackMove(entry, mon) {
@@ -2707,7 +3620,7 @@ function countTeamTypes(mons) {
 function desiredWeatherNeeds(slots, moveDetails) {
   if (currentWeather(slots).length) return [];
   const roles = roleCounts();
-  const abilities = new Set(slots.flatMap((slot) => slot.pokemon.abilities || []));
+  const abilities = new Set(slots.flatMap((slot) => slot.ability ? [slot.ability] : slot.pokemon.abilities || []));
   const moveIds = new Set(moveDetails.map((entry) => toId(entry.move)));
   const needs = [];
 
@@ -2774,7 +3687,36 @@ function suggestionExplanation(mon, reasons, profile, candidate) {
 }
 
 function isWarningReason(reason) {
-  return /^(repite|empeora|apila|pisa|compite)/.test(reason);
+  return /^(repite|empeora|apila|pisa|compite|va contra|tercera Mega)/.test(reason);
+}
+
+function prioritizeSuggestionReasons(reasons) {
+  const clean = unique(reasons).filter(Boolean);
+  const warning = clean.find(isWarningReason);
+  const selected = clean
+    .filter((reason) => !isWarningReason(reason))
+    .sort((a, b) => suggestionReasonPriority(b) - suggestionReasonPriority(a))
+    .slice(0, warning ? 5 : 6);
+  if (warning) selected.push(warning);
+  return selected;
+}
+
+function suggestionReasonPriority(reason) {
+  if (/encaje estratégico|abusa de tu Trick Room|aprovecha Trick Room|funciona en Trick Room|presiona en Trick Room|segundo setter de Trick Room/i.test(reason)) return 100;
+  if (/Tailwind|Viento Afín|bajadas de Velocidad|control de velocidad/i.test(reason)) return 92;
+  if (/lluvia|sol|arena|nieve|clima/i.test(reason)) return 90;
+  if (/entra bien|abre cobertura|presiona amenazas|atacante físico|atacante especial/i.test(reason)) return 78;
+  if (/Fake Out|redirección|Intimidate|protege|resistencia/i.test(reason)) return 70;
+  if (/^encaja con /.test(reason)) return 62;
+  if (/Pokémon flexible|amenaza del meta/i.test(reason)) return 20;
+  return 50;
+}
+
+function strategicFitCount(reasons) {
+  return unique(reasons).filter((reason) => {
+    if (!reason || isWarningReason(reason)) return false;
+    return /Trick Room|Tailwind|lluvia|sol|arena|nieve|clima|bajadas de Velocidad|control de velocidad|Fake Out|redirección|Intimidate|entra bien|abre cobertura|presiona amenazas|atacante|resistencia|protege|encaja con/i.test(reason);
+  }).length;
 }
 
 function suggestionTagLabel(reason) {
@@ -2801,6 +3743,34 @@ function suggestionTagLabel(reason) {
   if (reason === "ayuda a mover primero") return selectedLanguage === "es" ? "Control de velocidad" : "Speed control";
   if (reason === "puede activar Trick Room o Tailwind") return selectedLanguage === "es" ? "Control de velocidad" : "Speed control";
   if (reason === "añade Tailwind, Icy Wind o parálisis") return selectedLanguage === "es" ? "Control de velocidad" : "Speed control";
+  if (reason === "encaje estratégico completo") return selectedLanguage === "es" ? "Encaje de plan excelente" : "Excellent gameplan fit";
+  if (reason === "encaje estratégico claro") return selectedLanguage === "es" ? "Encaje de plan claro" : "Clear gameplan fit";
+  if (reason === "abusa de tu Trick Room") return selectedLanguage === "es" ? "Abusa de Espacio Raro" : "Trick Room abuser";
+  if (reason === "aprovecha Trick Room") return selectedLanguage === "es" ? "Aprovecha Espacio Raro" : "Benefits from Trick Room";
+  if (reason === "funciona en Trick Room") return selectedLanguage === "es" ? "Funciona en Espacio Raro" : "Works in Trick Room";
+  if (reason === "va contra tu Trick Room") return selectedLanguage === "es" ? "Demasiado rápido para Espacio Raro" : "Too fast for Trick Room";
+  if (reason === "segundo setter de Trick Room") return selectedLanguage === "es" ? "Segundo setter de Espacio Raro" : "Second Trick Room setter";
+  if (reason === "presiona en Trick Room") return selectedLanguage === "es" ? "Presión en Espacio Raro" : "Trick Room pressure";
+  if (reason === "aprovecha Tailwind") return selectedLanguage === "es" ? "Aprovecha Viento Afín" : "Benefits from Tailwind";
+  if (reason === "necesita Tailwind para brillar") return selectedLanguage === "es" ? "Brilla con Viento Afín" : "Shines with Tailwind";
+  if (reason === "convierte Tailwind en presión ofensiva") return selectedLanguage === "es" ? "Presión bajo Viento Afín" : "Tailwind pressure";
+  if (reason === "presiona incluso sin Tailwind") return selectedLanguage === "es" ? "Presiona sin apoyo" : "Pressures without support";
+  if (reason === "aprovecha bajadas de Velocidad") return selectedLanguage === "es" ? "Aprovecha Speed control" : "Benefits from Speed control";
+  if (reason === "remata tras control de velocidad") return selectedLanguage === "es" ? "Remata con prioridad" : "Cleans with priority";
+  if (reason === "abusa de la lluvia") return selectedLanguage === "es" ? "Abusa de lluvia" : "Rain abuser";
+  if (reason === "activa lluvia para tu plan ofensivo") return selectedLanguage === "es" ? "Activa lluvia" : "Sets rain";
+  if (reason === "potencia daño de Agua") return selectedLanguage === "es" ? "Daño de Agua potenciado" : "Boosted Water damage";
+  if (reason === "aprovecha precisión con lluvia") return selectedLanguage === "es" ? "Aprovecha lluvia" : "Uses rain accuracy";
+  if (reason === "puede jugar Adaptability sin lluvia") return selectedLanguage === "es" ? "Plan sin lluvia" : "No-rain plan";
+  if (reason === "abusa del sol") return selectedLanguage === "es" ? "Abusa de sol" : "Sun abuser";
+  if (reason === "activa sol para tu plan ofensivo") return selectedLanguage === "es" ? "Activa sol" : "Sets sun";
+  if (reason === "potencia daño de Fuego") return selectedLanguage === "es" ? "Daño de Fuego potenciado" : "Boosted Fire damage";
+  if (reason === "aprovecha Solar Beam con sol") return selectedLanguage === "es" ? "Solar Beam bajo sol" : "Solar Beam in sun";
+  if (reason === "abusa de la arena") return selectedLanguage === "es" ? "Abusa de arena" : "Sand abuser";
+  if (reason === "activa arena para tus atacantes") return selectedLanguage === "es" ? "Activa arena" : "Sets sand";
+  if (reason === "encaja con arena") return selectedLanguage === "es" ? "Encaja con arena" : "Fits sand";
+  if (reason === "abusa de la nieve") return selectedLanguage === "es" ? "Abusa de nieve" : "Snow abuser";
+  if (reason === "encaja con nieve") return selectedLanguage === "es" ? "Encaja con nieve" : "Fits snow";
   if (reason === "resistencia para estabilizar el equipo") return selectedLanguage === "es" ? "Más aguante" : "More bulk";
   if (reason === "protege atacantes frágiles") return selectedLanguage === "es" ? "Protege el equipo" : "Protects the team";
   if (reason === "inmune a Terremoto aliado" || reason === "immune to allied Earthquake") return selectedLanguage === "es" ? "Inmune a Terremoto aliado" : "Immune to allied Earthquake";
@@ -2810,6 +3780,8 @@ function suggestionTagLabel(reason) {
   if (reason === "aprovecha la arena" || reason === "benefits from sand") return selectedLanguage === "es" ? "Aprovecha arena" : "Benefits from sand";
   if (reason === "protege turnos de setup" || reason === "protects setup turns") return selectedLanguage === "es" ? "Protege setup" : "Protects setup";
   if (reason === "compite por Mega") return selectedLanguage === "es" ? "Conflicto de Mega" : "Mega conflict";
+  if (reason === "segunda Mega opcional") return selectedLanguage === "es" ? "Segunda Mega" : "Second Mega";
+  if (reason === "tercera Mega es situacional") return selectedLanguage === "es" ? "Mega extra" : "Extra Mega";
   if (reason === "usa tu slot Mega") return selectedLanguage === "es" ? "Opción de Mega" : "Mega option";
   if (reason === "Pokémon flexible") return selectedLanguage === "es" ? "Flexible" : "Flexible";
   if (/^amenaza del meta/.test(reason)) return selectedLanguage === "es" ? "Amenaza del meta" : "Meta threat";
@@ -2830,6 +3802,18 @@ function reasonExplanationPhrases(reasons) {
   if (coverage) phrases.push(selectedLanguage === "es" ? `añade cobertura ofensiva contra ${coverage.replace(/^abre cobertura /, "")}` : `adds offensive coverage into ${coverage.replace(/^abre cobertura /, "")}`);
   const pressure = reasons.find((reason) => /^presiona amenazas /.test(reason));
   if (pressure) phrases.push(selectedLanguage === "es" ? "presiona amenazas que tu equipo todavía no castiga bien" : "pressures threats your team does not punish well yet");
+  if (reasons.includes("encaje estratégico completo")) phrases.push(selectedLanguage === "es" ? "encaja con varias piezas del plan actual, así que se prioriza por sinergia antes que por uso bruto" : "fits several parts of the current plan, so it is prioritized by synergy over raw usage");
+  if (reasons.includes("encaje estratégico claro")) phrases.push(selectedLanguage === "es" ? "encaja con el plan actual del equipo aunque no sea simplemente la opción más usada" : "fits the team's current plan even if it is not just the most-used option");
+  if (reasons.includes("abusa de tu Trick Room")) phrases.push(selectedLanguage === "es" ? "aprovecha tus turnos de Espacio Raro mejor que una amenaza rápida estándar" : "uses your Trick Room turns better than a standard fast threat");
+  if (reasons.includes("aprovecha Trick Room")) phrases.push(selectedLanguage === "es" ? "su baja Velocidad convierte Espacio Raro en una ventaja real" : "its lower Speed turns Trick Room into a real advantage");
+  if (reasons.includes("presiona en Trick Room")) phrases.push(selectedLanguage === "es" ? "convierte Espacio Raro en presión ofensiva inmediata" : "turns Trick Room into immediate offensive pressure");
+  if (reasons.includes("convierte Tailwind en presión ofensiva")) phrases.push(selectedLanguage === "es" ? "con Viento Afín puede convertir daño fuerte en presión antes de que el rival responda" : "with Tailwind it can turn strong damage into pressure before the opponent responds");
+  if (reasons.includes("necesita Tailwind para brillar")) phrases.push(selectedLanguage === "es" ? "Viento Afín le da el empujón que necesita para atacar antes de sus respuestas" : "Tailwind gives it the push it needs to move before its answers");
+  if (reasons.includes("abusa de la lluvia")) phrases.push(selectedLanguage === "es" ? "tu lluvia activa su mejor plan y hace que el set importado cambie alrededor de Nado Rápido" : "your rain activates its best plan and makes the imported set revolve around Swift Swim");
+  if (reasons.includes("puede jugar Adaptability sin lluvia")) phrases.push(selectedLanguage === "es" ? "como no tienes lluvia activa, se valora más el daño constante que depender de Nado Rápido" : "without active rain, consistent damage is valued more than relying on Swift Swim");
+  if (reasons.includes("activa lluvia para tu plan ofensivo")) phrases.push(selectedLanguage === "es" ? "enciende abusers de lluvia que ya tienes o que el equipo está pidiendo" : "turns on rain abusers your team already has or clearly wants");
+  if (reasons.includes("activa sol para tu plan ofensivo")) phrases.push(selectedLanguage === "es" ? "convierte tus piezas de sol en un plan principal, no en una opción suelta" : "turns your sun pieces into a main plan instead of a loose option");
+  if (reasons.includes("activa arena para tus atacantes")) phrases.push(selectedLanguage === "es" ? "da sentido a atacantes que escalan con arena como Sand Rush o Sand Force" : "enables attackers that scale with sand such as Sand Rush or Sand Force");
   return phrases;
 }
 
@@ -2839,12 +3823,75 @@ function suggestionAdvice(mon, reasons, profile, candidate) {
   const plan = formatSentenceList(capabilities.slice(0, 2));
   if (plan) lines.push({ label: "Plan", text: plan });
 
+  const build = suggestionBuildAdvice(mon, profile);
+  if (build) lines.push({ label: selectedLanguage === "es" ? "Set al importar" : "Imported set", text: build });
+
   const fit = formatSentenceList(suggestionFitPhrases(reasons, profile).slice(0, 2));
   if (fit) lines.push({ label: selectedLanguage === "es" ? "Encaje" : "Fit", text: fit });
 
   const caution = suggestionCaution(mon, reasons, candidate, profile);
   if (caution) lines.push({ label: selectedLanguage === "es" ? "Cuidado" : "Watch out", text: caution, tone: "warn" });
-  return lines.slice(0, 3);
+  return lines.slice(0, 4);
+}
+
+function suggestionBuildAdvice(mon, profile) {
+  const contextSlots = team.filter((slot) => slot.pokemon);
+  const live = munchStatsForName(mon.name);
+  const popularAbility = live?.abilities?.find((ability) => mon.abilities?.some((known) => toId(known) === toId(ability))) || mon.popularAbility || mon.abilities?.[0] || "";
+  const ability = contextualAbilityFor(mon, popularAbility, contextSlots);
+  const nature = contextualNatureFor(mon, live?.nature || mon.nature || "Hardy", contextSlots);
+  const item = contextualItemFor(mon, ability, { usedItems: usedTeamItemKeys(), contextSlots });
+  const spread = contextualSpreadFor(mon, live?.spread || mon.spread, nature, contextSlots);
+  const speedPlan = profile.speedPlan || {};
+  const weather = profile.currentWeather || [];
+  const clauses = [];
+
+  if (weather.includes("Rain") && toId(ability) === "swiftswim") {
+    clauses.push(selectedLanguage === "es"
+      ? `entraría con ${abilityUiName(ability)} porque tu lluvia ya le da Velocidad inmediata, así que no necesita depender de Pañuelo Elección`
+      : `imports with ${abilityUiName(ability)} because your rain already gives it immediate Speed, so it does not need to rely on Choice Scarf`);
+  } else if (!weather.includes("Rain") && hasAbilityName(mon, "Swift Swim") && toId(ability) === "adaptability") {
+    clauses.push(selectedLanguage === "es"
+      ? `sin lluvia activa, prioriza ${abilityUiName(ability)} para tener daño real sin depender del clima`
+      : `without active rain, it prioritizes ${abilityUiName(ability)} to keep real damage without relying on weather`);
+  }
+
+  if (weather.includes("Sun") && ["chlorophyll", "solarpower"].includes(toId(ability))) {
+    clauses.push(selectedLanguage === "es"
+      ? `aprovecha tu sol con ${abilityUiName(ability)}`
+      : `uses your sun with ${abilityUiName(ability)}`);
+  }
+  if (weather.includes("Sand") && ["sandrush", "sandforce"].includes(toId(ability))) {
+    clauses.push(selectedLanguage === "es"
+      ? `aprovecha tu arena con ${abilityUiName(ability)}`
+      : `uses your sand with ${abilityUiName(ability)}`);
+  }
+  if (speedPlan.trickRoom && NATURES[nature]?.down === "spe") {
+    clauses.push(selectedLanguage === "es"
+      ? `la naturaleza ${natureUiName(nature)} baja Velocidad para funcionar mejor en Espacio Raro`
+      : `${natureUiName(nature)} lowers Speed so it works better in Trick Room`);
+    if (!spread.spe) {
+      clauses.push(selectedLanguage === "es"
+        ? "el reparto evita invertir en Velocidad para aprovechar mejor tus turnos de Espacio Raro"
+        : "the spread avoids Speed investment to use your Trick Room turns better");
+    }
+  } else if (speedPlan.tailwind && mon.baseStats.spe >= 70 && mon.baseStats.spe <= 110) {
+    clauses.push(selectedLanguage === "es"
+      ? `Viento Afín convierte su Velocidad media en presión antes de sus checks`
+      : `Tailwind turns its medium Speed into pressure before its checks`);
+  }
+
+  if (item && clauses.length) {
+    clauses.push(selectedLanguage === "es"
+      ? `el objeto sugerido sería ${itemUiName(item)}`
+      : `the suggested item would be ${itemUiName(item)}`);
+  }
+
+  return clauses.slice(0, 3).join(selectedLanguage === "es" ? "; " : "; ");
+}
+
+function hasAbilityName(mon, abilityName) {
+  return (mon?.abilities || []).some((ability) => toId(ability) === toId(abilityName));
 }
 
 function suggestionFitPhrases(reasons) {
@@ -2857,9 +3904,25 @@ function suggestionFitPhrases(reasons) {
   if (coverage) phrases.push(selectedLanguage === "es" ? `añade presión ofensiva contra ${coverage.replace(/^abre cobertura /, "")}` : `adds offensive pressure into ${coverage.replace(/^abre cobertura /, "")}`);
   const pressure = reasons.find((reason) => /^presiona amenazas /.test(reason));
   if (pressure) phrases.push(selectedLanguage === "es" ? "castiga amenazas populares que tu equipo no estaba presionando" : "punishes popular threats your team was not pressuring");
+  if (reasons.includes("encaje estratégico completo")) phrases.push(selectedLanguage === "es" ? "se prioriza porque encaja con varias capas del plan, no solo por uso" : "is prioritized because it fits several layers of the plan, not just usage");
+  if (reasons.includes("encaje estratégico claro")) phrases.push(selectedLanguage === "es" ? "tiene mejor encaje práctico que una opción popular sin sinergia" : "has better practical fit than a popular option without synergy");
   if (reasons.includes("atacante especial necesario")) phrases.push(selectedLanguage === "es" ? "equilibra el daño especial del equipo" : "balances the team's special damage");
   if (reasons.includes("atacante físico necesario")) phrases.push(selectedLanguage === "es" ? "equilibra el daño físico del equipo" : "balances the team's physical damage");
   if (reasons.includes("ayuda a mover primero")) phrases.push(selectedLanguage === "es" ? "reduce la dependencia de ganar speed ties" : "reduces reliance on winning speed ties");
+  if (reasons.includes("abusa de tu Trick Room")) phrases.push(selectedLanguage === "es" ? "es una pieza lenta que convierte tus turnos de Espacio Raro en presión real" : "is a slow piece that turns Trick Room turns into real pressure");
+  if (reasons.includes("aprovecha Trick Room")) phrases.push(selectedLanguage === "es" ? "entra mejor cuando tu equipo invierte el orden de velocidad con Espacio Raro" : "fits turns where your team reverses Speed order with Trick Room");
+  if (reasons.includes("funciona en Trick Room")) phrases.push(selectedLanguage === "es" ? "puede jugar cómodo en turnos de Espacio Raro por su baja Velocidad o buen aguante" : "can operate comfortably in Trick Room turns thanks to lower Speed or good bulk");
+  if (reasons.includes("presiona en Trick Room")) phrases.push(selectedLanguage === "es" ? "amenaza varios slots mientras Espacio Raro está activo" : "threatens several slots while Trick Room is active");
+  if (reasons.includes("aprovecha Tailwind")) phrases.push(selectedLanguage === "es" ? "Viento Afín convierte su Velocidad media en presión inmediata" : "Tailwind turns its medium Speed into immediate pressure");
+  if (reasons.includes("necesita Tailwind para brillar")) phrases.push(selectedLanguage === "es" ? "agradece Viento Afín porque sin apoyo se queda algo justo de Velocidad" : "appreciates Tailwind because it is a bit short on Speed without support");
+  if (reasons.includes("convierte Tailwind en presión ofensiva")) phrases.push(selectedLanguage === "es" ? "con Viento Afín puede lanzar daño fuerte antes de recibir castigo" : "with Tailwind it can fire strong damage before taking punishment");
+  if (reasons.includes("abusa de la lluvia")) phrases.push(selectedLanguage === "es" ? "tu lluvia activa su plan de Velocidad o daño de Agua" : "your rain activates its Speed or Water-damage plan");
+  if (reasons.includes("activa lluvia para tu plan ofensivo")) phrases.push(selectedLanguage === "es" ? "convierte tus piezas que piden lluvia en un plan principal" : "turns pieces that want rain into a main plan");
+  if (reasons.includes("puede jugar Adaptability sin lluvia")) phrases.push(selectedLanguage === "es" ? "si no llevas lluvia, puede cambiar a Adaptability y seguir teniendo daño real" : "without rain, it can switch to Adaptability and still keep real damage");
+  if (reasons.includes("abusa del sol")) phrases.push(selectedLanguage === "es" ? "tu sol potencia su habilidad o su presión ofensiva" : "your sun boosts its ability or offensive pressure");
+  if (reasons.includes("activa sol para tu plan ofensivo")) phrases.push(selectedLanguage === "es" ? "da continuidad a atacantes que quieren sol en campo" : "supports attackers that want sun active");
+  if (reasons.includes("abusa de la arena")) phrases.push(selectedLanguage === "es" ? "la arena activa su plan o le da un encaje defensivo natural" : "sand activates its plan or gives it a natural defensive fit");
+  if (reasons.includes("activa arena para tus atacantes")) phrases.push(selectedLanguage === "es" ? "enciende atacantes que escalan con arena" : "enables attackers that scale with sand");
   if (reasons.includes("protege atacantes frágiles")) phrases.push(isDoublesFormat()
     ? (selectedLanguage === "es" ? "ayuda a colocar a tus atacantes sin exponerlos a doble target" : "helps place attackers without exposing them to double targets")
     : (selectedLanguage === "es" ? "aporta una forma más segura de entrar y sostener momentum" : "offers a safer way to enter and maintain momentum"));
@@ -2977,12 +4040,20 @@ function detailsOpenAttr(key, defaultOpen = false) {
 
 function wireDetailsPersistence(root = document) {
   root.querySelectorAll("details[data-detail-key]").forEach((details) => {
+    syncSuggestionExpansion(details);
     if (details.dataset.detailPersistenceWired) return;
     details.dataset.detailPersistenceWired = "true";
     details.addEventListener("toggle", () => {
       detailsOpenState.set(details.dataset.detailKey, details.open);
+      syncSuggestionExpansion(details);
     });
   });
+}
+
+function syncSuggestionExpansion(details) {
+  const card = details.closest?.(".suggestion-card");
+  if (!card || !details.classList.contains("card-details")) return;
+  card.classList.toggle("expanded", details.open);
 }
 
 function wireDetailOpenState(root, scope, stateSet) {
@@ -3046,7 +4117,7 @@ function physicalPressureWeak(mons) {
 function inferTeamSynergies(slots, moveDetails) {
   const synergies = [];
   const moveIds = new Set(moveDetails.map((entry) => toId(entry.move)));
-  const abilities = new Set(slots.flatMap((slot) => slot.pokemon.abilities || []));
+  const abilities = new Set(slots.flatMap((slot) => slot.ability ? [slot.ability] : slot.pokemon.abilities || []));
   if (moveIds.has("earthquake")) synergies.push({ kind: "groundImmune", reason: "inmune a Earthquake aliado" });
   if (["surf", "muddywater"].some((move) => moveIds.has(move))) synergies.push({ kind: "waterImmune", reason: "aprovecha ataques Water aliados" });
   if (abilities.has("Drought")) synergies.push({ kind: "sun", reason: "sinergia con sol" });
@@ -3057,7 +4128,63 @@ function inferTeamSynergies(slots, moveDetails) {
 }
 
 function currentWeather(slots) {
-  return unique(slots.flatMap((slot) => weatherFromAbilities(slot.pokemon.abilities || [])));
+  return unique(slots.flatMap((slot) => weatherFromAbilities(slot.ability ? [slot.ability] : slot.pokemon.abilities || [])));
+}
+
+function hasCandidateAbility(candidate, ability) {
+  return [...(candidate.abilities || [])].some((item) => toId(item) === toId(ability));
+}
+
+function applyTeamContextScore(mon, candidate, profile, add) {
+  const speedPlan = profile.speedPlan || {};
+  const strongPhysical = candidate.physicalDamage || mon.baseStats.atk >= 115;
+  const strongSpecial = candidate.specialDamage || mon.baseStats.spa >= 115;
+  const strongAttacker = strongPhysical || strongSpecial;
+
+  if (speedPlan.trickRoom) {
+    if (mon.baseStats.spe <= 55 && strongAttacker) add(38, "abusa de tu Trick Room");
+    else if (mon.baseStats.spe <= 75 && strongAttacker) add(30, "aprovecha Trick Room");
+    else if (mon.baseStats.spe <= 90 && candidate.bulkScore >= 285) add(16, "funciona en Trick Room");
+    else if (mon.baseStats.spe >= 115 && !candidate.setRoles.has("priority")) add(-24, "va contra tu Trick Room");
+    if (candidate.setMoveIds.has("trickroom")) add(14, "segundo setter de Trick Room");
+    if (strongAttacker && candidate.setRoles.has("spreadDamage") && mon.baseStats.spe <= 80) add(14, "presiona en Trick Room");
+  }
+
+  if (speedPlan.tailwind) {
+    if (mon.baseStats.spe >= 65 && mon.baseStats.spe <= 115 && strongAttacker) add(26, "aprovecha Tailwind");
+    if (mon.baseStats.spe >= 45 && mon.baseStats.spe < 65 && strongAttacker) add(12, "necesita Tailwind para brillar");
+    if (candidate.setRoles.has("spreadDamage") && strongAttacker) add(12, "convierte Tailwind en presión ofensiva");
+    if (mon.baseStats.spe >= 120 && strongAttacker) add(5, "presiona incluso sin Tailwind");
+  }
+
+  if (speedPlan.speedDrops || speedPlan.paralysis) {
+    if (mon.baseStats.spe >= 75 && mon.baseStats.spe <= 115 && strongAttacker) add(16, "aprovecha bajadas de Velocidad");
+    if (candidate.setRoles.has("priority")) add(8, "remata tras control de velocidad");
+  }
+
+  if (profile.currentWeather.includes("Rain")) {
+    if (hasCandidateAbility(candidate, "Swift Swim")) add(40, "abusa de la lluvia");
+    if (candidate.attackTypes.includes("Water")) add(16, "potencia daño de Agua");
+    if (candidate.moveIds.has("hurricane") || candidate.moveIds.has("thunder")) add(10, "aprovecha precisión con lluvia");
+  } else if (hasCandidateAbility(candidate, "Swift Swim") && hasCandidateAbility(candidate, "Adaptability")) {
+    add(12, "puede jugar Adaptability sin lluvia");
+  }
+
+  if (profile.currentWeather.includes("Sun")) {
+    if (hasCandidateAbility(candidate, "Chlorophyll") || hasCandidateAbility(candidate, "Solar Power")) add(36, "abusa del sol");
+    if (candidate.attackTypes.includes("Fire")) add(16, "potencia daño de Fuego");
+    if (candidate.moveIds.has("solarbeam")) add(9, "aprovecha Solar Beam con sol");
+  }
+
+  if (profile.currentWeather.includes("Sand")) {
+    if (hasCandidateAbility(candidate, "Sand Rush") || hasCandidateAbility(candidate, "Sand Force")) add(36, "abusa de la arena");
+    if (["Rock", "Ground", "Steel"].some((type) => candidate.types.has(type))) add(10, "encaja con arena");
+  }
+
+  if (profile.currentWeather.includes("Snow")) {
+    if (hasCandidateAbility(candidate, "Slush Rush")) add(34, "abusa de la nieve");
+    if (candidate.types.has("Ice") || candidate.moveIds.has("auroraveil") || candidate.moveIds.has("blizzard")) add(12, "encaja con nieve");
+  }
 }
 
 function candidateWeather(candidate) {
@@ -3961,7 +5088,7 @@ function importShowdown(text) {
   const blocks = text.split(/\n\s*\n/g).map((block) => block.trim()).filter(Boolean).slice(0, MAX_TEAM);
   for (let i = 0; i < MAX_TEAM; i++) team[i] = emptySlot();
   let insertIndex = 0;
-  const importedIds = new Set();
+  const importedSpecies = new Set();
   blocks.forEach((block) => {
     if (insertIndex >= MAX_TEAM) return;
     const lines = block.split(/\n/g).map((line) => line.trim()).filter(Boolean);
@@ -3972,12 +5099,13 @@ function importShowdown(text) {
     const megaName = importedItem ? megaNameFromStone(importedItem) : "";
     if (megaName) mon = findPokemon(megaName) || mon;
     if (!mon) return;
-    if (importedIds.has(mon.id)) return;
-    importedIds.add(mon.id);
+    const speciesKey = speciesClauseKey(mon);
+    if (importedSpecies.has(speciesKey)) return;
+    importedSpecies.add(speciesKey);
     const slot = emptySlot();
     slot.pokemon = mon;
     applyPopularSet(slot, mon);
-    if (importedItem && isChampionsItem(importedItem, mon)) slot.item = importedItem;
+    slot.item = importedItem && isChampionsItem(importedItem, mon) ? importedItem : "";
     const moves = [];
     for (const line of lines.slice(1)) {
       if (/^Ability:/i.test(line)) {
@@ -4283,6 +5411,11 @@ function baseStatsHtml(mon, labeled = false) {
   return `<span class="base-stats-line">${labeled ? `<span class="base-stats-label">${selectedLanguage === "es" ? "Stats base" : "Base stats"}</span>` : ""}${stats.map(([label, value]) => `<span><b>${label}</b> ${value}</span>`).join("")}</span>`;
 }
 
+function baseStatsText(mon) {
+  if (!mon?.baseStats) return "";
+  return STAT_KEYS.map((key) => `${STAT_LABELS[key]} ${mon.baseStats[key]}`).join(" · ");
+}
+
 function typeLabel(type) {
   if (selectedLanguage === "en") return type;
   return {
@@ -4403,16 +5536,96 @@ function availableItemsFor(mon) {
   return championsItemPool().filter((item) => !itemData(item)?.megaStone);
 }
 
-function defaultItemFor(mon) {
+function defaultItemFor(mon, options = {}) {
   const available = availableItemsFor(mon);
+  if (mon?.isMega) return available[0] || "";
   const live = munchStatsForName(mon?.name);
-  const preferred = [...(live?.items || []), ...(mon.items || [])].map(normalizeItemName).find((item) => available.includes(item));
   const roleSuggestion = normalizeItemName(suggestedItem(mon.roles || [], mon.baseStats || {}));
-  return preferred || (available.includes(roleSuggestion) ? roleSuggestion : "") || available[0] || "";
+  const candidates = sortByUsageThenName(
+    unique([...(live?.items || []), ...(mon.items || []), roleSuggestion, ...available].map(normalizeItemName))
+      .filter((item) => available.includes(item)),
+    (item) => itemUsageFor(mon, item)
+  );
+  const usedItems = options.usedItems || usedTeamItemKeys(options.slot || null);
+  return candidates.find((item) => !usedItems.has(itemClauseKey(item))) || candidates[0] || "";
+}
+
+function contextualItemFor(mon, ability = "", options = {}) {
+  const available = availableItemsFor(mon);
+  if (mon?.isMega) return available[0] || "";
+
+  const live = munchStatsForName(mon?.name);
+  const usedItems = options.usedItems || usedTeamItemKeys(options.slot || null);
+  const contextSlots = (options.contextSlots || team.filter((slot) => slot.pokemon))
+    .filter((slot) => speciesClauseKey(slot.pokemon) !== speciesClauseKey(mon));
+  const weather = currentWeather(contextSlots);
+  const speedPlan = speedPlanForSlots(contextSlots);
+  const roleSuggestion = normalizeItemName(suggestedItem(mon.roles || [], mon.baseStats || {}));
+  const candidates = sortByUsageThenName(
+    unique([...(live?.items || []), ...(mon.items || []), roleSuggestion, ...available].map(normalizeItemName))
+      .filter((item) => available.includes(item)),
+    (item) => itemUsageFor(mon, item)
+  );
+  const legal = candidates.filter((item) => !usedItems.has(itemClauseKey(item)));
+  const pick = (...names) => {
+    const ids = new Set(names.map(toId));
+    return legal.find((item) => ids.has(itemClauseKey(item)) || ids.has(toId(item)));
+  };
+  const bestNonChoice = () => legal.find((item) => !isChoiceItem(item)) || "";
+  const fallback = () => defaultItemFor(mon, options);
+  const abilityId = toId(ability);
+
+  if (weather.includes("Rain") && abilityId === "swiftswim") {
+    return pick("Mystic Water", "Life Orb", "Spell Tag", "Focus Sash", "Sitrus Berry", "Clear Amulet", "White Herb")
+      || bestNonChoice()
+      || fallback();
+  }
+
+  if (!weather.includes("Rain") && hasAbilityName(mon, "Swift Swim") && abilityId === "adaptability") {
+    return pick("Choice Scarf", "Mystic Water", "Spell Tag", "Focus Sash", "Sitrus Berry") || fallback();
+  }
+
+  if (weather.includes("Sun") && ["chlorophyll", "solarpower"].includes(abilityId)) {
+    return pick("Life Orb", "Charcoal", "Heat Rock", "Focus Sash", "Sitrus Berry", "Covert Cloak")
+      || bestNonChoice()
+      || fallback();
+  }
+
+  if (weather.includes("Sand") && ["sandrush", "sandforce"].includes(abilityId)) {
+    return pick("Life Orb", "Soft Sand", "Clear Amulet", "Focus Sash", "Sitrus Berry", "White Herb")
+      || bestNonChoice()
+      || fallback();
+  }
+
+  if (speedPlan.trickRoom && Number(mon?.baseStats?.spe || 0) <= 75) {
+    return pick("Life Orb", "Charcoal", "Throat Spray", "Mystic Water", "Spell Tag", "Sitrus Berry", "Leftovers", "Mental Herb", "Focus Sash")
+      || bestNonChoice()
+      || fallback();
+  }
+
+  if (speedPlan.tailwind && Number(mon?.baseStats?.spe || 0) >= 65 && Number(mon?.baseStats?.spe || 0) <= 115) {
+    return pick("Life Orb", "Clear Amulet", "Mystic Water", "Spell Tag", "Soft Sand", "White Herb", "Focus Sash", "Sitrus Berry")
+      || bestNonChoice()
+      || fallback();
+  }
+
+  return fallback();
 }
 
 function isChampionsItem(item, mon) {
+  if (!item) return true;
   return availableItemsFor(mon).includes(normalizeItemName(item));
+}
+
+function usedTeamItemKeys(exceptSlot = null) {
+  return new Set(team
+    .filter((slot) => slot !== exceptSlot && slot.pokemon && slot.item)
+    .map((slot) => itemClauseKey(slot.item))
+    .filter(Boolean));
+}
+
+function itemClauseKey(item) {
+  return toId(displayItemName(item) || normalizeItemName(item));
 }
 
 function itemData(item) {

@@ -1,6 +1,8 @@
 (() => {
   const STORAGE_KEY = "champions-core-builder";
   const LANGUAGES = new Set(["es", "en"]);
+  const LANGUAGE_ORDER = ["en", "es"];
+  const LANGUAGE_NAMES = { es: "Español", en: "English" };
   const TEXT = {
     es: {
       bannerAlt: "Pkounter: Construye tus equipos, estudia la sinergia, elimina tus counters",
@@ -9,7 +11,6 @@
       title: "Construye equipos con contexto real del meta.",
       copy: "Pkounter te ayuda a montar equipos, revisar amenazas, importar y exportar sets en formato Showdown y tomar decisiones con datos de uso, roles, tipos, movimientos y objetos del formato seleccionado.",
       startButton: "Empezar a construir",
-      aboutButton: "Sobre Pkounter",
     },
     en: {
       bannerAlt: "Pkounter: Build your teams, study the synergy, finish your counters",
@@ -18,12 +19,11 @@
       title: "Build teams with real metagame context.",
       copy: "Pkounter helps you build teams, review threats, import and export Showdown sets, and make decisions with usage data, roles, types, moves, and items from the selected format.",
       startButton: "Start building",
-      aboutButton: "About Pkounter",
     },
   };
   const BANNERS = {
-    es: "assets/Banner-Pkounter-inicio-ESP.jpg?v=1",
-    en: "assets/Banner-Pkounter-inicio-ENG.jpg?v=1",
+    es: "/assets/Banner-Pkounter-inicio-ESP.jpg?v=1",
+    en: "/assets/Banner-Pkounter-inicio-ENG.jpg?v=1",
   };
 
   function savedLanguage() {
@@ -31,9 +31,9 @@
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}")?.selectedLanguage;
       if (LANGUAGES.has(saved)) return saved;
     } catch {
-      // Ignore broken local storage and fall back to the browser language.
+      // Ignore broken local storage and fall back to English.
     }
-    return navigator.language?.toLowerCase().startsWith("es") ? "es" : "en";
+    return "en";
   }
 
   function persistLanguage(language) {
@@ -61,8 +61,15 @@
       banner.src = BANNERS[language];
       banner.alt = TEXT[language].bannerAlt;
     }
-    document.querySelectorAll("[data-landing-language]").forEach((button) => {
+    const languageButtons = [...document.querySelectorAll("[data-landing-language]")];
+    LANGUAGE_ORDER.forEach((code) => {
+      const button = languageButtons.find((item) => item.dataset.landingLanguage === code);
+      if (button) button.parentElement?.appendChild(button);
+    });
+    languageButtons.forEach((button) => {
       const active = button.dataset.landingLanguage === language;
+      button.textContent = LANGUAGE_NAMES[button.dataset.landingLanguage] || button.textContent;
+      button.hidden = false;
       button.classList.toggle("active", active);
       button.setAttribute("aria-pressed", String(active));
     });

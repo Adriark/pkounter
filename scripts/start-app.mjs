@@ -81,7 +81,11 @@ async function openBrowser(url) {
 
 async function serveFile(req, res) {
   const requestedPath = decodeURIComponent(new URL(req.url, "http://localhost").pathname);
-  const cleanPath = requestedPath === "/" ? "/index.html" : requestedPath;
+  const cleanPath = requestedPath === "/"
+    ? "/index.html"
+    : requestedPath.endsWith("/")
+      ? `${requestedPath}index.html`
+      : requestedPath;
   const filePath = normalize(join(ROOT, cleanPath));
 
   const relativePath = relative(ROOT, filePath);
