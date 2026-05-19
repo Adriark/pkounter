@@ -445,21 +445,21 @@ label {
 }
 
 .about-page {
-  height: 100dvh;
+  height: auto;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
-  overflow-y: hidden;
+  overflow-y: auto;
 }
 
 .about-shell {
   width: min(1120px, calc(100vw - 32px));
   margin: 0 auto;
   padding: 28px 0 34px;
-  flex: 1 1 auto;
+  flex: 1 0 auto;
   min-height: 0;
-  overflow-y: auto;
+  overflow-y: visible;
 }
 
 .about-page .site-footer {
@@ -1185,6 +1185,18 @@ body.modal-open::before {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+  align-items: start;
+}
+
+.form-grid > div {
+  min-width: 0;
+}
+
+.form-grid label {
+  display: flex;
+  align-items: center;
+  min-height: 22px;
+  margin-bottom: 4px;
 }
 
 .form-grid .wide {
@@ -1204,14 +1216,19 @@ body.modal-open::before {
 
 .select-with-art {
   position: relative;
+  min-width: 0;
 }
 
 .select-with-art :is(select, input).has-art {
+  height: 50px;
   min-height: 50px;
   padding-left: 60px;
 }
 
 .combo-input {
+  width: 100%;
+  height: 50px;
+  min-height: 50px;
   min-width: 0;
   padding-right: 42px;
 }
@@ -1219,6 +1236,7 @@ body.modal-open::before {
 .combo-picker {
   position: relative;
   width: 100%;
+  min-width: 0;
 }
 
 .combo-picker:focus-within {
@@ -5589,12 +5607,6 @@ body {
   overflow: visible !important;
 }
 
-.about-page .landing-footer {
-  flex: 0 0 auto !important;
-  padding: 18px 16px 22px !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
 .landing-footer-set {
   display: grid;
   justify-items: center;
@@ -6847,7 +6859,7 @@ body.modal-open > :not(.import-tray) {
 
   .about-page {
     overflow-x: hidden;
-    overflow-y: hidden;
+    overflow-y: auto;
   }
 
   .about-shell {
@@ -6856,7 +6868,7 @@ body.modal-open > :not(.import-tray) {
     margin-inline: auto;
     padding: 16px 8px 20px;
     overflow-x: hidden;
-    overflow-y: auto;
+    overflow-y: visible;
   }
 
   .about-grid {

@@ -2999,18 +2999,6 @@ function renderEditor() {
         ${megaControlHtml(mon)}
       </div>
       <div>
-        <label>${selectedLanguage === "es" ? "Naturaleza" : "Nature"}</label>
-        ${comboInputHtml({
-          listId: natureListId,
-          value: natureOptionLabel(mon, slot.nature),
-          options: natureOptions,
-          labelFor: (nature) => natureOptionLabel(mon, nature),
-          aliasesFor: (nature) => [nature, natureUiName(nature), natureModifierLabel(nature)],
-          field: "nature",
-          placeholder: selectedLanguage === "es" ? "Buscar naturaleza..." : "Search nature...",
-        })}
-      </div>
-      <div>
         <label class="label-with-info">
           <span>${selectedLanguage === "es" ? "Objeto" : "Item"}</span>
           ${infoButtonHtml(slot.item ? itemUiName(slot.item) : t("noItem"), itemDescriptionText(slot.item), "item")}
@@ -3029,6 +3017,18 @@ function renderEditor() {
           })}
         </div>
         ${editorNotice ? `<div class="field-warning">${escapeHtml(editorNotice)}</div>` : ""}
+      </div>
+      <div>
+        <label>${selectedLanguage === "es" ? "Naturaleza" : "Nature"}</label>
+        ${comboInputHtml({
+          listId: natureListId,
+          value: natureOptionLabel(mon, slot.nature),
+          options: natureOptions,
+          labelFor: (nature) => natureOptionLabel(mon, nature),
+          aliasesFor: (nature) => [nature, natureUiName(nature), natureModifierLabel(nature)],
+          field: "nature",
+          placeholder: selectedLanguage === "es" ? "Buscar naturaleza..." : "Search nature...",
+        })}
       </div>
       <div>
         <label class="label-with-info">
