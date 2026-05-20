@@ -1491,6 +1491,10 @@ body.modal-open::before {
   display: none;
 }
 
+.combo-option-info-trigger {
+  display: none;
+}
+
 .floating-move-info {
   position: fixed;
   z-index: 2147482600;
@@ -6431,6 +6435,40 @@ body {
   .side-panel {
     height: min(720px, 78dvh) !important;
     min-height: 390px !important;
+  }
+
+  .combo-option.has-combo-info {
+    padding-right: 42px !important;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  .combo-option-info-trigger {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border: 1px solid rgba(123, 211, 178, 0.72);
+    border-radius: 999px;
+    background: rgba(9, 20, 24, 0.88);
+    color: #9fe8cc;
+    font-size: 0.78rem;
+    font-weight: 900;
+    line-height: 1;
+    transform: translateY(-50%);
+    touch-action: manipulation;
+  }
+
+  .combo-option-info-trigger:active,
+  .combo-option-info-trigger:focus-visible {
+    background: rgba(63, 181, 138, 0.22);
+    color: #ffffff;
   }
 }
 

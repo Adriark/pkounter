@@ -2734,7 +2734,9 @@ function moveInfoButtonHtml(move) {
 
 function moveOptionDetailsHtml(move) {
   if (!move) return "";
-  return `<span class="combo-option-info" aria-hidden="true">
+  const label = selectedLanguage === "es" ? `Ver datos de ${moveUiName(move)}` : `View ${moveUiName(move)} details`;
+  return `<span class="combo-option-info-trigger" role="button" tabindex="0" aria-label="${escapeHtml(label)}">i</span>
+  <span class="combo-option-info" aria-hidden="true">
     <strong>${escapeHtml(moveUiName(move))}</strong>
     ${moveInfoRowsHtml(move)}
   </span>`;
@@ -3003,7 +3005,8 @@ function comboOptionButtonsHtml(options, labelFor, aliasesFor = () => [], option
       const label = labelFor(option);
       const search = [label, ...(aliasesFor(option) || [])].filter(Boolean).join(" ");
       const details = optionDetailsFor(option);
-      return `<button class="combo-option ${optionClassFor(option)}" type="button" data-combo-option="${index}" data-combo-value="${escapeHtml(label)}" data-combo-search="${escapeHtml(search)}"><span class="combo-option-label">${escapeHtml(label)}</span>${details}</button>`;
+      const infoClass = details ? "has-combo-info" : "";
+      return `<button class="combo-option ${infoClass} ${optionClassFor(option)}" type="button" data-combo-option="${index}" data-combo-value="${escapeHtml(label)}" data-combo-search="${escapeHtml(search)}"><span class="combo-option-label">${escapeHtml(label)}</span>${details}</button>`;
     })
     .join("");
 }
@@ -3078,7 +3081,6 @@ let moveOptionTooltipHideTimer;
 let moveOptionHoldTimer;
 let moveOptionSuppressClickUntil = 0;
 let moveOptionGlobalEventsWired = false;
-let moveOptionTouchState = null;
 
 function comboMoveOptionFromEvent(event) {
   const button = event.target.closest?.(".combo-option");
@@ -3159,6 +3161,23 @@ function hideMoveOptionTooltip(delay = 0) {
 function wireMoveOptionTooltips(menu) {
   if (!menu || menu.dataset.moveTooltipWired) return;
   menu.dataset.moveTooltipWired = "true";
+  const showTriggerTooltip = (event) => {
+    const trigger = event.target.closest?.(".combo-option-info-trigger");
+    if (!trigger) return false;
+    const button = trigger.closest(".combo-option");
+    if (!button) return false;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation?.();
+    moveOptionSuppressClickUntil = Date.now() + 320;
+    showMoveOptionTooltip(button);
+    return true;
+  };
+  menu.addEventListener("click", showTriggerTooltip, true);
+  menu.addEventListener("keydown", (event) => {
+    if (event.key !== "Enter" && event.key !== " ") return;
+    showTriggerTooltip(event);
+  }, true);
   menu.addEventListener("pointerover", (event) => {
     if (event.pointerType === "touch") return;
     const button = comboMoveOptionFromEvent(event);
@@ -3175,59 +3194,13 @@ function wireMoveOptionTooltips(menu) {
     if (button) showMoveOptionTooltip(button);
   });
   menu.addEventListener("focusout", () => hideMoveOptionTooltip(80));
-  menu.addEventListener("pointerdown", (event) => {
-    const button = comboMoveOptionFromEvent(event);
-    if (!button || event.pointerType !== "touch") return;
-    window.clearTimeout(moveOptionHoldTimer);
-    moveOptionTouchState = {
-      button,
-      pointerId: event.pointerId,
-      x: event.clientX,
-      y: event.clientY,
-      held: false,
-    };
-    moveOptionHoldTimer = window.setTimeout(() => {
-      if (!moveOptionTouchState || moveOptionTouchState.button !== button) return;
-      moveOptionTouchState.held = true;
-      button.dataset.comboTooltipHold = "true";
-      moveOptionSuppressClickUntil = Date.now() + 1400;
-      showMoveOptionTooltip(button);
-    }, 520);
-  });
-  menu.addEventListener("pointermove", (event) => {
-    if (!moveOptionTouchState || event.pointerType !== "touch" || event.pointerId !== moveOptionTouchState.pointerId) return;
-    const dx = Math.abs(event.clientX - moveOptionTouchState.x);
-    const dy = Math.abs(event.clientY - moveOptionTouchState.y);
-    if (dx > 12 || dy > 12) {
-      window.clearTimeout(moveOptionHoldTimer);
-      moveOptionTouchState = null;
-    }
-  }, { passive: true });
-  const endHold = (event) => {
-    window.clearTimeout(moveOptionHoldTimer);
-    const wasHeld = Boolean(moveOptionTouchState?.held);
-    const held = menu.querySelector("[data-combo-tooltip-hold]");
-    if (held) {
-      moveOptionSuppressClickUntil = Date.now() + 1400;
-      held.removeAttribute("data-combo-tooltip-hold");
-      hideMoveOptionTooltip(1600);
-    }
-    moveOptionTouchState = null;
-    if (wasHeld) {
-      event?.preventDefault?.();
-      event?.stopPropagation?.();
-    }
-  };
-  menu.addEventListener("pointerup", endHold);
-  menu.addEventListener("pointercancel", endHold);
   menu.addEventListener("click", (event) => {
     if (Date.now() >= moveOptionSuppressClickUntil) return;
     event.preventDefault();
     event.stopPropagation();
   }, true);
   menu.addEventListener("contextmenu", (event) => {
-    if (Date.now() >= moveOptionSuppressClickUntil) return;
-    event.preventDefault();
+    if (event.target.closest?.(".combo-option.has-combo-info")) event.preventDefault();
   });
   menu.addEventListener("mouseleave", () => hideMoveOptionTooltip());
   menu.addEventListener("scroll", () => hideMoveOptionTooltip(), { passive: true });
