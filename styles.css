@@ -7481,3 +7481,109 @@ body.modal-open > :not(.import-tray) {
     overflow: visible !important;
   }
 }
+
+/* Intermediate desktop: give team/config breathing room, then split tools below. */
+@media (min-width: 1181px) and (max-width: 2150px) and (max-height: 1150px) {
+  body.split-side-layout:not(.landing-page):not(.about-page) {
+    height: auto !important;
+    min-height: 100dvh !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  body.split-side-layout:not(.landing-page):not(.about-page) .app-shell {
+    grid-template-columns: minmax(360px, 0.96fr) minmax(480px, 1.04fr) !important;
+    grid-template-areas:
+      "team editor"
+      "side side" !important;
+    grid-template-rows: clamp(620px, 68dvh, 760px) clamp(620px, 74dvh, 820px) !important;
+    height: auto !important;
+    min-height: calc(100dvh - var(--topbar-height) - var(--footer-height)) !important;
+    align-items: stretch !important;
+    overflow: visible !important;
+  }
+
+  body.split-side-layout:not(.landing-page):not(.about-page) .team-panel,
+  body.split-side-layout:not(.landing-page):not(.about-page) .editor-panel {
+    height: 100% !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  body.split-side-layout:not(.landing-page):not(.about-page) .team-panel {
+    overflow-y: auto !important;
+  }
+
+  body.split-side-layout:not(.landing-page):not(.about-page) .editor-panel #editor {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+  }
+
+  body.split-side-layout:not(.landing-page):not(.about-page) .side-panel {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr) !important;
+    grid-template-rows: auto minmax(0, 1fr) !important;
+    grid-template-areas:
+      "suggestions tabs"
+      "suggestions counter" !important;
+    gap: 10px !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  body.split-side-layout:not(.landing-page):not(.about-page) .side-tabs {
+    grid-area: tabs !important;
+    position: static !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    margin: 0 !important;
+  }
+
+  body.split-side-layout:not(.landing-page):not(.about-page) #tab-suggestions {
+    display: none !important;
+  }
+
+  body.split-side-layout:not(.landing-page):not(.about-page) .suggestions-panel {
+    grid-area: suggestions !important;
+  }
+
+  body.split-side-layout:not(.landing-page):not(.about-page) .counters-panel,
+  body.split-side-layout:not(.landing-page):not(.about-page) .threat-panel {
+    grid-area: counter !important;
+  }
+
+  body.split-side-layout:not(.landing-page):not(.about-page) .side-tab-panel {
+    height: 100% !important;
+    min-height: 0 !important;
+    overflow: hidden !important;
+  }
+
+  body.split-side-layout:not(.landing-page):not(.about-page) .side-tab-panel .suggestions,
+  body.split-side-layout:not(.landing-page):not(.about-page) .side-tab-panel .counters {
+    flex: 1 1 auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    overflow-y: auto !important;
+  }
+
+  body.split-side-layout:not(.landing-page):not(.about-page) .suggestions-panel .suggestion-grid {
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)) !important;
+  }
+}
+
+@media (min-width: 1181px) and (max-width: 1500px) and (max-height: 1150px) {
+  body.split-side-layout:not(.landing-page):not(.about-page) .app-shell {
+    grid-template-rows: clamp(590px, 70dvh, 720px) clamp(600px, 78dvh, 780px) !important;
+  }
+
+  body.split-side-layout:not(.landing-page):not(.about-page) .side-panel {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  }
+
+  body.split-side-layout:not(.landing-page):not(.about-page) .suggestions-panel .suggestion-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

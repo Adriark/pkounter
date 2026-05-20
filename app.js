@@ -835,6 +835,9 @@ let selectedSlot = 0;
 let suggestionLimit = 8;
 let threatSearchMode = "auto";
 let activeSideTab = "suggestions";
+let secondarySideTab = "counters";
+let splitSideLayoutActive = false;
+const splitSideLayoutQuery = window.matchMedia?.("(min-width: 1181px) and (max-width: 2150px) and (max-height: 1150px)");
 let typeAnalysisView = "";
 let threatAdvanced = false;
 const majorThreatAdvancedIds = new Set();
@@ -894,6 +897,7 @@ function init() {
   renderLanguageSelect();
   renderPokemonList();
   bindEvents();
+  syncResponsiveSideLayout({ render: false });
   renderAll();
 }
 
@@ -998,6 +1002,7 @@ function bindEvents() {
   els.sideTabs?.forEach((button) => {
     button.addEventListener("click", () => setActiveSideTab(button.dataset.sideTab));
   });
+  splitSideLayoutQuery?.addEventListener?.("change", () => syncResponsiveSideLayout());
   document.addEventListener?.("click", (event) => {
     if (!event.target.closest?.(".format-control") && !event.target.closest?.(".format-menu")) {
       closeFormatMenu();
@@ -1007,6 +1012,7 @@ function bindEvents() {
   window.addEventListener?.("resize", () => {
     if (!els.formatMenu?.hidden) positionHeaderMenu(els.formatMenu, els.formatButton);
     if (!els.languageMenu?.hidden) positionHeaderMenu(els.languageMenu, els.languageButton);
+    syncResponsiveSideLayout();
   });
   document.addEventListener?.("keydown", (event) => {
     if (event.key === "Escape") {
@@ -1034,13 +1040,19 @@ function closeImportModal() {
 
 function setActiveSideTab(tabName, options = {}) {
   activeSideTab = tabName || "suggestions";
+  const splitLayout = isSplitSideLayout();
+  if (splitLayout && activeSideTab !== "suggestions") secondarySideTab = activeSideTab;
   els.sideTabs?.forEach((button) => {
-    const active = button.dataset.sideTab === activeSideTab;
+    const active = splitLayout
+      ? button.dataset.sideTab === secondarySideTab
+      : button.dataset.sideTab === activeSideTab;
     button.classList.toggle("active", active);
     button.setAttribute("aria-selected", String(active));
   });
   els.sidePanels?.forEach((panel) => {
-    const active = panel.dataset.tabPanel === activeSideTab;
+    const active = splitLayout
+      ? panel.dataset.tabPanel === "suggestions" || panel.dataset.tabPanel === secondarySideTab
+      : panel.dataset.tabPanel === activeSideTab;
     panel.classList.toggle("active", active);
     panel.hidden = !active;
   });
@@ -1048,6 +1060,15 @@ function setActiveSideTab(tabName, options = {}) {
 }
 
 function renderActiveSidePanel() {
+  if (isSplitSideLayout()) {
+    renderSuggestions();
+    if (secondarySideTab === "threat") {
+      renderThreatCounters();
+    } else {
+      renderCounters();
+    }
+    return;
+  }
   if (activeSideTab === "counters") {
     renderCounters();
     return;
@@ -1057,6 +1078,19 @@ function renderActiveSidePanel() {
     return;
   }
   renderSuggestions();
+}
+
+function isSplitSideLayout() {
+  return Boolean(splitSideLayoutQuery?.matches);
+}
+
+function syncResponsiveSideLayout(options = {}) {
+  const splitLayout = isSplitSideLayout();
+  document.body.classList.toggle("split-side-layout", splitLayout);
+  if (splitLayout === splitSideLayoutActive) return;
+  splitSideLayoutActive = splitLayout;
+  if (splitLayout && activeSideTab !== "suggestions") secondarySideTab = activeSideTab;
+  setActiveSideTab(activeSideTab, { render: options.render !== false });
 }
 
 function updateSelectedFormat(formatId) {
