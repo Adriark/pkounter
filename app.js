@@ -4485,7 +4485,7 @@ function suggestionExplanation(mon, reasons, profile, candidate) {
   const warnings = reasons.filter(isWarningReason);
   const details = unique([
     ...reasonExplanationPhrases(positives, profile),
-    ...candidateCapabilityPhrases(mon, candidate),
+    ...candidateCapabilityPhrases(mon, candidate, profile),
   ]).slice(0, 3);
 
   if (details.length) {
@@ -4578,7 +4578,7 @@ function suggestionTagLabel(reason) {
   const worsens = reason.match(/^empeora (.+)$/);
   if (worsens) return selectedLanguage === "es" ? `Añade debilidad a ${worsens[1]}` : `Adds weakness to ${worsens[1]}`;
   const stacks = reason.match(/^apila debilidad (.+)$/);
-  if (stacks) return selectedLanguage === "es" ? `Apila ${stacks[1]}` : `Stacks ${stacks[1]}`;
+  if (stacks) return selectedLanguage === "es" ? `Apila debilidad al tipo ${stacks[1]}` : `Stacks weakness to ${stacks[1]}`;
   const weather = reason.match(/^pisa tu clima con (.+)$/);
   if (weather) return selectedLanguage === "es" ? `Choca con ${weather[1]}` : `Clashes with ${weather[1]}`;
   const weatherPlan = reason.match(/^pisa el plan de (.+) con (.+)$/);
@@ -4999,7 +4999,7 @@ function suggestionCaution(mon, reasons, candidate, profile) {
   return "";
 }
 
-function candidateCapabilityPhrases(mon, candidate) {
+function candidateCapabilityPhrases(mon, candidate, profile = null) {
   const popularMoves = candidate.popularMoves || popularMoveDetails(mon);
   const moveIds = new Set(popularMoves.map((entry) => toId(entry.move)));
   const phrases = [];
@@ -5026,7 +5026,7 @@ function candidateCapabilityPhrases(mon, candidate) {
   if (moveIds.has("haze")) phrases.push(selectedLanguage === "es" ? "puede frenar boosts rivales con Haze" : "can stop opposing boosts with Haze");
   if (moveIds.has("encore") || moveIds.has("disable")) phrases.push(selectedLanguage === "es" ? `molesta turnos clave con ${firstMove(["encore", "disable"])}` : `disrupts key turns with ${firstMove(["encore", "disable"])}`);
   if (candidate.weather.includes("Rain")) phrases.push(selectedLanguage === "es" ? `activa lluvia para potenciar planes de ${typeLabel("Water")} y ${moveUiName("Hurricane")}` : "sets rain to boost Water plans and Hurricane");
-  if (candidate.weather.includes("Sun")) phrases.push(selectedLanguage === "es" ? `activa sol para potenciar ${typeLabel("Fire")} y ${abilityUiName("Chlorophyll")}` : "sets sun to boost Fire damage and Chlorophyll");
+  if (candidate.weather.includes("Sun")) phrases.push(sunSetterCapabilityPhrase(mon, popularMoves, profile));
   if (candidate.weather.includes("Sand")) phrases.push(selectedLanguage === "es" ? `activa arena para ${abilityUiName("Sand Rush")} o presión residual` : "sets sand for Sand Rush or residual pressure");
   if (spreadMoves.length) phrases.push(doubles
     ? (selectedLanguage === "es" ? `presiona ambos rivales con ${formatMoveList(spreadMoves.slice(0, 2))}` : `pressures both foes with ${formatMoveList(spreadMoves.slice(0, 2))}`)
@@ -5038,6 +5038,55 @@ function candidateCapabilityPhrases(mon, candidate) {
   if (doubles && boostMove) phrases.push(selectedLanguage === "es" ? `puede potenciar a su compañero con ${boostMove}` : `can boost its partner with ${boostMove}`);
 
   return phrases;
+}
+
+function sunSetterCapabilityPhrase(mon, popularMoves, profile = null) {
+  const sunTargets = new Set((profile?.weatherNeeds || [])
+    .filter((need) => need.weather === "Sun")
+    .flatMap((need) => need.targets || []));
+  const currentSunAbilityUsers = team
+    .filter((slot) => slot.pokemon && slot.pokemon.name !== mon.name)
+    .filter((slot) => {
+      const ability = slot.ability || slot.pokemon.popularAbility || "";
+      return ["chlorophyll", "solarpower"].includes(toId(ability));
+    })
+    .map((slot) => slot.pokemon.name);
+  const namedSunAbilityUsers = unique([...sunTargets].filter((name) => {
+    const slot = team.find((item) => item.pokemon?.name === name);
+    const ability = slot?.ability || slot?.pokemon?.popularAbility || "";
+    return ["chlorophyll", "solarpower"].includes(toId(ability));
+  }));
+  const abilityUsers = unique([...currentSunAbilityUsers, ...namedSunAbilityUsers]);
+  const hasSolarBeamUser = team.some((slot) => slot.pokemon && slot.pokemon.name !== mon.name && slotMoveIds(slot).has("solarbeam"));
+  const hasWeatherBallUser = team.some((slot) => slot.pokemon && slot.pokemon.name !== mon.name && slotMoveIds(slot).has("weatherball"));
+  const candidateHasSolarBeam = (popularMoves || []).some((entry) => toId(entry.move) === "solarbeam");
+  const candidateHasWeatherBall = (popularMoves || []).some((entry) => toId(entry.move) === "weatherball");
+  const fireText = typeLabel("Fire");
+  const solarText = moveUiName("Solar Beam");
+  const ballText = moveUiName("Weather Ball");
+
+  if (abilityUsers.length) {
+    const users = localizedList(abilityUsers.slice(0, 2));
+    return selectedLanguage === "es"
+      ? `activa sol para potenciar ${fireText} y habilidades de sol como ${abilityUiName("Chlorophyll")}${users ? ` en ${users}` : ""}`
+      : `sets sun to boost Fire damage and sun abilities like ${abilityUiName("Chlorophyll")}${users ? ` on ${users}` : ""}`;
+  }
+
+  if (hasSolarBeamUser || candidateHasSolarBeam) {
+    return selectedLanguage === "es"
+      ? `activa sol para potenciar ${fireText} y convertir ${solarText} en cobertura inmediata`
+      : `sets sun to boost Fire damage and turn ${solarText} into immediate coverage`;
+  }
+
+  if (hasWeatherBallUser || candidateHasWeatherBall) {
+    return selectedLanguage === "es"
+      ? `activa sol para potenciar ${fireText} y convertir ${ballText} en presión de sol`
+      : `sets sun to boost Fire damage and turn ${ballText} into sun pressure`;
+  }
+
+  return selectedLanguage === "es"
+    ? `activa sol para potenciar el daño de ${fireText} del equipo`
+    : "sets sun to boost the team's Fire damage";
 }
 
 function formatMoveWithUsage(entry) {

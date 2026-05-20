@@ -7122,6 +7122,70 @@ body.modal-open > :not(.import-tray) {
   }
 }
 
+/* Final mobile tuning: keep the header compact and restore sprites in single counters. */
+@media (max-width: 760px) {
+  body:not(.landing-page) #formatButton {
+    min-width: clamp(160px, 44vw, 198px) !important;
+    max-width: clamp(160px, 44vw, 198px) !important;
+  }
+
+  body:not(.landing-page) #languageButton {
+    min-width: clamp(80px, 22vw, 104px) !important;
+    max-width: clamp(80px, 22vw, 104px) !important;
+  }
+
+  body:not(.landing-page) .threat-panel .threat-target,
+  body:not(.landing-page) .threat-panel .counter-card {
+    grid-template-columns: 44px minmax(0, 1fr) !important;
+    align-items: start !important;
+    gap: 8px !important;
+  }
+
+  body:not(.landing-page) .threat-panel .threat-target > .sprite-frame,
+  body:not(.landing-page) .threat-panel .counter-card > .sprite-frame {
+    display: inline-flex !important;
+    width: 44px !important;
+    height: 44px !important;
+    align-self: start !important;
+  }
+
+  body:not(.landing-page) .threat-panel .threat-target > .sprite-frame img,
+  body:not(.landing-page) .threat-panel .counter-card > .sprite-frame img {
+    max-width: 50px !important;
+    max-height: 50px !important;
+  }
+}
+
+@media (max-width: 420px) {
+  body:not(.landing-page) #formatButton {
+    min-width: clamp(154px, 50vw, 188px) !important;
+    max-width: clamp(154px, 50vw, 188px) !important;
+  }
+
+  body:not(.landing-page) #languageButton {
+    min-width: 84px !important;
+    max-width: 84px !important;
+  }
+
+  body:not(.landing-page) .threat-panel .threat-target,
+  body:not(.landing-page) .threat-panel .counter-card {
+    grid-template-columns: 40px minmax(0, 1fr) !important;
+    gap: 8px !important;
+  }
+
+  body:not(.landing-page) .threat-panel .threat-target > .sprite-frame,
+  body:not(.landing-page) .threat-panel .counter-card > .sprite-frame {
+    width: 40px !important;
+    height: 40px !important;
+  }
+
+  body:not(.landing-page) .threat-panel .threat-target > .sprite-frame img,
+  body:not(.landing-page) .threat-panel .counter-card > .sprite-frame img {
+    max-width: 46px !important;
+    max-height: 46px !important;
+  }
+}
+
 /* Landing/About polish after the simplified home */
 @media (max-width: 760px) {
   .landing-page {
