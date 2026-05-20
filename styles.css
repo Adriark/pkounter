@@ -1008,8 +1008,26 @@ body.modal-open::before {
   background: rgba(231, 111, 100, 0.08);
 }
 
+.type-analysis-list-weaknesses .type-analysis-row.is-danger-signal {
+  border-color: rgba(239, 93, 86, 0.82);
+  background:
+    linear-gradient(90deg, rgba(125, 36, 42, 0.42), rgba(15, 21, 24, 0.96) 72%);
+  box-shadow:
+    inset 0 0 0 1px rgba(239, 93, 86, 0.18),
+    0 0 12px rgba(239, 93, 86, 0.08);
+}
+
 .type-analysis-list-resistances .type-analysis-row {
   border-color: rgba(84, 201, 143, 0.35);
+}
+
+.type-analysis-list-resistances .type-analysis-row.is-safe-signal {
+  border-color: rgba(65, 224, 148, 0.82);
+  background:
+    linear-gradient(90deg, rgba(17, 99, 61, 0.5), rgba(15, 21, 24, 0.96) 72%);
+  box-shadow:
+    inset 0 0 0 1px rgba(72, 255, 170, 0.18),
+    0 0 12px rgba(72, 255, 170, 0.1);
 }
 
 .type-analysis-row .type-icon {
@@ -1061,6 +1079,13 @@ body.modal-open::before {
   color: #ffe0a0;
 }
 
+.type-analysis-row.is-danger-signal .type-factor.weak,
+.type-analysis-row.is-danger-signal .type-factor.severe {
+  border-color: rgba(255, 162, 152, 0.35);
+  background: rgba(137, 42, 47, 0.82);
+  color: #ffe7e4;
+}
+
 .type-factor.severe {
   background: rgba(231, 111, 100, 0.22);
   color: #ffd4cf;
@@ -1069,6 +1094,13 @@ body.modal-open::before {
 .type-factor.resist {
   background: rgba(84, 201, 143, 0.18);
   color: #d8f4e7;
+}
+
+.type-analysis-row.is-safe-signal .type-factor.resist,
+.type-analysis-row.is-safe-signal .type-factor.immune {
+  border-color: rgba(129, 255, 194, 0.35);
+  background: rgba(25, 111, 69, 0.86);
+  color: #e5fff0;
 }
 
 .type-factor.immune {

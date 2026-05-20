@@ -6457,8 +6457,9 @@ function typePlannerHtml() {
     const weak2 = weak - weak4;
     const immune = matchups.filter((multiplier) => multiplier === 0).length;
     const resistOnly = matchups.filter((multiplier) => multiplier > 0 && multiplier < 1).length;
+    const resist4 = matchups.filter((multiplier) => multiplier > 0 && multiplier <= 0.25).length;
     const resist = resistOnly + immune;
-    return { type, weak, weak2, weak4, resist, resistOnly, immune };
+    return { type, weak, weak2, weak4, resist, resistOnly, resist4, immune };
   });
   const sortedRows = rows.sort((a, b) =>
     b.weak - a.weak ||
@@ -6476,12 +6477,16 @@ function typePlannerHtml() {
     );
   const resistanceRows = [...rows]
     .filter((row) => row.resist > 0)
-    .sort((a, b) =>
-      b.immune - a.immune ||
-      b.resist - a.resist ||
-      b.resistOnly - a.resistOnly ||
-      a.type.localeCompare(b.type)
-    );
+    .sort((a, b) => {
+      const aSignal = typeResistanceHasStrongSignal(a) ? 1 : 0;
+      const bSignal = typeResistanceHasStrongSignal(b) ? 1 : 0;
+      return bSignal - aSignal ||
+        b.resist - a.resist ||
+        b.resist4 - a.resist4 ||
+        b.resistOnly - a.resistOnly ||
+        b.immune - a.immune ||
+        a.type.localeCompare(b.type);
+    });
   const activeView = ["weaknesses", "resistances"].includes(typeAnalysisView) ? typeAnalysisView : "";
   const weakTabLabel = selectedLanguage === "es" ? "Debilidades" : "Weaknesses";
   const resistTabLabel = selectedLanguage === "es" ? "Resistencias" : "Resistances";
@@ -6522,10 +6527,22 @@ function typeAnalysisRowHtml(row, kind) {
         row.resistOnly ? typeFactorHtml("resist", "R", row.resistOnly) : "",
         row.immune ? typeFactorHtml("immune", "I", row.immune) : "",
       ];
-  return `<div class="type-analysis-row ${kind === "weaknesses" && row.weak4 ? "has-severe" : ""}" title="${typeBalanceTitle(row)}">
+  const classes = ["type-analysis-row"];
+  if (kind === "weaknesses" && row.weak4) classes.push("has-severe");
+  if (kind === "weaknesses" && typeWeaknessHasDangerSignal(row)) classes.push("is-danger-signal");
+  if (kind === "resistances" && typeResistanceHasStrongSignal(row)) classes.push("is-safe-signal");
+  return `<div class="${classes.join(" ")}" title="${typeBalanceTitle(row)}">
     ${typeIconHtml(row.type)}
     <span class="type-factor-row">${badges.filter(Boolean).join("")}</span>
   </div>`;
+}
+
+function typeWeaknessHasDangerSignal(row) {
+  return row.weak4 > 0 || row.weak2 >= 2;
+}
+
+function typeResistanceHasStrongSignal(row) {
+  return row.resistOnly > 3 || row.resistOnly + row.immune >= 3;
 }
 
 function typeFactorHtml(kind, label, count) {
@@ -6547,7 +6564,7 @@ function wireTypeAnalysisTabs(root) {
 function typeBalanceTitle(row) {
   const parts = [];
   if (row.weak) parts.push(selectedLanguage === "es" ? `${row.weak} miembros débiles${row.weak4 ? `, ${row.weak4} reciben x4` : ""}` : `${row.weak} weak members${row.weak4 ? `, ${row.weak4} take x4` : ""}`);
-  if (row.resistOnly) parts.push(selectedLanguage === "es" ? `${row.resistOnly} resisten` : `${row.resistOnly} resist`);
+  if (row.resistOnly) parts.push(selectedLanguage === "es" ? `${row.resistOnly} resisten${row.resist4 ? `, ${row.resist4} resisten x4` : ""}` : `${row.resistOnly} resist${row.resist4 ? `, ${row.resist4} resist x4` : ""}`);
   if (row.immune) parts.push(selectedLanguage === "es" ? `${row.immune} inmunes` : `${row.immune} immune`);
   return `${typeLabel(row.type)}: ${parts.join(" · ") || (selectedLanguage === "es" ? "sin debilidades ni resistencias relevantes" : "no relevant weaknesses or resistances")}`;
 }
