@@ -56,6 +56,87 @@ const FORM_MOVE_BLOCKLIST = {
   ],
 };
 
+// Champions data lists the Psychic move too broadly; keep it only for Pokemon Showdown learners.
+const PSYCHIC_MOVE_LEARNERS = new Set([
+  "alakazam",
+  "alcremie",
+  "ariados",
+  "armarouge",
+  "aromatisse",
+  "audino",
+  "aurorus",
+  "banette",
+  "chandelure",
+  "chimecho",
+  "clefable",
+  "cofagrigus",
+  "delphox",
+  "espathra",
+  "espeon",
+  "farigiraf",
+  "floette",
+  "florges",
+  "froslass",
+  "gallade",
+  "garbodor",
+  "gardevoir",
+  "gengar",
+  "golurk",
+  "gourgeist",
+  "hatterene",
+  "klefki",
+  "lucario",
+  "medicham",
+  "megaalakazam",
+  "megaaudino",
+  "megabanette",
+  "megachandelure",
+  "megachimecho",
+  "megaclefable",
+  "megadelphox",
+  "megafloette",
+  "megafroslass",
+  "megagallade",
+  "megagardevoir",
+  "megagengar",
+  "megagolurk",
+  "megalucario",
+  "megamedicham",
+  "megameowstic",
+  "megasableye",
+  "megaslowbro",
+  "megastarmie",
+  "meowstic",
+  "mimikyu",
+  "mrrime",
+  "noivern",
+  "oranguru",
+  "politoed",
+  "polteageist",
+  "primarina",
+  "raichualola",
+  "reuniclus",
+  "runerigus",
+  "sableye",
+  "slowbro",
+  "slowbrogalar",
+  "slowking",
+  "slowkinggalar",
+  "slurpuff",
+  "snorlax",
+  "spiritomb",
+  "starmie",
+  "sylveon",
+  "trevenant",
+  "umbreon",
+  "vivillon",
+  "volcarona",
+  "whimsicott",
+  "wyrdeer",
+  "zoroark",
+  "zoroarkhisui",
+]);
+
 const UI_TEXT = {
   es: {
     addButton: "Añadir",
@@ -512,6 +593,92 @@ const TYPE_CHART = {
   Fairy: { Fire: 0.5, Fighting: 2, Poison: 0.5, Dragon: 2, Dark: 2, Steel: 0.5 },
 };
 
+const TYPE_ALIASES = {
+  normal: "Normal",
+  fire: "Fire",
+  fuego: "Fire",
+  water: "Water",
+  agua: "Water",
+  electric: "Electric",
+  electrico: "Electric",
+  grass: "Grass",
+  planta: "Grass",
+  ice: "Ice",
+  hielo: "Ice",
+  fighting: "Fighting",
+  lucha: "Fighting",
+  poison: "Poison",
+  veneno: "Poison",
+  ground: "Ground",
+  tierra: "Ground",
+  flying: "Flying",
+  volador: "Flying",
+  psychic: "Psychic",
+  psiquico: "Psychic",
+  psquico: "Psychic",
+  bug: "Bug",
+  bicho: "Bug",
+  rock: "Rock",
+  roca: "Rock",
+  ghost: "Ghost",
+  fantasma: "Ghost",
+  dragon: "Dragon",
+  dark: "Dark",
+  siniestro: "Dark",
+  steel: "Steel",
+  acero: "Steel",
+  fairy: "Fairy",
+  hada: "Fairy",
+};
+
+const TYPE_OVERRIDES = {
+  raichualola: ["Electric", "Psychic"],
+  alakazam: ["Psychic"],
+  megaalakazam: ["Psychic"],
+  slowbro: ["Water", "Psychic"],
+  megaslowbro: ["Water", "Psychic"],
+  slowbrogalar: ["Poison", "Psychic"],
+  starmie: ["Water", "Psychic"],
+  megastarmie: ["Water", "Psychic"],
+  espeon: ["Psychic"],
+  slowking: ["Water", "Psychic"],
+  slowkinggalar: ["Poison", "Psychic"],
+  gardevoir: ["Psychic", "Fairy"],
+  megagardevoir: ["Psychic", "Fairy"],
+  medicham: ["Fighting", "Psychic"],
+  megamedicham: ["Fighting", "Psychic"],
+  chimecho: ["Psychic"],
+  megachimecho: ["Psychic", "Steel"],
+  gallade: ["Psychic", "Fighting"],
+  megagallade: ["Psychic", "Fighting"],
+  reuniclus: ["Psychic"],
+  delphox: ["Fire", "Psychic"],
+  megadelphox: ["Fire", "Psychic"],
+  meowstic: ["Psychic"],
+  megameowstic: ["Psychic"],
+  oranguru: ["Normal", "Psychic"],
+  hatterene: ["Psychic", "Fairy"],
+  mrrime: ["Ice", "Psychic"],
+  wyrdeer: ["Normal", "Psychic"],
+  armarouge: ["Fire", "Psychic"],
+  espathra: ["Psychic"],
+  farigiraf: ["Normal", "Psychic"],
+  indeedee: ["Psychic", "Normal"],
+  indeedeef: ["Psychic", "Normal"],
+  metagross: ["Steel", "Psychic"],
+  megametagross: ["Steel", "Psychic"],
+  latias: ["Dragon", "Psychic"],
+  megalatias: ["Dragon", "Psychic"],
+  latios: ["Dragon", "Psychic"],
+  megalatios: ["Dragon", "Psychic"],
+  bronzong: ["Steel", "Psychic"],
+  tapulele: ["Psychic", "Fairy"],
+  rabsca: ["Bug", "Psychic"],
+  bruxish: ["Water", "Psychic"],
+  veluza: ["Water", "Psychic"],
+  ironleaves: ["Grass", "Psychic"],
+};
+
 const MOVE_INFO = {
   "Aqua Jet": { type: "Water", category: "Physical", role: "priority" },
   "Body Press": { type: "Fighting", category: "Physical" },
@@ -549,6 +716,7 @@ const MOVE_INFO = {
   "Parting Shot": { type: "Dark", category: "Status", role: "pivot" },
   "Play Rough": { type: "Fairy", category: "Physical" },
   "Protect": { type: "Normal", category: "Status", role: "protect" },
+  "Psychic": { type: "Psychic", category: "Special" },
   "Rage Powder": { type: "Bug", category: "Status", role: "redirection" },
   "Rock Slide": { type: "Rock", category: "Physical", role: "spread" },
   "Shadow Ball": { type: "Ghost", category: "Special" },
@@ -667,6 +835,7 @@ let selectedSlot = 0;
 let suggestionLimit = 8;
 let threatSearchMode = "auto";
 let activeSideTab = "suggestions";
+let typeAnalysisView = "";
 let threatAdvanced = false;
 const majorThreatAdvancedIds = new Set();
 const majorThreatDetailOpenIds = new Set();
@@ -682,7 +851,6 @@ const els = {
   pokemonSearch: document.querySelector("#pokemonSearch"),
   pokemonList: document.querySelector("#pokemonList"),
   quickPokemonMenu: document.querySelector("#quickPokemonMenu"),
-  addPokemon: document.querySelector("#addPokemon"),
   clearTeam: document.querySelector("#clearTeam"),
   randomTeam: document.querySelector("#randomTeam"),
   teamSlots: document.querySelector("#teamSlots"),
@@ -744,10 +912,6 @@ function mountHeaderMenus() {
 }
 
 function bindEvents() {
-  els.addPokemon.addEventListener("click", () => {
-    addPokemonByName(els.pokemonSearch.value.trim());
-    els.pokemonSearch.value = "";
-  });
   els.pokemonSearch.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       addPokemonByName(els.pokemonSearch.value.trim());
@@ -1261,12 +1425,12 @@ function buildChampionsDex() {
   return POKEMON.map((raw, index) => {
     const stats = STATS[index] || [80, 80, 80, 80, 80, 80];
     const rawMoves = MOVES[index] || [];
-    const types = [raw.type1, raw.type2].filter(Boolean);
     const name = canonicalPokemonName(raw);
+    const types = correctedPokemonTypes(name, [raw.type1, raw.type2]);
+    const baseStats = Object.fromEntries(STAT_KEYS.map((key, statIndex) => [key, stats[statIndex] || 1]));
     const learnset = sanitizeLearnsetForForm(name, unique(rawMoves.map(moveNameFromSlug).filter(Boolean)));
     const meta = nameKeys(name).map((key) => metaByKey.get(key)).find(Boolean);
     const live = munchStatsForName(name);
-    const baseStats = Object.fromEntries(STAT_KEYS.map((key, statIndex) => [key, stats[statIndex] || 1]));
     const isMega = name.startsWith("Mega ");
     const roles = unique([...(meta?.roles || []), ...inferRoles(raw, learnset, baseStats, isMega)]);
     const metaMoves = (meta?.moves || []).filter((move) => isLegalMoveForLearnset(learnset, move));
@@ -1304,9 +1468,14 @@ function buildChampionsDex() {
 }
 
 function sanitizeLearnsetForForm(name, learnset) {
+  const monId = toId(name);
   const blocked = new Set(FORM_MOVE_BLOCKLIST[toId(name)] || []);
-  if (!blocked.size) return learnset;
-  return learnset.filter((move) => !blocked.has(toId(move)));
+  return learnset.filter((move) => {
+    const moveId = toId(move);
+    if (blocked.has(moveId)) return false;
+    if (moveId === "psychic" && !PSYCHIC_MOVE_LEARNERS.has(monId)) return false;
+    return true;
+  });
 }
 
 function canonicalPokemonName(raw) {
@@ -1332,6 +1501,29 @@ function canonicalPokemonName(raw) {
   if (raw.name === "Raichu" && abilityIds.has("surgesurfer")) return "Raichu-Alola";
   if (raw.name === "Samurott" && abilityIds.has("sharpness")) return "Samurott-Hisui";
   return raw.name;
+}
+
+function normalizedTypeKey(type) {
+  return String(type || "")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "");
+}
+
+function normalizeTypeName(type) {
+  if (!type) return "";
+  const raw = String(type).trim();
+  if (TYPE_CHART[raw]) return raw;
+  return TYPE_ALIASES[normalizedTypeKey(raw)] || raw;
+}
+
+function correctedPokemonTypes(name, rawTypes) {
+  const normalized = unique((rawTypes || []).map(normalizeTypeName).filter((type) => TYPE_CHART[type]));
+  const override = TYPE_OVERRIDES[toId(name)];
+  if (!override) return normalized;
+  const missing = override.filter((type) => !normalized.includes(type));
+  return missing.length ? unique([...normalized, ...missing]).slice(0, 2) : normalized;
 }
 
 function munchStatsForName(name) {
@@ -1410,9 +1602,9 @@ function nameKeys(name) {
 function moveNameFromSlug(slug) {
   if (!slug) return "";
   const id = toId(slug);
-  if (TYPE_CHART[titleCase(id)]) return "";
   const known = Object.keys(MOVE_INFO).find((move) => toId(move) === id);
   if (known) return known;
+  if (TYPE_CHART[titleCase(id)]) return "";
   if (typeof PS_MOVES !== "undefined" && PS_MOVES[id]?.name) return PS_MOVES[id].name;
   return titleCase(String(slug).replace(/-/g, " "));
 }
@@ -2105,6 +2297,7 @@ function renderTeam() {
     metric(selectedLanguage === "es" ? "Tipos repetidos" : "Repeated types", repeatedTypeSummary()),
   ].join("") + typePlannerHtml();
   wireDetailsPersistence(els.teamSummary);
+  wireTypeAnalysisTabs(els.teamSummary);
   wireSpriteFallbacks(els.teamSlots);
 }
 
@@ -2215,6 +2408,304 @@ function abilityDescriptionText(ability) {
   return localizeMechanicDescription(text, "ability", ability);
 }
 
+function moveCategoryText(category) {
+  const value = String(category || "");
+  if (selectedLanguage === "es") {
+    return {
+      Physical: "Físico",
+      Special: "Especial",
+      Status: "Estado",
+    }[value] || value || "—";
+  }
+  return value || "—";
+}
+
+function movePowerText(move) {
+  const data = getMoveData(move) || {};
+  const info = moveInfo(move) || {};
+  if ((data.category || info.category) === "Status") return "—";
+  const basePower = Number(data.basePower || 0);
+  if (Array.isArray(data.multihit) && basePower > 0) return `${basePower} x${data.multihit[0]}-${data.multihit[1]}`;
+  if (data.basePowerCallback) return basePower > 0 ? `${basePower}+` : (selectedLanguage === "es" ? "Variable" : "Variable");
+  return basePower > 0 ? String(basePower) : "—";
+}
+
+var moveDescriptionOverridesCache;
+function moveDescriptionOverrides() {
+  if (!moveDescriptionOverridesCache) moveDescriptionOverridesCache = {
+  es: {
+    protect: "Protege al usuario durante este turno.",
+    detect: "Protege al usuario durante este turno.",
+    spikyshield: "Protege y daña si recibe contacto.",
+    kingsshield: "Protege y castiga contacto físico.",
+    wideguard: "Protege al equipo de movimientos en área.",
+    quickguard: "Protege al equipo de prioridad.",
+    fakeout: "Prioridad alta; retrocede si el usuario acaba de entrar.",
+    tailwind: "Duplica la Velocidad del equipo durante varios turnos.",
+    trickroom: "Invierte el orden de Velocidad durante cinco turnos.",
+    icywind: "Golpea en área y baja la Velocidad rival.",
+    electroweb: "Golpea en área y baja la Velocidad rival.",
+    thunderwave: "Paraliza al objetivo.",
+    glare: "Paraliza al objetivo.",
+    willowisp: "Quema al objetivo.",
+    followme: "Redirige ataques hacia el usuario.",
+    ragepowder: "Redirige ataques hacia el usuario.",
+    helpinghand: "Potencia el ataque del aliado este turno.",
+    coaching: "Sube Ataque y Defensa del aliado.",
+    spore: "Duerme al objetivo.",
+    sleeppowder: "Duerme al objetivo.",
+    encore: "Fuerza a repetir el último movimiento.",
+    disable: "Anula el último movimiento usado por el objetivo.",
+    taunt: "Impide usar movimientos de estado.",
+    haze: "Elimina cambios de estadísticas.",
+    lightscreen: "Reduce daño especial al equipo.",
+    reflect: "Reduce daño físico al equipo.",
+    auroraveil: "Reduce daño físico y especial al equipo bajo nieve.",
+    partingshot: "Baja ofensivas y permite pivotar.",
+    uturn: "Ataca y permite pivotar.",
+    flipturn: "Ataca y permite pivotar.",
+    voltswitch: "Ataca y permite pivotar.",
+    direclaw: "Tiene un 30% de envenenar, paralizar o dormir al objetivo.",
+    bittermalice: "Baja siempre el Ataque del objetivo.",
+    stoneaxe: "Ataca y coloca Trampa Rocas en el campo rival.",
+    nastyplot: "Sube mucho el Ataque Especial.",
+    swordsdance: "Sube mucho el Ataque.",
+    dragondance: "Sube Ataque y Velocidad.",
+    calmmind: "Sube Ataque Especial y Defensa Especial.",
+    quiverdance: "Sube Ataque Especial, Defensa Especial y Velocidad.",
+    irondefense: "Sube mucho la Defensa.",
+    roost: "Recupera PS del usuario.",
+    recover: "Recupera PS del usuario.",
+    synthesis: "Recupera PS; mejora con sol.",
+    strengthsap: "Recupera PS y baja Ataque.",
+  },
+  en: {
+    protect: "Protects the user this turn.",
+    detect: "Protects the user this turn.",
+    spikyshield: "Protects and damages contact moves.",
+    kingsshield: "Protects and punishes physical contact.",
+    wideguard: "Protects allies from spread moves.",
+    quickguard: "Protects allies from priority moves.",
+    fakeout: "High priority; flinches if the user just entered.",
+    tailwind: "Doubles your team's Speed for several turns.",
+    trickroom: "Reverses Speed order for five turns.",
+    icywind: "Hits both foes and lowers Speed.",
+    electroweb: "Hits both foes and lowers Speed.",
+    thunderwave: "Paralyzes the target.",
+    glare: "Paralyzes the target.",
+    willowisp: "Burns the target.",
+    followme: "Redirects attacks into the user.",
+    ragepowder: "Redirects attacks into the user.",
+    helpinghand: "Boosts an ally's attack this turn.",
+    coaching: "Raises an ally's Attack and Defense.",
+    spore: "Puts the target to sleep.",
+    sleeppowder: "Puts the target to sleep.",
+    encore: "Locks the target into its last move.",
+    disable: "Disables the target's last move.",
+    taunt: "Prevents status moves.",
+    haze: "Removes stat changes.",
+    lightscreen: "Reduces special damage to allies.",
+    reflect: "Reduces physical damage to allies.",
+    auroraveil: "Reduces physical and special damage in snow.",
+    partingshot: "Lowers offenses and pivots out.",
+    uturn: "Attacks and pivots out.",
+    flipturn: "Attacks and pivots out.",
+    voltswitch: "Attacks and pivots out.",
+    direclaw: "30% chance to poison, paralyze, or put the target to sleep.",
+    bittermalice: "Always lowers the target's Attack.",
+    stoneaxe: "Deals damage and sets Stealth Rock on the opposing side.",
+    nastyplot: "Sharply raises Special Attack.",
+    swordsdance: "Sharply raises Attack.",
+    dragondance: "Raises Attack and Speed.",
+    calmmind: "Raises Special Attack and Special Defense.",
+    quiverdance: "Raises Sp. Atk, Sp. Def, and Speed.",
+    irondefense: "Sharply raises Defense.",
+    roost: "Restores the user's HP.",
+    recover: "Restores the user's HP.",
+    synthesis: "Restores HP; stronger in sun.",
+    strengthsap: "Restores HP and lowers Attack.",
+  },
+  };
+  return moveDescriptionOverridesCache;
+}
+
+function moveDescriptionText(move) {
+  const id = toId(move);
+  const sourceDescriptions = (typeof window !== "undefined" && window.PKOUNTER_MOVE_DESCRIPTIONS)
+    || (typeof globalThis !== "undefined" && globalThis.PKOUNTER_MOVE_DESCRIPTIONS);
+  const sourceDescription = sourceDescriptions?.[selectedLanguage]?.[id];
+  if (sourceDescription) return sourceDescription;
+  const override = moveDescriptionOverrides()[selectedLanguage]?.[id];
+  if (override) return override;
+  const data = getMoveData(move) || {};
+  const info = moveInfo(move) || {};
+  const category = data.category || info.category || "";
+  const pieces = [];
+  const add = (es, en) => {
+    const text = selectedLanguage === "es" ? es : en;
+    if (text && !pieces.includes(text)) pieces.push(text);
+  };
+
+  if (data.priority > 0) add("Tiene prioridad.", "Usually moves first.");
+  if (isSpreadDamageMove(move, info, data)) add("Golpea en área.", "Hits multiple targets.");
+  if (Array.isArray(data.drain)) add("Recupera parte del daño.", "Restores part of the damage dealt.");
+  if (Array.isArray(data.recoil)) add("Hace retroceso al usuario.", "Deals recoil to the user.");
+  if (data.forceSwitch) add("Fuerza el cambio del objetivo.", "Forces the target out.");
+  if (data.selfSwitch) add("Permite pivotar después de atacar.", "Lets the user pivot after attacking.");
+  if (data.status) add(`Causa ${statusNameEs(data.status)}.`, `Inflicts ${statusNameEn(data.status)}.`);
+  if (data.volatileStatus === "flinch") add("Puede hacer retroceder.", "Can make the target flinch.");
+  if (data.volatileStatus === "partiallytrapped") add("Atrapa y daña durante varios turnos.", "Traps and damages for several turns.");
+  if (data.weather) add(`Activa ${weatherLabel(data.weather)}.`, `Sets ${weatherLabel(data.weather)}.`);
+  if (data.sideCondition) add(sideConditionDescription(data.sideCondition, true), sideConditionDescription(data.sideCondition, false));
+  if (data.pseudoWeather) add(pseudoWeatherDescription(data.pseudoWeather, true), pseudoWeatherDescription(data.pseudoWeather, false));
+  if (data.boosts) add(boostDescription(data.boosts, true, "self"), boostDescription(data.boosts, false, "self"));
+  if (data.self?.boosts) add(boostDescription(data.self.boosts, true, "self"), boostDescription(data.self.boosts, false, "self"));
+  if (data.secondary?.boosts) add(boostDescription(data.secondary.boosts, true, "target", data.secondary.chance), boostDescription(data.secondary.boosts, false, "target", data.secondary.chance));
+  if (data.secondary?.status) add(`${chancePrefix(data.secondary.chance, true)}puede causar ${statusNameEs(data.secondary.status)}.`, `${chancePrefix(data.secondary.chance, false)}can inflict ${statusNameEn(data.secondary.status)}.`);
+  if (data.secondary?.volatileStatus === "flinch") add(`${chancePrefix(data.secondary.chance, true)}puede hacer retroceder.`, `${chancePrefix(data.secondary.chance, false)}can make the target flinch.`);
+  if (Array.isArray(data.secondaries)) {
+    data.secondaries.slice(0, 3).forEach((secondary) => {
+      if (secondary?.boosts) add(boostDescription(secondary.boosts, true, "target", secondary.chance), boostDescription(secondary.boosts, false, "target", secondary.chance));
+      if (secondary?.status) add(`${chancePrefix(secondary.chance, true)}puede causar ${statusNameEs(secondary.status)}.`, `${chancePrefix(secondary.chance, false)}can inflict ${statusNameEn(secondary.status)}.`);
+      if (secondary?.volatileStatus === "flinch") add(`${chancePrefix(secondary.chance, true)}puede hacer retroceder.`, `${chancePrefix(secondary.chance, false)}can make the target flinch.`);
+      if (secondary?.volatileStatus === "confusion") add(`${chancePrefix(secondary.chance, true)}puede confundir.`, `${chancePrefix(secondary.chance, false)}can confuse the target.`);
+    });
+  }
+  if (data.critRatio || data.willCrit) add("Alta probabilidad de crítico.", "High critical-hit chance.");
+  if (data.accuracy === true && category !== "Status") add("No falla por precisión.", "Ignores accuracy checks.");
+  if (data.basePowerCallback) add("La potencia varía según la situación.", "Power varies by situation.");
+
+  if (!pieces.length && selectedLanguage === "en" && data.desc && data.desc !== "No additional effect.") {
+    return data.desc;
+  }
+  if (!pieces.length && selectedLanguage === "en" && data.shortDesc && data.shortDesc !== "No additional effect.") {
+    return data.shortDesc;
+  }
+  if (!pieces.length) {
+    return category === "Status"
+      ? (selectedLanguage === "es" ? "Movimiento de apoyo." : "Support move.")
+      : (selectedLanguage === "es" ? "Daño directo sin efecto adicional relevante." : "Direct damage with no major extra effect.");
+  }
+  return pieces.slice(0, 2).join(" ");
+}
+
+function shortMoveDescription(text) {
+  const value = String(text || "").trim();
+  if (value.length <= 92) return value;
+  return `${value.slice(0, 89).trim()}...`;
+}
+
+function statusNameEn(status) {
+  const map = {
+    brn: "burn",
+    par: "paralysis",
+    slp: "sleep",
+    frz: "freeze",
+    psn: "poison",
+    tox: "bad poison",
+    confusion: "confusion",
+  };
+  return map[toId(status)] || String(status || "status");
+}
+
+function chancePrefix(chance, spanish) {
+  const value = Number(chance || 0);
+  if (!value || value >= 100) return spanish ? "" : "";
+  return spanish ? `${value}%: ` : `${value}% chance: `;
+}
+
+function boostDescription(boosts, spanish, target = "self", chance = 0) {
+  const entries = Object.entries(boosts || {}).filter(([, amount]) => Number(amount));
+  if (!entries.length) return "";
+  const up = entries.every(([, amount]) => Number(amount) > 0);
+  const names = entries.map(([stat, amount]) => {
+    const prefix = Number(amount) > 0 ? "+" : "";
+    return spanish ? `${statNameEs(stat)} ${prefix}${amount}` : `${statNameEn(stat)} ${prefix}${amount}`;
+  }).join(", ");
+  const chanceText = chancePrefix(chance, spanish);
+  if (spanish) {
+    const subject = target === "self" ? "del usuario" : "del objetivo";
+    return `${chanceText}${up ? "sube" : "baja"} ${names} ${subject}.`;
+  }
+  const subject = target === "self" ? "the user" : "the target";
+  return `${chanceText}${up ? "raises" : "lowers"} ${subject}'s ${names}.`;
+}
+
+function statNameEn(stat) {
+  const map = {
+    atk: "Attack",
+    attack: "Attack",
+    def: "Defense",
+    defense: "Defense",
+    spa: "Sp. Atk",
+    spatk: "Sp. Atk",
+    spd: "Sp. Def",
+    spdef: "Sp. Def",
+    spe: "Speed",
+    speed: "Speed",
+    accuracy: "accuracy",
+    evasion: "evasion",
+  };
+  return map[toId(stat)] || stat;
+}
+
+function sideConditionDescription(condition, spanish) {
+  const map = {
+    auroraveil: spanish ? "Reduce daño físico y especial al equipo." : "Reduces physical and special damage to allies.",
+    lightscreen: spanish ? "Reduce daño especial al equipo." : "Reduces special damage to allies.",
+    reflect: spanish ? "Reduce daño físico al equipo." : "Reduces physical damage to allies.",
+    tailwind: spanish ? "Duplica la Velocidad del equipo." : "Doubles your team's Speed.",
+    wideguard: spanish ? "Protege al equipo de movimientos en área." : "Protects allies from spread moves.",
+    safeguard: spanish ? "Protege al equipo de estados." : "Protects allies from status.",
+    spikes: spanish ? "Coloca púas en el campo rival." : "Sets Spikes on the opposing side.",
+    stealthrock: spanish ? "Coloca rocas en el campo rival." : "Sets Stealth Rock on the opposing side.",
+  };
+  return map[toId(condition)] || "";
+}
+
+function pseudoWeatherDescription(condition, spanish) {
+  const map = {
+    trickroom: spanish ? "Invierte el orden de Velocidad." : "Reverses Speed order.",
+    gravity: spanish ? "Activa gravedad en el campo." : "Sets Gravity.",
+    wonderroom: spanish ? "Intercambia Defensa y Defensa Especial." : "Swaps Defense and Sp. Def.",
+  };
+  return map[toId(condition)] || "";
+}
+
+function moveInfoRowsHtml(move) {
+  if (!move) return "";
+  const info = moveInfo(move) || {};
+  const data = getMoveData(move) || {};
+  const type = info.type || data.type || "";
+  return `
+    <span class="move-info-row"><b>${selectedLanguage === "es" ? "Tipo" : "Type"}:</b> ${escapeHtml(typeLabel(type || ""))}</span>
+    <span class="move-info-row"><b>${selectedLanguage === "es" ? "Potencia" : "Power"}:</b> ${escapeHtml(movePowerText(move))}</span>
+    <span class="move-info-row"><b>${selectedLanguage === "es" ? "Categoría" : "Category"}:</b> ${escapeHtml(moveCategoryText(info.category || data.category))}</span>
+    <span class="move-info-row"><b>${selectedLanguage === "es" ? "Descripción" : "Description"}:</b> ${escapeHtml(moveDescriptionText(move))}</span>
+  `;
+}
+
+function moveInfoButtonHtml(move) {
+  if (!move) return "";
+  const title = moveUiName(move);
+  const label = selectedLanguage === "es" ? `Ver datos de ${title}` : `View ${title} details`;
+  return `<span class="field-info-wrap move-info-wrap">
+    <button class="field-info-button move-info-button" type="button" aria-label="${escapeHtml(label)}">i</button>
+    <span class="field-info-popover move-info-popover" role="tooltip">
+      <strong>${selectedLanguage === "es" ? "Movimiento" : "Move"}: ${escapeHtml(title)}</strong>
+      ${moveInfoRowsHtml(move)}
+    </span>
+  </span>`;
+}
+
+function moveOptionDetailsHtml(move) {
+  if (!move) return "";
+  return `<span class="combo-option-info" aria-hidden="true">
+    <strong>${escapeHtml(moveUiName(move))}</strong>
+    ${moveInfoRowsHtml(move)}
+  </span>`;
+}
+
 function infoButtonHtml(title, description, kind) {
   if (!description) return "";
   const label = selectedLanguage === "es"
@@ -2304,6 +2795,12 @@ function statNameEs(stat) {
 
 function statusNameEs(status) {
   const map = {
+    brn: "quemado",
+    par: "paralizado",
+    slp: "dormido",
+    frz: "congelado",
+    psn: "envenenado",
+    tox: "gravemente envenenado",
     asleep: "dormido",
     burned: "quemado",
     confused: "confundido",
@@ -2466,12 +2963,13 @@ function pickerBaseText(value) {
   return String(value || "").split("·")[0].trim();
 }
 
-function comboOptionButtonsHtml(options, labelFor, aliasesFor = () => [], optionClassFor = () => "") {
+function comboOptionButtonsHtml(options, labelFor, aliasesFor = () => [], optionClassFor = () => "", optionDetailsFor = () => "") {
   return options
     .map((option, index) => {
       const label = labelFor(option);
       const search = [label, ...(aliasesFor(option) || [])].filter(Boolean).join(" ");
-      return `<button class="combo-option ${optionClassFor(option)}" type="button" data-combo-option="${index}" data-combo-search="${escapeHtml(search)}">${escapeHtml(label)}</button>`;
+      const details = optionDetailsFor(option);
+      return `<button class="combo-option ${optionClassFor(option)}" type="button" data-combo-option="${index}" data-combo-value="${escapeHtml(label)}" data-combo-search="${escapeHtml(search)}"><span class="combo-option-label">${escapeHtml(label)}</span>${details}</button>`;
     })
     .join("");
 }
@@ -2502,14 +3000,14 @@ function pokemonPickerSearchText(mon) {
   return [mon.name, pokemonOptionLabel(mon), ...nameKeys(mon.name), ...(megaFormsFor(mon).map((mega) => mega.name))].join(" ");
 }
 
-function comboInputHtml({ listId, value, options, labelFor, aliasesFor = () => [], optionClassFor = () => "", field = "", moveIndex = null, className = "", placeholder = "" }) {
+function comboInputHtml({ listId, value, options, labelFor, aliasesFor = () => [], optionClassFor = () => "", optionDetailsFor = () => "", field = "", moveIndex = null, className = "", placeholder = "" }) {
   const dataAttr = field ? `data-field="${field}"` : `data-move="${moveIndex}"`;
   const emptyText = selectedLanguage === "es" ? "Sin resultados" : "No results";
   return `<div class="combo-picker" data-combo-list="${escapeHtml(listId)}">
     <input class="combo-input ${className}" ${dataAttr} value="${escapeHtml(value)}" placeholder="${escapeHtml(placeholder)}" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false">
     <button class="combo-toggle" type="button" aria-label="${selectedLanguage === "es" ? "Abrir opciones" : "Open options"}"></button>
     <div class="combo-menu" hidden>
-      ${comboOptionButtonsHtml(options, labelFor, aliasesFor, optionClassFor)}
+      ${comboOptionButtonsHtml(options, labelFor, aliasesFor, optionClassFor, optionDetailsFor)}
       <span class="combo-empty" hidden>${emptyText}</span>
     </div>
   </div>`;
@@ -2541,6 +3039,180 @@ function resolvePickerChoice(rawValue, options, labelFor, aliasesFor = () => [])
   return partialIndex !== -1 ? options[partialIndex] : null;
 }
 
+let moveOptionTooltip;
+let moveOptionTooltipHideTimer;
+let moveOptionHoldTimer;
+let moveOptionSuppressClickUntil = 0;
+let moveOptionGlobalEventsWired = false;
+
+function comboMoveOptionFromEvent(event) {
+  const button = event.target.closest?.(".combo-option");
+  return button?.querySelector(".combo-option-info") ? button : null;
+}
+
+function moveInfoWrapFromEvent(event) {
+  const wrap = event.target.closest?.(".move-info-wrap");
+  return wrap?.querySelector(".move-info-popover") ? wrap : null;
+}
+
+function ensureMoveOptionTooltip() {
+  if (!moveOptionTooltip) {
+    moveOptionTooltip = document.createElement("div");
+    moveOptionTooltip.className = "floating-move-info";
+    moveOptionTooltip.hidden = true;
+    document.body.appendChild(moveOptionTooltip);
+  }
+  if (!moveOptionGlobalEventsWired) {
+    moveOptionGlobalEventsWired = true;
+    window.addEventListener("resize", () => hideMoveOptionTooltip(), { passive: true });
+    window.addEventListener("scroll", () => hideMoveOptionTooltip(), { passive: true, capture: true });
+  }
+  return moveOptionTooltip;
+}
+
+function positionMoveOptionTooltip(button, tooltip) {
+  const rect = button.getBoundingClientRect();
+  const padding = 16;
+  const gap = 10;
+  tooltip.style.maxWidth = `${Math.min(420, window.innerWidth - padding * 2)}px`;
+  let left = rect.right + gap;
+  const tooltipRect = tooltip.getBoundingClientRect();
+  if (left + tooltipRect.width > window.innerWidth - padding) {
+    left = Math.max(padding, window.innerWidth - tooltipRect.width - padding);
+  }
+  let top = rect.top;
+  if (top + tooltipRect.height > window.innerHeight - padding) {
+    top = Math.max(padding, window.innerHeight - tooltipRect.height - padding);
+  }
+  tooltip.style.left = `${Math.round(left)}px`;
+  tooltip.style.top = `${Math.round(top)}px`;
+}
+
+function showMoveOptionTooltip(button) {
+  const info = button?.querySelector(".combo-option-info");
+  if (!info || button.hidden) return;
+  window.clearTimeout(moveOptionTooltipHideTimer);
+  const tooltip = ensureMoveOptionTooltip();
+  tooltip.innerHTML = info.innerHTML;
+  tooltip.hidden = false;
+  positionMoveOptionTooltip(button, tooltip);
+}
+
+function showMoveInfoButtonTooltip(wrap) {
+  const button = wrap?.querySelector(".move-info-button");
+  const info = wrap?.querySelector(".move-info-popover");
+  if (!button || !info) return;
+  window.clearTimeout(moveOptionTooltipHideTimer);
+  const tooltip = ensureMoveOptionTooltip();
+  tooltip.innerHTML = info.innerHTML;
+  tooltip.hidden = false;
+  positionMoveOptionTooltip(button, tooltip);
+}
+
+function hideMoveOptionTooltip(delay = 0) {
+  window.clearTimeout(moveOptionTooltipHideTimer);
+  const hide = () => {
+    if (moveOptionTooltip) moveOptionTooltip.hidden = true;
+  };
+  if (delay) {
+    moveOptionTooltipHideTimer = window.setTimeout(hide, delay);
+  } else {
+    hide();
+  }
+}
+
+function wireMoveOptionTooltips(menu) {
+  if (!menu || menu.dataset.moveTooltipWired) return;
+  menu.dataset.moveTooltipWired = "true";
+  menu.addEventListener("pointerover", (event) => {
+    if (event.pointerType === "touch") return;
+    const button = comboMoveOptionFromEvent(event);
+    if (button) showMoveOptionTooltip(button);
+  });
+  menu.addEventListener("pointerout", (event) => {
+    if (event.pointerType === "touch") return;
+    const button = comboMoveOptionFromEvent(event);
+    if (!button || (event.relatedTarget && button.contains(event.relatedTarget))) return;
+    hideMoveOptionTooltip();
+  });
+  menu.addEventListener("focusin", (event) => {
+    const button = comboMoveOptionFromEvent(event);
+    if (button) showMoveOptionTooltip(button);
+  });
+  menu.addEventListener("focusout", () => hideMoveOptionTooltip(80));
+  menu.addEventListener("pointerdown", (event) => {
+    const button = comboMoveOptionFromEvent(event);
+    if (!button || event.pointerType !== "touch") return;
+    window.clearTimeout(moveOptionHoldTimer);
+    moveOptionHoldTimer = window.setTimeout(() => {
+      button.dataset.comboTooltipHold = "true";
+      showMoveOptionTooltip(button);
+    }, 420);
+  });
+  const endHold = () => {
+    window.clearTimeout(moveOptionHoldTimer);
+    const held = menu.querySelector("[data-combo-tooltip-hold]");
+    if (held) {
+      moveOptionSuppressClickUntil = Date.now() + 360;
+      held.removeAttribute("data-combo-tooltip-hold");
+      hideMoveOptionTooltip(140);
+    }
+  };
+  menu.addEventListener("pointerup", endHold);
+  menu.addEventListener("pointercancel", endHold);
+  menu.addEventListener("mouseleave", () => hideMoveOptionTooltip());
+  menu.addEventListener("scroll", () => hideMoveOptionTooltip(), { passive: true });
+}
+
+function wireMoveInfoButtonTooltips(root) {
+  if (!root || root.dataset.moveInfoTooltipWired) return;
+  root.dataset.moveInfoTooltipWired = "true";
+  root.addEventListener("click", (event) => {
+    if (!event.target.closest?.(".move-info-button")) return;
+    const wrap = moveInfoWrapFromEvent(event);
+    if (!wrap) return;
+    event.preventDefault();
+    event.stopPropagation();
+    showMoveInfoButtonTooltip(wrap);
+  });
+  root.addEventListener("pointerover", (event) => {
+    if (event.pointerType === "touch") return;
+    const wrap = moveInfoWrapFromEvent(event);
+    if (wrap) showMoveInfoButtonTooltip(wrap);
+  });
+  root.addEventListener("pointerout", (event) => {
+    if (event.pointerType === "touch") return;
+    const wrap = moveInfoWrapFromEvent(event);
+    if (!wrap || (event.relatedTarget && wrap.contains(event.relatedTarget))) return;
+    hideMoveOptionTooltip();
+  });
+  root.addEventListener("focusin", (event) => {
+    const wrap = moveInfoWrapFromEvent(event);
+    if (wrap) showMoveInfoButtonTooltip(wrap);
+  });
+  root.addEventListener("focusout", () => hideMoveOptionTooltip(80));
+  root.addEventListener("pointerdown", (event) => {
+    const wrap = moveInfoWrapFromEvent(event);
+    if (!wrap || event.pointerType !== "touch") return;
+    window.clearTimeout(moveOptionHoldTimer);
+    moveOptionHoldTimer = window.setTimeout(() => {
+      wrap.dataset.moveTooltipHold = "true";
+      showMoveInfoButtonTooltip(wrap);
+    }, 420);
+  });
+  const endHold = () => {
+    window.clearTimeout(moveOptionHoldTimer);
+    const held = root.querySelector("[data-move-tooltip-hold]");
+    if (held) {
+      moveOptionSuppressClickUntil = Date.now() + 360;
+      held.removeAttribute("data-move-tooltip-hold");
+      hideMoveOptionTooltip(160);
+    }
+  };
+  root.addEventListener("pointerup", endHold);
+  root.addEventListener("pointercancel", endHold);
+}
+
 function wireComboPicker(input) {
   const picker = input.closest(".combo-picker");
   if (!picker) return;
@@ -2548,6 +3220,7 @@ function wireComboPicker(input) {
   const toggle = picker.querySelector(".combo-toggle");
   const options = [...picker.querySelectorAll("[data-combo-option]")];
   const close = () => {
+    hideMoveOptionTooltip();
     menu.hidden = true;
     input.setAttribute("aria-expanded", "false");
   };
@@ -2557,7 +3230,7 @@ function wireComboPicker(input) {
     input.setAttribute("aria-expanded", "true");
   };
   const choose = (button) => {
-    input.value = button.textContent.trim();
+    input.value = button.dataset.comboValue || button.querySelector(".combo-option-label")?.textContent.trim() || button.textContent.trim();
     close();
     input.dispatchEvent(new Event("change", { bubbles: true }));
   };
@@ -2593,8 +3266,15 @@ function wireComboPicker(input) {
     open(true);
   });
   menu.addEventListener("mousedown", (event) => event.preventDefault());
+  wireMoveOptionTooltips(menu);
   options.forEach((button) => {
-    button.addEventListener("click", () => choose(button));
+    button.addEventListener("click", (event) => {
+      if (Date.now() < moveOptionSuppressClickUntil) {
+        event.preventDefault();
+        return;
+      }
+      choose(button);
+    });
     button.addEventListener("keydown", (event) => {
       if (event.key === "Enter") choose(button);
       if (event.key === "Escape") {
@@ -3048,17 +3728,21 @@ function renderEditor() {
       <div class="wide">
         <label class="inline-label">${selectedLanguage === "es" ? "Movimientos" : "Moves"} <span class="move-order-note">${selectedLanguage === "es" ? "(ordenados por uso)" : "(sorted by usage)"}</span></label>
         <div class="moves-grid">
-          ${slot.moves.map((move, index) => comboInputHtml({
+          ${slot.moves.map((move, index) => `<div class="move-field">
+          ${comboInputHtml({
             listId: `config-move-options-${selectedSlot}-${index}`,
             value: move ? moveOptionLabel(mon, move) : "",
             options: allMoves,
             labelFor: (candidate) => moveOptionLabel(mon, candidate),
             aliasesFor: (candidate) => [candidate, moveUiName(candidate)],
             optionClassFor: (candidate) => moveTypeClass(candidate),
+            optionDetailsFor: (candidate) => moveOptionDetailsHtml(candidate),
             moveIndex: index,
             className: `move-select ${moveTypeClass(move)}`,
             placeholder: t("movePlaceholder", { n: index + 1 }),
-          })).join("")}
+          })}
+          ${moveInfoButtonHtml(move)}
+          </div>`).join("")}
         </div>
         ${spreadRecommendationsHtml(mon)}
       </div>
@@ -3148,6 +3832,7 @@ function renderEditor() {
       renderAll();
     });
   });
+  wireMoveInfoButtonTooltips(els.editor);
   els.editor.querySelectorAll("[data-apply-spread]").forEach((button) => {
     button.addEventListener("click", () => {
       const option = spreadOptionsFor(mon)[Number(button.dataset.applySpread)];
@@ -3217,7 +3902,7 @@ function renderSuggestions() {
         <span class="mini">${typeIconRow(mon.types)} · ${selectedLanguage === "es" ? "uso" : "usage"} ${pokemonUsage(mon).toFixed(2)}%</span>
         ${baseStatsHtml(mon)}
         ${collapsibleDetailsHtml(selectedLanguage === "es" ? "Por qué se sugiere" : "Why this is suggested", `<p class="suggestion-explain">${localizeInlineTerms(explanation)}</p>${insightListHtml(advice)}`, "card-details", { detailKey })}
-        <div class="tag-row">${suggestionReasonChips(reasons).slice(0, 4).map((reason) => `<span class="tag">${localizeInlineTerms(reason)}</span>`).join("")}</div>
+        <div class="tag-row">${suggestionReasonChips(reasons, candidate).slice(0, 4).map((reason) => `<span class="tag">${localizeInlineTerms(reason)}</span>`).join("")}</div>
         <div class="suggestion-actions">
           <span class="score">${fit} · ${Math.round(score)} pts</span>
           <button class="${teamFull ? "team-full-button" : ""}" type="button" data-import="${mon.name}" ${teamFull ? "disabled" : ""}>${teamFull ? t("teamFull") : t("importButton")}</button>
@@ -3251,41 +3936,43 @@ function needSummary(profile) {
   if (profile.roleNeeds.length) {
     const roles = localizedList(profile.roleNeeds.map((need) => roleNeedLabel(need.reason)).slice(0, 3));
     lines.push(selectedLanguage === "es"
-      ? `Prioridad: añade ${roles} para que el equipo tenga turnos más cómodos.`
-      : `Priority: add ${roles} so the team gets cleaner turns.`);
+      ? `Te conviene añadir ${roles} para que tu equipo tenga turnos más cómodos.`
+      : `You should add ${roles} so your team gets cleaner turns.`);
   }
   if (profile.speedPlan?.trickRoom) {
     lines.push(selectedLanguage === "es"
-      ? "Ya tienes Espacio Raro; priorizo Pokémon lentos, fuertes o con buen bulk que puedan aprovechar esos turnos."
-      : "You already have Trick Room; prioritizing slower, strong, or bulky Pokémon that can use those turns.");
+      ? "Ya tienes Espacio Raro; te interesan Pokémon lentos, fuertes o con buen bulk que puedan aprovechar esos turnos."
+      : "You already have Trick Room; slower, strong, or bulky Pokémon that can use those turns are more valuable for you.");
   } else if (profile.speedPlan?.tailwind) {
     lines.push(selectedLanguage === "es"
-      ? "Ya tienes Viento Afín; priorizo atacantes de Velocidad media que se vuelven muy peligrosos con ese apoyo."
-      : "You already have Tailwind; prioritizing medium-Speed attackers that become dangerous with that support.");
+      ? "Ya tienes Viento Afín; te interesan atacantes de Velocidad media que se vuelven muy peligrosos con ese apoyo."
+      : "You already have Tailwind; medium-Speed attackers that become dangerous with that support are more valuable for you.");
   }
   if (profile.currentWeather.length) {
     const weather = localizedList(profile.currentWeather.map(weatherLabel));
     lines.push(selectedLanguage === "es"
-      ? `Ya tienes ${weather}; suben las piezas que aprovechan ese clima antes que una opción solo popular.`
-      : `You already have ${weather}; Pokémon that exploit that weather rise above merely popular options.`);
+      ? `Ya tienes ${weather}; te conviene mirar antes piezas que aprovechen ese clima que una opción solo popular.`
+      : `You already have ${weather}; you should look first at Pokémon that exploit that weather instead of merely popular options.`);
+  }
+  if (profile.weatherNeeds.length) {
+    const mainNeed = profile.weatherNeeds[0];
+    const weather = weatherLabel(mainNeed.weather);
+    const targets = localizedList((mainNeed.targets || []).slice(0, 3));
+    lines.push(selectedLanguage === "es"
+      ? `${targets ? `${targets} ya pide ${weather}` : `Tu equipo ya pide ${weather}`}; por eso te conviene un setter de ${weather} antes que otro clima que rompa el plan.`
+      : `${targets ? `${targets} already wants ${weather}` : `Your team already wants ${weather}`}; that is why a ${weather} setter fits you better than another weather that breaks the plan.`);
   }
   if (profile.dangerTypes.length) {
     const danger = localizedList(profile.dangerTypes.map((item) => typeLabel(item.type)).slice(0, 3));
     lines.push(selectedLanguage === "es"
-      ? `Cuidado con ${danger}; busca resistencias, inmunidades o presión ofensiva contra esos tipos.`
-      : `Watch ${danger}; look for resistances, immunities, or offensive pressure into those types.`);
+      ? `${danger} es lo que más te fuerza cambios ahora mismo; tu equipo agradece Pokémon que entren bien ahí o amenacen KOs contra esos tipos.`
+      : `${danger} is what forces your switches the most right now; your team appreciates Pokémon that switch into it or threaten KOs into those types.`);
   }
   if (profile.missingCoverage.length) {
     const coverage = localizedList(profile.missingCoverage.map(typeLabel).slice(0, 3));
     lines.push(selectedLanguage === "es"
-      ? `La cobertura ofensiva puede mejorar contra ${coverage}.`
-      : `Offensive coverage can improve into ${coverage}.`);
-  }
-  if (profile.weatherNeeds.length) {
-    const weather = localizedList(profile.weatherNeeds.map((need) => weatherLabel(need.weather)));
-    lines.push(selectedLanguage === "es"
-      ? `El equipo ya tiene Pokémon que aprovechan ${weather}; un setter fiable puede convertirlo en plan principal.`
-      : `The team already has Pokémon that benefit from ${weather}; a reliable setter can turn that into a main plan.`);
+      ? `Todavía te falta presión ofensiva contra ${coverage}; te van a encajar mejor opciones con cobertura real aunque tengan menos uso.`
+      : `You still lack offensive pressure into ${coverage}; options with real coverage will fit you better even if they have lower usage.`);
   }
   if (profile.needsSpecial) {
     lines.push(selectedLanguage === "es"
@@ -3310,8 +3997,8 @@ function needSummary(profile) {
       : `Avoid stacking more ${repeats} unless the new slot clearly pays for it.`);
   }
   return lines.slice(0, 4).join(" ") || (selectedLanguage === "es"
-    ? "El equipo ya está bastante equilibrado; priorizo matchups del meta, mejor posicionamiento y sinergias finas."
-    : "The team is already fairly balanced; prioritizing meta matchups, cleaner positioning, and finer synergies.");
+    ? "Tu equipo ya está bastante equilibrado; te conviene afinar matchups del meta, posicionamiento y sinergias concretas."
+    : "Your team is already fairly balanced; you should refine meta matchups, positioning, and specific synergies.");
 }
 
 function roleNeedLabel(reason) {
@@ -3370,6 +4057,117 @@ function teamNeedsProfile(slots) {
   return cacheSet(performanceCaches.teamNeeds, key, analyzeTeamNeeds(slots), 32);
 }
 
+function weatherNeedFor(profile, weather) {
+  return (profile.weatherNeeds || []).find((need) => need.weather === weather);
+}
+
+function weatherNeedNames(profile) {
+  return (profile.weatherNeeds || []).map((need) => need.weather);
+}
+
+function selectedSlotWeather(slot) {
+  if (!slot?.pokemon) return [];
+  return weatherFromAbilities(slot.ability ? [slot.ability] : slot.pokemon.abilities || []);
+}
+
+function slotMoveIds(slot) {
+  return new Set((slot?.moves || []).filter(Boolean).map(toId));
+}
+
+function slotAttackTypes(slot) {
+  return unique((slot?.moves || [])
+    .map((move) => moveInfo(move))
+    .filter((info) => info && info.category !== "Status")
+    .map((info) => info.type)
+    .filter(Boolean));
+}
+
+function slotBenefitsFromWeather(slot, weather) {
+  if (!slot?.pokemon) return false;
+  const abilityId = toId(slot.ability || slot.pokemon.popularAbility || "");
+  const moveIds = slotMoveIds(slot);
+  const attackTypes = slotAttackTypes(slot);
+  if (weather === "Rain") return ["swiftswim", "raindish", "dryskin"].includes(abilityId) || attackTypes.includes("Water") || moveIds.has("hurricane") || moveIds.has("thunder");
+  if (weather === "Sun") return ["chlorophyll", "solarpower", "protosynthesis"].includes(abilityId) || attackTypes.includes("Fire") || moveIds.has("solarbeam") || moveIds.has("weatherball");
+  if (weather === "Sand") return ["sandrush", "sandforce", "sandveil"].includes(abilityId) || ["Rock", "Ground", "Steel"].some((type) => slot.pokemon.types.includes(type));
+  if (weather === "Snow") return ["slushrush", "snowcloak", "icebody"].includes(abilityId) || slot.pokemon.types.includes("Ice") || moveIds.has("auroraveil") || moveIds.has("blizzard");
+  return false;
+}
+
+function candidateBenefitsFromWeather(candidate, weather) {
+  const setMoves = candidate.setMoveIds || new Set();
+  if (weather === "Rain") return hasCandidateAbility(candidate, "Swift Swim") || hasCandidateAbility(candidate, "Rain Dish") || candidate.types.has("Water") || setMoves.has("hurricane") || setMoves.has("thunder");
+  if (weather === "Sun") return hasCandidateAbility(candidate, "Chlorophyll") || hasCandidateAbility(candidate, "Solar Power") || candidate.types.has("Fire") || setMoves.has("solarbeam") || setMoves.has("weatherball");
+  if (weather === "Sand") return hasCandidateAbility(candidate, "Sand Rush") || hasCandidateAbility(candidate, "Sand Force") || ["Rock", "Ground", "Steel"].some((type) => candidate.types.has(type));
+  if (weather === "Snow") return hasCandidateAbility(candidate, "Slush Rush") || candidate.types.has("Ice") || setMoves.has("auroraveil") || setMoves.has("blizzard");
+  return false;
+}
+
+function partnerSynergyReasons(mon, candidate, coreSlot) {
+  const core = coreSlot?.pokemon;
+  if (!core) return [];
+  const reasons = [];
+  const add = (points, reason) => {
+    if (points && reason) reasons.push({ points, reason });
+  };
+  const moveIds = slotMoveIds(coreSlot);
+  const strongAttacker = candidate.physicalDamage || candidate.specialDamage || mon.baseStats.atk >= 115 || mon.baseStats.spa >= 115;
+  const support = candidate.setRoles.has("fakeOut") || candidate.setRoles.has("redirection") || candidate.setRoles.has("intimidate") || candidate.setRoles.has("support");
+  const teammateListed = core.teammates.includes(mon.name) || mon.teammates.includes(core.name);
+
+  if (moveIds.has("trickroom")) {
+    if (mon.baseStats.spe <= 60 && strongAttacker) add(44, `aprovecha el Trick Room de ${core.name}`);
+    else if (support) add(22, `protege el Trick Room de ${core.name}`);
+    else if (mon.baseStats.spe >= 115 && !candidate.setRoles.has("priority")) add(-28, `se acelera demasiado para el Trick Room de ${core.name}`);
+  }
+  if (moveIds.has("tailwind")) {
+    if (mon.baseStats.spe >= 60 && mon.baseStats.spe <= 115 && strongAttacker) add(30, `aprovecha el Tailwind de ${core.name}`);
+    else if (mon.baseStats.spe < 60 && strongAttacker && !candidate.setRoles.has("priority")) add(-10, `no aprovecha bien el Tailwind de ${core.name}`);
+  }
+
+  const coreWeather = selectedSlotWeather(coreSlot);
+  for (const weather of coreWeather) {
+    if (candidateBenefitsFromWeather(candidate, weather)) add(34, `aprovecha ${weatherLabel(weather)} de ${core.name}`);
+  }
+  for (const weather of candidateWeather(candidate)) {
+    if (!coreWeather.includes(weather) && slotBenefitsFromWeather(coreSlot, weather)) add(48, `activa ${weatherLabel(weather)} para ${core.name}`);
+  }
+
+  const coveredTypes = partnerCoveredWeaknesses(mon, candidate, coreSlot).slice(0, 2);
+  if (coveredTypes.length) add(14 + coveredTypes.length * 4, `protege a ${core.name} de ${formatTypeList(coveredTypes)}`);
+
+  const pressuredTypes = partnerPressuredWeaknesses(candidate, coreSlot).slice(0, 2);
+  if (pressuredTypes.length) add(10 + pressuredTypes.length * 3, `castiga atacantes de ${formatTypeList(pressuredTypes)} que molestan a ${core.name}`);
+
+  if (teammateListed) {
+    const hasPlanSignal = reasons.some((entry) => entry.points >= 18);
+    add(hasPlanSignal ? 8 : 10, hasPlanSignal ? `pareja probada con ${core.name}` : `pareja frecuente con ${core.name}`);
+  }
+  return reasons;
+}
+
+function partnerCoveredWeaknesses(mon, candidate, coreSlot) {
+  const core = coreSlot?.pokemon;
+  if (!core) return [];
+  return Object.keys(TYPE_CHART).filter((type) => {
+    const coreMultiplier = battleMultiplier(type, { ...core, ability: coreSlot.ability || core.popularAbility });
+    if (coreMultiplier <= 1) return false;
+    return battleMultiplier(type, mon) < 1 || isAbilityImmune(type, [...candidate.abilities].map(toId));
+  });
+}
+
+function partnerPressuredWeaknesses(candidate, coreSlot) {
+  const core = coreSlot?.pokemon;
+  if (!core) return [];
+  const attackTypes = candidate.attackTypes || [];
+  return Object.keys(TYPE_CHART).filter((type) => {
+    const coreMultiplier = battleMultiplier(type, { ...core, ability: coreSlot.ability || core.popularAbility });
+    if (coreMultiplier <= 1) return false;
+    const answers = bestTypesInto([type]);
+    return attackTypes.some((attackType) => answers.includes(attackType));
+  });
+}
+
 function getSuggestions() {
   const selectedSlots = team.filter((slot) => slot.pokemon);
   const suggestionKey = `${selectedFormat}|${selectedLanguage}|${teamStateSignature(selectedSlots)}`;
@@ -3380,7 +4178,10 @@ function getSuggestions() {
   const profile = teamNeedsProfile(selectedSlots);
   const megaCount = team.filter(isMegaSlot).length;
 
-  const result = POKEDEX.filter((mon) => !selectedSpecies.has(speciesClauseKey(mon)))
+  const result = POKEDEX.filter((mon) =>
+    !selectedSpecies.has(speciesClauseKey(mon)) &&
+    (!mon.isMega || megaCount < 2)
+  )
     .map((mon) => {
       const candidate = analyzeCandidate(mon);
       const usage = pokemonUsage(mon);
@@ -3392,12 +4193,9 @@ function getSuggestions() {
         if (reason) reasons.push(reason);
       };
 
-      for (const coreMon of selected) {
-        if (coreMon.teammates.includes(mon.name)) {
-          add(22, `encaja con ${coreMon.name}`);
-        }
-        if (mon.teammates.includes(coreMon.name)) {
-          add(18, `encaja con ${coreMon.name}`);
+      for (const coreSlot of selectedSlots) {
+        for (const signal of partnerSynergyReasons(mon, candidate, coreSlot)) {
+          add(signal.points, signal.reason);
         }
       }
 
@@ -3434,8 +4232,17 @@ function getSuggestions() {
       if (profile.needsSpeed && (candidate.fast || candidate.setRoles.has("speedControl") || candidate.setRoles.has("priority"))) add(10, "ayuda a mover primero");
       if (profile.needsBulk && candidate.bulkScore >= 300) add(8, "resistencia para estabilizar el equipo");
       if (profile.needsProtection && (candidate.setRoles.has("redirection") || candidate.setRoles.has("fakeOut") || candidate.setRoles.has("intimidate"))) add(10, "protege atacantes frágiles");
-      const weatherClash = candidateWeather(candidate).find((weather) => profile.currentWeather.length && !profile.currentWeather.includes(weather));
-      if (weatherClash) add(-18, `pisa tu clima con ${weatherLabel(weatherClash)}`);
+      const wantedWeather = weatherNeedNames(profile);
+      const weatherClash = candidateWeather(candidate).find((weather) =>
+        (profile.currentWeather.length && !profile.currentWeather.includes(weather)) ||
+        (wantedWeather.length && !wantedWeather.includes(weather))
+      );
+      if (weatherClash) {
+        const wanted = localizedList([...(profile.currentWeather || []), ...wantedWeather].map(weatherLabel));
+        add(wantedWeather.length ? -46 : -26, wanted
+          ? `pisa el plan de ${wanted} con ${weatherLabel(weatherClash)}`
+          : `pisa tu clima con ${weatherLabel(weatherClash)}`);
+      }
 
       applyTeamContextScore(mon, candidate, profile, add);
 
@@ -3454,9 +4261,7 @@ function getSuggestions() {
       if (strategicHits >= 3) add(24, "encaje estratégico completo");
       else if (strategicHits >= 2) add(14, "encaje estratégico claro");
 
-      if (megaCount >= 2 && mon.isMega) {
-        add(-16, "tercera Mega es situacional");
-      } else if (megaCount >= 1 && mon.isMega) {
+      if (megaCount >= 1 && mon.isMega) {
         add(-4, "segunda Mega opcional");
       } else if (mon.isMega) {
         add(6, "usa tu slot Mega");
@@ -3622,18 +4427,37 @@ function desiredWeatherNeeds(slots, moveDetails) {
   const roles = roleCounts();
   const abilities = new Set(slots.flatMap((slot) => slot.ability ? [slot.ability] : slot.pokemon.abilities || []));
   const moveIds = new Set(moveDetails.map((entry) => toId(entry.move)));
+  const targets = {
+    Sand: new Set(),
+    Rain: new Set(),
+    Sun: new Set(),
+    Snow: new Set(),
+  };
+  for (const slot of slots) {
+    if (!slot.pokemon) continue;
+    const abilityId = toId(slot.ability || slot.pokemon.popularAbility || "");
+    const ids = slotMoveIds(slot);
+    const attackTypes = slotAttackTypes(slot);
+    if (["sandrush", "sandforce", "sandveil"].includes(abilityId) || slot.pokemon.roles.includes("sandOffense")) targets.Sand.add(slot.pokemon.name);
+    if (["swiftswim", "raindish", "dryskin"].includes(abilityId) || ids.has("hurricane") || ids.has("thunder") || slot.pokemon.roles.includes("rainOffense")) targets.Rain.add(slot.pokemon.name);
+    if (["chlorophyll", "solarpower", "protosynthesis"].includes(abilityId) || ids.has("solarbeam") || attackTypes.includes("Fire") || slot.pokemon.roles.includes("sunOffense")) targets.Sun.add(slot.pokemon.name);
+    if (["slushrush", "snowcloak", "icebody"].includes(abilityId) || ids.has("auroraveil") || ids.has("blizzard") || slot.pokemon.roles.includes("snowOffense")) targets.Snow.add(slot.pokemon.name);
+  }
   const needs = [];
 
   if (roles.sandOffense || abilities.has("Sand Rush") || abilities.has("Sand Force")) {
-    needs.push({ weather: "Sand", weight: 72, reason: "activa arena para tus atacantes" });
+    needs.push({ weather: "Sand", weight: 92, reason: "activa arena para tus atacantes", targets: [...targets.Sand] });
   }
-  if (roles.rainOffense || abilities.has("Swift Swim") || moveIds.has("hurricane") || moveIds.has("thunder")) {
-    needs.push({ weather: "Rain", weight: 72, reason: "activa lluvia para tu plan ofensivo" });
+  if (roles.rainOffense || abilities.has("Swift Swim") || moveIds.has("hurricane") || moveIds.has("thunder") || targets.Rain.size >= 2) {
+    needs.push({ weather: "Rain", weight: 92, reason: "activa lluvia para tu plan ofensivo", targets: [...targets.Rain] });
   }
-  if (roles.sunOffense || abilities.has("Chlorophyll") || moveIds.has("solarbeam")) {
-    needs.push({ weather: "Sun", weight: 72, reason: "activa sol para tu plan ofensivo" });
+  if (roles.sunOffense || abilities.has("Chlorophyll") || moveIds.has("solarbeam") || targets.Sun.size >= 2) {
+    needs.push({ weather: "Sun", weight: 92, reason: "activa sol para tu plan ofensivo", targets: [...targets.Sun] });
   }
-  return needs;
+  if (targets.Snow.size >= 2) {
+    needs.push({ weather: "Snow", weight: 86, reason: "activa nieve para tu plan defensivo", targets: [...targets.Snow] });
+  }
+  return needs.sort((a, b) => b.weight + (b.targets?.length || 0) * 8 - (a.weight + (a.targets?.length || 0) * 8));
 }
 
 function typeOverlapPenalty(candidate, profile) {
@@ -3660,8 +4484,8 @@ function suggestionExplanation(mon, reasons, profile, candidate) {
   const positives = reasons.filter((reason) => !isWarningReason(reason));
   const warnings = reasons.filter(isWarningReason);
   const details = unique([
-    ...candidateCapabilityPhrases(mon, candidate),
     ...reasonExplanationPhrases(positives, profile),
+    ...candidateCapabilityPhrases(mon, candidate),
   ]).slice(0, 3);
 
   if (details.length) {
@@ -3687,7 +4511,7 @@ function suggestionExplanation(mon, reasons, profile, candidate) {
 }
 
 function isWarningReason(reason) {
-  return /^(repite|empeora|apila|pisa|compite|va contra|tercera Mega)/.test(reason);
+  return /^(repite|empeora|apila|pisa|compite|va contra|se acelera|no aprovecha)/.test(reason);
 }
 
 function prioritizeSuggestionReasons(reasons) {
@@ -3703,11 +4527,12 @@ function prioritizeSuggestionReasons(reasons) {
 
 function suggestionReasonPriority(reason) {
   if (/encaje estratégico|abusa de tu Trick Room|aprovecha Trick Room|funciona en Trick Room|presiona en Trick Room|segundo setter de Trick Room/i.test(reason)) return 100;
+  if (/aprovecha el Trick Room de|protege el Trick Room de|activa .* para/i.test(reason)) return 98;
   if (/Tailwind|Viento Afín|bajadas de Velocidad|control de velocidad/i.test(reason)) return 92;
   if (/lluvia|sol|arena|nieve|clima/i.test(reason)) return 90;
   if (/entra bien|abre cobertura|presiona amenazas|atacante físico|atacante especial/i.test(reason)) return 78;
   if (/Fake Out|redirección|Intimidate|protege|resistencia/i.test(reason)) return 70;
-  if (/^encaja con /.test(reason)) return 62;
+  if (/^encaja con |^pareja /.test(reason)) return 58;
   if (/Pokémon flexible|amenaza del meta/i.test(reason)) return 20;
   return 50;
 }
@@ -3715,13 +4540,31 @@ function suggestionReasonPriority(reason) {
 function strategicFitCount(reasons) {
   return unique(reasons).filter((reason) => {
     if (!reason || isWarningReason(reason)) return false;
-    return /Trick Room|Tailwind|lluvia|sol|arena|nieve|clima|bajadas de Velocidad|control de velocidad|Fake Out|redirección|Intimidate|entra bien|abre cobertura|presiona amenazas|atacante|resistencia|protege|encaja con/i.test(reason);
+    return /Trick Room|Tailwind|lluvia|sol|arena|nieve|clima|bajadas de Velocidad|control de velocidad|Fake Out|redirección|Intimidate|entra bien|abre cobertura|presiona amenazas|atacante|resistencia|protege|encaja con|pareja|activa .* para|castiga atacantes/i.test(reason);
   }).length;
 }
 
 function suggestionTagLabel(reason) {
   reason = typeof reason === "string" ? reason : "";
   if (!reason) return "";
+  const trAbuse = reason.match(/^aprovecha el Trick Room de (.+)$/);
+  if (trAbuse) return selectedLanguage === "es" ? `Espacio Raro de ${trAbuse[1]}` : `${trAbuse[1]}'s Trick Room`;
+  const trProtect = reason.match(/^protege el Trick Room de (.+)$/);
+  if (trProtect) return selectedLanguage === "es" ? `Protege el Espacio Raro de ${trProtect[1]}` : `Protects ${trProtect[1]}'s Trick Room`;
+  const tailwindPartner = reason.match(/^aprovecha el Tailwind de (.+)$/);
+  if (tailwindPartner) return selectedLanguage === "es" ? `Viento Afín de ${tailwindPartner[1]}` : `${tailwindPartner[1]}'s Tailwind`;
+  const weatherPartner = reason.match(/^aprovecha (.+) de (.+)$/);
+  if (weatherPartner) return selectedLanguage === "es" ? `${sentenceCase(weatherPartner[1])} de ${weatherPartner[2]}` : `${weatherPartner[2]}'s ${weatherPartner[1]}`;
+  const activatesFor = reason.match(/^activa (.+) para (.+)$/);
+  if (activatesFor) return selectedLanguage === "es" ? `Activa ${activatesFor[1]} para ${activatesFor[2]}` : `Sets ${activatesFor[1]} for ${activatesFor[2]}`;
+  const protects = reason.match(/^protege a (.+) de (.+)$/);
+  if (protects) return selectedLanguage === "es" ? `Protege a ${protects[1]} de ${protects[2]}` : `Protects ${protects[1]} from ${protects[2]}`;
+  const punishes = reason.match(/^castiga atacantes de (.+) que molestan a (.+)$/);
+  if (punishes) return selectedLanguage === "es" ? `Castiga ${punishes[1]} por ${punishes[2]}` : `Punishes ${punishes[1]} for ${punishes[2]}`;
+  const testedPair = reason.match(/^pareja probada con (.+)$/);
+  if (testedPair) return selectedLanguage === "es" ? `Pareja probada con ${testedPair[1]}` : `Tested partner with ${testedPair[1]}`;
+  const frequentPair = reason.match(/^pareja frecuente con (.+)$/);
+  if (frequentPair) return selectedLanguage === "es" ? `Pareja frecuente con ${frequentPair[1]}` : `Frequent partner with ${frequentPair[1]}`;
   const synergy = reason.match(/^encaja con (.+)$/);
   if (synergy) return selectedLanguage === "es" ? `Sinergia con ${synergy[1]}` : `Synergy with ${synergy[1]}`;
   const enters = reason.match(/^entra bien ante (.+)$/);
@@ -3738,13 +4581,19 @@ function suggestionTagLabel(reason) {
   if (stacks) return selectedLanguage === "es" ? `Apila ${stacks[1]}` : `Stacks ${stacks[1]}`;
   const weather = reason.match(/^pisa tu clima con (.+)$/);
   if (weather) return selectedLanguage === "es" ? `Choca con ${weather[1]}` : `Clashes with ${weather[1]}`;
+  const weatherPlan = reason.match(/^pisa el plan de (.+) con (.+)$/);
+  if (weatherPlan) return selectedLanguage === "es" ? `Rompe ${weatherPlan[1]} con ${weatherPlan[2]}` : `Breaks ${weatherPlan[1]} with ${weatherPlan[2]}`;
+  const tooFastForPartnerTr = reason.match(/^se acelera demasiado para el Trick Room de (.+)$/);
+  if (tooFastForPartnerTr) return selectedLanguage === "es" ? `No encaja con Espacio Raro de ${tooFastForPartnerTr[1]}` : `Poor fit with ${tooFastForPartnerTr[1]}'s Trick Room`;
+  const poorTailwind = reason.match(/^no aprovecha bien el Tailwind de (.+)$/);
+  if (poorTailwind) return selectedLanguage === "es" ? `No aprovecha Viento Afín de ${poorTailwind[1]}` : `Does not use ${poorTailwind[1]}'s Tailwind well`;
   if (reason === "atacante especial necesario") return selectedLanguage === "es" ? "Daño especial" : "Special damage";
   if (reason === "atacante físico necesario") return selectedLanguage === "es" ? "Daño físico" : "Physical damage";
   if (reason === "ayuda a mover primero") return selectedLanguage === "es" ? "Control de velocidad" : "Speed control";
   if (reason === "puede activar Trick Room o Tailwind") return selectedLanguage === "es" ? "Control de velocidad" : "Speed control";
   if (reason === "añade Tailwind, Icy Wind o parálisis") return selectedLanguage === "es" ? "Control de velocidad" : "Speed control";
-  if (reason === "encaje estratégico completo") return selectedLanguage === "es" ? "Encaje de plan excelente" : "Excellent gameplan fit";
-  if (reason === "encaje estratégico claro") return selectedLanguage === "es" ? "Encaje de plan claro" : "Clear gameplan fit";
+  if (reason === "encaje estratégico completo") return selectedLanguage === "es" ? "Plan muy claro" : "Very clear plan";
+  if (reason === "encaje estratégico claro") return selectedLanguage === "es" ? "Buen encaje" : "Good fit";
   if (reason === "abusa de tu Trick Room") return selectedLanguage === "es" ? "Abusa de Espacio Raro" : "Trick Room abuser";
   if (reason === "aprovecha Trick Room") return selectedLanguage === "es" ? "Aprovecha Espacio Raro" : "Benefits from Trick Room";
   if (reason === "funciona en Trick Room") return selectedLanguage === "es" ? "Funciona en Espacio Raro" : "Works in Trick Room";
@@ -3770,6 +4619,7 @@ function suggestionTagLabel(reason) {
   if (reason === "activa arena para tus atacantes") return selectedLanguage === "es" ? "Activa arena" : "Sets sand";
   if (reason === "encaja con arena") return selectedLanguage === "es" ? "Encaja con arena" : "Fits sand";
   if (reason === "abusa de la nieve") return selectedLanguage === "es" ? "Abusa de nieve" : "Snow abuser";
+  if (reason === "activa nieve para tu plan defensivo") return selectedLanguage === "es" ? "Activa nieve" : "Sets snow";
   if (reason === "encaja con nieve") return selectedLanguage === "es" ? "Encaja con nieve" : "Fits snow";
   if (reason === "resistencia para estabilizar el equipo") return selectedLanguage === "es" ? "Más aguante" : "More bulk";
   if (reason === "protege atacantes frágiles") return selectedLanguage === "es" ? "Protege el equipo" : "Protects the team";
@@ -3781,21 +4631,203 @@ function suggestionTagLabel(reason) {
   if (reason === "protege turnos de setup" || reason === "protects setup turns") return selectedLanguage === "es" ? "Protege setup" : "Protects setup";
   if (reason === "compite por Mega") return selectedLanguage === "es" ? "Conflicto de Mega" : "Mega conflict";
   if (reason === "segunda Mega opcional") return selectedLanguage === "es" ? "Segunda Mega" : "Second Mega";
-  if (reason === "tercera Mega es situacional") return selectedLanguage === "es" ? "Mega extra" : "Extra Mega";
   if (reason === "usa tu slot Mega") return selectedLanguage === "es" ? "Opción de Mega" : "Mega option";
   if (reason === "Pokémon flexible") return selectedLanguage === "es" ? "Flexible" : "Flexible";
   if (/^amenaza del meta/.test(reason)) return selectedLanguage === "es" ? "Amenaza del meta" : "Meta threat";
   return sentenceCase(reason);
 }
 
-function suggestionReasonChips(reasons) {
-  return unique(reasons.map(suggestionTagLabel)).filter((label) => !/^(Sinergia con|Synergy with) /.test(label));
+function suggestionChipKey(reason) {
+  if (/^aprovecha el Trick Room de /.test(reason)) return "speed:tr-partner";
+  if (/^protege el Trick Room de /.test(reason)) return "speed:tr-protect";
+  if (/^aprovecha el Tailwind de /.test(reason)) return "speed:tailwind-partner";
+  if (/^(aprovecha Tailwind|necesita Tailwind|convierte Tailwind en presión ofensiva)$/.test(reason)) return "speed:tailwind-generic";
+  if (reason === "presiona incluso sin Tailwind") return "speed:no-support";
+  if (reason === "aprovecha bajadas de Velocidad") return "speed:drops";
+  if (/^aprovecha (lluvia|sol|arena|nieve|rain|sun|sand|snow) de /.test(reason)) return `weather:${weatherKeyFromReason(reason)}:partner`;
+  if (/^(abusa de la lluvia|activa lluvia para tu plan ofensivo|potencia daño de Agua|aprovecha precisión con lluvia)$/.test(reason)) return "weather:rain";
+  if (/^(abusa del sol|activa sol para tu plan ofensivo|potencia daño de Fuego|aprovecha Solar Beam con sol)$/.test(reason)) return "weather:sun";
+  if (/^(abusa de la arena|activa arena para tus atacantes|encaja con arena)$/.test(reason)) return "weather:sand";
+  if (/^(abusa de la nieve|activa nieve para tu plan defensivo|encaja con nieve)$/.test(reason)) return "weather:snow";
+  if (/^entra bien ante /.test(reason)) return "defensive-entry";
+  if (/^abre cobertura /.test(reason)) return "coverage";
+  if (/^presiona amenazas /.test(reason)) return "threat-pressure";
+  if (/^protege a .+ de /.test(reason)) return "protect-partner";
+  if (/^castiga atacantes de .+ que molestan a /.test(reason)) return "punish-partner-check";
+  if (/^(encaje estratégico completo|encaje estratégico claro)$/.test(reason)) return "strategic-fit";
+  if (/^(atacante especial necesario|atacante físico necesario)$/.test(reason)) return "damage-profile";
+  if (/^(puede activar Trick Room o Tailwind|añade Tailwind, Icy Wind o parálisis|ayuda a mover primero)$/.test(reason)) return "speed-control";
+  return toId(suggestionTagLabel(reason));
+}
+
+function weatherKeyFromReason(reason) {
+  const match = String(reason || "").match(/^aprovecha (.+?) de /);
+  const weather = match?.[1]?.toLowerCase() || "";
+  if (/lluvia|rain/.test(weather)) return "rain";
+  if (/sol|sun/.test(weather)) return "sun";
+  if (/arena|sand/.test(weather)) return "sand";
+  if (/nieve|snow/.test(weather)) return "snow";
+  return weather || "weather";
+}
+
+function suggestionChipPriority(reason) {
+  if (/^protege a .+ de |^castiga atacantes de /.test(reason)) return 100;
+  if (/^entra bien ante |^abre cobertura |^presiona amenazas /.test(reason)) return 94;
+  if (/^aprovecha el Trick Room de |^protege el Trick Room de /.test(reason)) return 90;
+  if (/^aprovecha el Tailwind de /.test(reason)) return 88;
+  if (/^aprovecha (lluvia|sol|arena|nieve|rain|sun|sand|snow) de /.test(reason)) return 86;
+  if (/^(abusa de la lluvia|activa lluvia|abusa del sol|activa sol|abusa de la arena|activa arena|abusa de la nieve|activa nieve)/.test(reason)) return 82;
+  if (/^(aprovecha Tailwind|necesita Tailwind|convierte Tailwind|aprovecha bajadas)/.test(reason)) return 76;
+  if (/^(atacante especial necesario|atacante físico necesario|resistencia para estabilizar|protege atacantes)/.test(reason)) return 70;
+  if (/^(encaje estratégico completo|encaje estratégico claro)/.test(reason)) return 40;
+  if (isWarningReason(reason)) return 25;
+  return 55;
+}
+
+function shouldHideSuggestionChip(reason, reasons) {
+  if (!reason) return true;
+  if (/^(encaja con|pareja probada con|pareja frecuente con) /.test(reason)) return true;
+  const concreteCount = reasons.filter((item) => !isWarningReason(item) && !/^(encaje estratégico completo|encaje estratégico claro)$/.test(item)).length;
+  if (/^(encaje estratégico completo|encaje estratégico claro)$/.test(reason) && concreteCount >= 2) return true;
+  if (/^(aprovecha Tailwind|necesita Tailwind|convierte Tailwind en presión ofensiva)$/.test(reason) && reasons.some((item) => /^aprovecha el Tailwind de /.test(item))) return true;
+  if (reason === "aprovecha Tailwind" && reasons.includes("convierte Tailwind en presión ofensiva")) return true;
+  if (reason === "aprovecha bajadas de Velocidad" && reasons.some((item) => /^aprovecha el Tailwind de /.test(item))) return true;
+  const weatherPartners = reasons
+    .filter((item) => /^aprovecha (lluvia|sol|arena|nieve|rain|sun|sand|snow) de /.test(item))
+    .map(weatherKeyFromReason)
+    .filter((key) => key && key !== "weather");
+  if (/^(abusa de la lluvia|potencia daño de Agua|aprovecha precisión con lluvia)$/.test(reason) && weatherPartners.includes("rain")) return true;
+  if (/^(abusa del sol|potencia daño de Fuego|aprovecha Solar Beam con sol)$/.test(reason) && weatherPartners.includes("sun")) return true;
+  if (/^(abusa de la arena|encaja con arena)$/.test(reason) && weatherPartners.includes("sand")) return true;
+  if (/^(abusa de la nieve|encaja con nieve)$/.test(reason) && weatherPartners.includes("snow")) return true;
+  return false;
+}
+
+function candidateSummaryChipOptions(candidate, usedKeys) {
+  if (!candidate) return [];
+  const chips = [];
+  const roles = new Set([...(candidate.roles || []), ...(candidate.setRoles || [])]);
+  const hasSpeedChip = [...usedKeys].some((key) => key.startsWith("speed:"));
+  const hasWeatherChip = [...usedKeys].some((key) => key.startsWith("weather:"));
+  const add = (key, label, priority = 50) => {
+    if (!label || usedKeys.has(key)) return;
+    chips.push({ key, label, priority });
+  };
+
+  if (roles.has("fakeOut")) add("role:fakeout", moveUiName("Fake Out"), 92);
+  if (roles.has("intimidate")) add("role:intimidate", abilityUiName("Intimidate"), 90);
+  if (roles.has("redirection")) add("role:redirection", selectedLanguage === "es" ? "Redirección" : "Redirection", 88);
+  if (roles.has("priority")) add("role:priority", selectedLanguage === "es" ? "Prioridad" : "Priority", 84);
+  if (roles.has("trickRoom") && !hasSpeedChip) add("role:trickroom", moveUiName("Trick Room"), 82);
+  if (roles.has("speedControl") && !hasSpeedChip) add("role:speedcontrol", selectedLanguage === "es" ? "Control de velocidad" : "Speed control", 80);
+  if (roles.has("spreadDamage")) add("role:spread", selectedLanguage === "es" ? "Daño en área" : "Spread damage", 74);
+  if (candidate.weather?.length && !hasWeatherChip) {
+    add("role:weather", selectedLanguage === "es" ? `Setter de ${weatherLabel(candidate.weather[0])}` : `${weatherLabel(candidate.weather[0])} setter`, 86);
+  }
+  if (!usedKeys.has("damage-profile") && candidate.physicalDamage && candidate.specialDamage) {
+    add("damage:mixed", selectedLanguage === "es" ? "Daño mixto" : "Mixed damage", 79);
+  } else if (candidate.physicalDamage && !usedKeys.has("damage-profile")) {
+    add("damage:physical", selectedLanguage === "es" ? "Daño físico" : "Physical damage", 78);
+  } else if (candidate.specialDamage && !usedKeys.has("damage-profile")) {
+    add("damage:special", selectedLanguage === "es" ? "Daño especial" : "Special damage", 77);
+  }
+  if (candidate.bulkScore >= 315) add("bulk:high", selectedLanguage === "es" ? "Más aguante" : "More bulk", 62);
+  if (roles.has("support")) add("role:support", selectedLanguage === "es" ? "Apoyo" : "Support", 58);
+  if (roles.has("mega")) add("role:mega", selectedLanguage === "es" ? "Opción de Mega" : "Mega option", 48);
+
+  return chips.sort((a, b) => b.priority - a.priority);
+}
+
+function suggestionReasonChips(reasons, candidate = null) {
+  const selected = [];
+  const usedKeys = new Set();
+  const ordered = unique(reasons)
+    .filter((reason) => !shouldHideSuggestionChip(reason, reasons))
+    .sort((a, b) => suggestionChipPriority(b) - suggestionChipPriority(a));
+
+  for (const reason of ordered) {
+    const label = suggestionTagLabel(reason);
+    if (!label) continue;
+    const key = suggestionChipKey(reason);
+    if (usedKeys.has(key)) continue;
+    usedKeys.add(key);
+    selected.push(label);
+  }
+  for (const chip of candidateSummaryChipOptions(candidate, usedKeys)) {
+    if (selected.length >= 4) break;
+    usedKeys.add(chip.key);
+    selected.push(chip.label);
+  }
+  return selected;
 }
 
 function reasonExplanationPhrases(reasons) {
   const phrases = [];
   const synergy = reasons.find((reason) => /^encaja con /.test(reason));
-  if (synergy) phrases.push(selectedLanguage === "es" ? `comparte un plan real con ${synergy.replace(/^encaja con /, "")}` : `shares a real game plan with ${synergy.replace(/^encaja con /, "")}`);
+  const trAbuse = reasons.find((reason) => /^aprovecha el Trick Room de /.test(reason));
+  if (trAbuse) {
+    const partner = trAbuse.replace(/^aprovecha el Trick Room de /, "");
+    phrases.push(selectedLanguage === "es"
+      ? `usa los turnos de Espacio Raro de ${partner} para atacar antes que amenazas rápidas`
+      : `uses ${partner}'s Trick Room turns to attack before faster threats`);
+  }
+  const trProtect = reasons.find((reason) => /^protege el Trick Room de /.test(reason));
+  if (trProtect) {
+    const partner = trProtect.replace(/^protege el Trick Room de /, "");
+    phrases.push(selectedLanguage === "es"
+      ? `ayuda a que ${partner} coloque Espacio Raro sin regalar el primer turno`
+      : `helps ${partner} set Trick Room without giving up the first turn`);
+  }
+  const tailwindPartner = reasons.find((reason) => /^aprovecha el Tailwind de /.test(reason));
+  if (tailwindPartner) {
+    const partner = tailwindPartner.replace(/^aprovecha el Tailwind de /, "");
+    phrases.push(selectedLanguage === "es"
+      ? `convierte el Viento Afín de ${partner} en presión ofensiva inmediata`
+      : `turns ${partner}'s Tailwind into immediate offensive pressure`);
+  }
+  const weatherPartner = reasons.find((reason) => /^aprovecha (lluvia|sol|arena|nieve|rain|sun|sand|snow) de (.+)$/i.test(reason));
+  if (weatherPartner) {
+    const [, weather, partner] = weatherPartner.match(/^aprovecha (.+) de (.+)$/);
+    phrases.push(selectedLanguage === "es"
+      ? `aprovecha directamente ${weather} que ya aporta ${partner}`
+      : `directly uses the ${weather} already provided by ${partner}`);
+  }
+  const activatesFor = reasons.find((reason) => /^activa (.+) para (.+)$/.test(reason));
+  if (activatesFor) {
+    const [, weather, partners] = activatesFor.match(/^activa (.+) para (.+)$/);
+    phrases.push(selectedLanguage === "es"
+      ? `da el clima que ${partners} necesita para que el plan deje de depender de turnos sueltos`
+      : `sets the weather ${partners} needs so the plan stops relying on isolated turns`);
+  }
+  const protects = reasons.find((reason) => /^protege a .+ de /.test(reason));
+  if (protects) {
+    const [, partner, types] = protects.match(/^protege a (.+) de (.+)$/);
+    phrases.push(selectedLanguage === "es"
+      ? `puede entrar ante ${types} para que ${partner} siga ejecutando su función`
+      : `can switch into ${types} so ${partner} can keep doing its job`);
+  }
+  const punishes = reasons.find((reason) => /^castiga atacantes de .+ que molestan a /.test(reason));
+  if (punishes) {
+    const [, types, partner] = punishes.match(/^castiga atacantes de (.+) que molestan a (.+)$/);
+    phrases.push(selectedLanguage === "es"
+      ? `amenaza a los atacantes de ${types} que normalmente presionan a ${partner}`
+      : `threatens ${types} attackers that usually pressure ${partner}`);
+  }
+  const testedPair = reasons.find((reason) => /^pareja probada con /.test(reason));
+  if (testedPair) {
+    const partner = testedPair.replace(/^pareja probada con /, "");
+    phrases.push(selectedLanguage === "es"
+      ? `también aparece como pareja real de ${partner}, pero aquí se valora por lo que aporta al plan`
+      : `also appears as a real partner for ${partner}, but the score here comes from what it adds to the plan`);
+  }
+  const frequentPair = reasons.find((reason) => /^pareja frecuente con /.test(reason));
+  if (frequentPair) {
+    const partner = frequentPair.replace(/^pareja frecuente con /, "");
+    phrases.push(selectedLanguage === "es"
+      ? `tiene datos de compañero con ${partner}, aunque no basta por sí solo si no cubre una necesidad`
+      : `has teammate data with ${partner}, though that alone is not enough unless it covers a need`);
+  }
+  if (synergy) phrases.push(selectedLanguage === "es" ? `tiene una sinergia directa con ${synergy.replace(/^encaja con /, "")}` : `has direct synergy with ${synergy.replace(/^encaja con /, "")}`);
   const enters = reasons.find((reason) => /^entra bien ante /.test(reason));
   if (enters) phrases.push(selectedLanguage === "es" ? `da una entrada defensiva útil contra ${enters.replace(/^entra bien ante /, "")}` : `gives a useful defensive entry into ${enters.replace(/^entra bien ante /, "")}`);
   const coverage = reasons.find((reason) => /^abre cobertura /.test(reason));
@@ -3814,6 +4846,7 @@ function reasonExplanationPhrases(reasons) {
   if (reasons.includes("activa lluvia para tu plan ofensivo")) phrases.push(selectedLanguage === "es" ? "enciende abusers de lluvia que ya tienes o que el equipo está pidiendo" : "turns on rain abusers your team already has or clearly wants");
   if (reasons.includes("activa sol para tu plan ofensivo")) phrases.push(selectedLanguage === "es" ? "convierte tus piezas de sol en un plan principal, no en una opción suelta" : "turns your sun pieces into a main plan instead of a loose option");
   if (reasons.includes("activa arena para tus atacantes")) phrases.push(selectedLanguage === "es" ? "da sentido a atacantes que escalan con arena como Sand Rush o Sand Force" : "enables attackers that scale with sand such as Sand Rush or Sand Force");
+  if (reasons.includes("activa nieve para tu plan defensivo")) phrases.push(selectedLanguage === "es" ? "convierte la nieve en una capa defensiva real en vez de una cobertura aislada" : "turns snow into a real defensive layer instead of isolated coverage");
   return phrases;
 }
 
@@ -3897,6 +4930,24 @@ function hasAbilityName(mon, abilityName) {
 function suggestionFitPhrases(reasons) {
   const phrases = [];
   const synergy = reasons.find((reason) => /^encaja con /.test(reason));
+  const trAbuse = reasons.find((reason) => /^aprovecha el Trick Room de /.test(reason));
+  if (trAbuse) phrases.push(selectedLanguage === "es" ? `se coloca detrás del Espacio Raro de ${trAbuse.replace(/^aprovecha el Trick Room de /, "")}` : `slots behind ${trAbuse.replace(/^aprovecha el Trick Room de /, "")}'s Trick Room`);
+  const trProtect = reasons.find((reason) => /^protege el Trick Room de /.test(reason));
+  if (trProtect) phrases.push(selectedLanguage === "es" ? `compra turnos para que ${trProtect.replace(/^protege el Trick Room de /, "")} active Espacio Raro` : `buys turns for ${trProtect.replace(/^protege el Trick Room de /, "")} to set Trick Room`);
+  const tailwindPartner = reasons.find((reason) => /^aprovecha el Tailwind de /.test(reason));
+  if (tailwindPartner) phrases.push(selectedLanguage === "es" ? `aprovecha el Viento Afín de ${tailwindPartner.replace(/^aprovecha el Tailwind de /, "")}` : `uses ${tailwindPartner.replace(/^aprovecha el Tailwind de /, "")}'s Tailwind`);
+  const activatesFor = reasons.find((reason) => /^activa (.+) para (.+)$/.test(reason));
+  if (activatesFor) {
+    const [, weather, partners] = activatesFor.match(/^activa (.+) para (.+)$/);
+    phrases.push(selectedLanguage === "es" ? `activa ${weather} para ${partners}` : `sets ${weather} for ${partners}`);
+  }
+  const protects = reasons.find((reason) => /^protege a .+ de /.test(reason));
+  if (protects) {
+    const [, partner, types] = protects.match(/^protege a (.+) de (.+)$/);
+    phrases.push(selectedLanguage === "es" ? `protege a ${partner} de ${types}` : `protects ${partner} from ${types}`);
+  }
+  const testedPair = reasons.find((reason) => /^pareja probada con /.test(reason));
+  if (testedPair) phrases.push(selectedLanguage === "es" ? `tiene datos reales junto a ${testedPair.replace(/^pareja probada con /, "")}` : `has real usage data next to ${testedPair.replace(/^pareja probada con /, "")}`);
   if (synergy) phrases.push(selectedLanguage === "es" ? `se coordina bien con ${synergy.replace(/^encaja con /, "")}` : `coordinates well with ${synergy.replace(/^encaja con /, "")}`);
   const enters = reasons.find((reason) => /^entra bien ante /.test(reason));
   if (enters) phrases.push(selectedLanguage === "es" ? `puede pivotar ante ${enters.replace(/^entra bien ante /, "")}` : `can pivot into ${enters.replace(/^entra bien ante /, "")}`);
@@ -4140,20 +5191,22 @@ function applyTeamContextScore(mon, candidate, profile, add) {
   const strongPhysical = candidate.physicalDamage || mon.baseStats.atk >= 115;
   const strongSpecial = candidate.specialDamage || mon.baseStats.spa >= 115;
   const strongAttacker = strongPhysical || strongSpecial;
+  const trickRoomSupportException = candidate.setMoveIds.has("trickroom") || candidate.setRoles.has("fakeOut") || candidate.setRoles.has("redirection") || candidate.setRoles.has("intimidate") || candidate.setRoles.has("priority");
 
   if (speedPlan.trickRoom) {
-    if (mon.baseStats.spe <= 55 && strongAttacker) add(38, "abusa de tu Trick Room");
-    else if (mon.baseStats.spe <= 75 && strongAttacker) add(30, "aprovecha Trick Room");
-    else if (mon.baseStats.spe <= 90 && candidate.bulkScore >= 285) add(16, "funciona en Trick Room");
-    else if (mon.baseStats.spe >= 115 && !candidate.setRoles.has("priority")) add(-24, "va contra tu Trick Room");
-    if (candidate.setMoveIds.has("trickroom")) add(14, "segundo setter de Trick Room");
-    if (strongAttacker && candidate.setRoles.has("spreadDamage") && mon.baseStats.spe <= 80) add(14, "presiona en Trick Room");
+    if (mon.baseStats.spe <= 55 && strongAttacker) add(58, "abusa de tu Trick Room");
+    else if (mon.baseStats.spe <= 75 && strongAttacker) add(42, "aprovecha Trick Room");
+    else if (mon.baseStats.spe <= 90 && candidate.bulkScore >= 285) add(20, "funciona en Trick Room");
+    else if (mon.baseStats.spe >= 115 && !trickRoomSupportException) add(-58, "va contra tu Trick Room");
+    else if (mon.baseStats.spe >= 100 && !trickRoomSupportException && !speedPlan.tailwind) add(-34, "va contra tu Trick Room");
+    if (candidate.setMoveIds.has("trickroom")) add(20, "segundo setter de Trick Room");
+    if (strongAttacker && candidate.setRoles.has("spreadDamage") && mon.baseStats.spe <= 80) add(22, "presiona en Trick Room");
   }
 
   if (speedPlan.tailwind) {
-    if (mon.baseStats.spe >= 65 && mon.baseStats.spe <= 115 && strongAttacker) add(26, "aprovecha Tailwind");
+    if (mon.baseStats.spe >= 65 && mon.baseStats.spe <= 115 && strongAttacker) add(36, "aprovecha Tailwind");
     if (mon.baseStats.spe >= 45 && mon.baseStats.spe < 65 && strongAttacker) add(12, "necesita Tailwind para brillar");
-    if (candidate.setRoles.has("spreadDamage") && strongAttacker) add(12, "convierte Tailwind en presión ofensiva");
+    if (candidate.setRoles.has("spreadDamage") && strongAttacker) add(18, "convierte Tailwind en presión ofensiva");
     if (mon.baseStats.spe >= 120 && strongAttacker) add(5, "presiona incluso sin Tailwind");
   }
 
@@ -4163,27 +5216,38 @@ function applyTeamContextScore(mon, candidate, profile, add) {
   }
 
   if (profile.currentWeather.includes("Rain")) {
-    if (hasCandidateAbility(candidate, "Swift Swim")) add(40, "abusa de la lluvia");
-    if (candidate.attackTypes.includes("Water")) add(16, "potencia daño de Agua");
-    if (candidate.moveIds.has("hurricane") || candidate.moveIds.has("thunder")) add(10, "aprovecha precisión con lluvia");
+    if (hasCandidateAbility(candidate, "Swift Swim")) add(52, "abusa de la lluvia");
+    if (candidate.attackTypes.includes("Water")) add(20, "potencia daño de Agua");
+    if (candidate.setMoveIds.has("hurricane") || candidate.setMoveIds.has("thunder")) add(10, "aprovecha precisión con lluvia");
   } else if (hasCandidateAbility(candidate, "Swift Swim") && hasCandidateAbility(candidate, "Adaptability")) {
     add(12, "puede jugar Adaptability sin lluvia");
   }
 
   if (profile.currentWeather.includes("Sun")) {
-    if (hasCandidateAbility(candidate, "Chlorophyll") || hasCandidateAbility(candidate, "Solar Power")) add(36, "abusa del sol");
-    if (candidate.attackTypes.includes("Fire")) add(16, "potencia daño de Fuego");
-    if (candidate.moveIds.has("solarbeam")) add(9, "aprovecha Solar Beam con sol");
+    if (hasCandidateAbility(candidate, "Chlorophyll") || hasCandidateAbility(candidate, "Solar Power")) add(52, "abusa del sol");
+    if (candidate.attackTypes.includes("Fire")) add(20, "potencia daño de Fuego");
+    if (candidate.setMoveIds.has("solarbeam")) add(9, "aprovecha Solar Beam con sol");
   }
 
   if (profile.currentWeather.includes("Sand")) {
-    if (hasCandidateAbility(candidate, "Sand Rush") || hasCandidateAbility(candidate, "Sand Force")) add(36, "abusa de la arena");
+    if (hasCandidateAbility(candidate, "Sand Rush") || hasCandidateAbility(candidate, "Sand Force")) add(50, "abusa de la arena");
     if (["Rock", "Ground", "Steel"].some((type) => candidate.types.has(type))) add(10, "encaja con arena");
   }
 
   if (profile.currentWeather.includes("Snow")) {
     if (hasCandidateAbility(candidate, "Slush Rush")) add(34, "abusa de la nieve");
-    if (candidate.types.has("Ice") || candidate.moveIds.has("auroraveil") || candidate.moveIds.has("blizzard")) add(12, "encaja con nieve");
+    if (candidate.types.has("Ice") || candidate.setMoveIds.has("auroraveil") || candidate.setMoveIds.has("blizzard")) add(12, "encaja con nieve");
+  }
+
+  for (const need of profile.weatherNeeds || []) {
+    if (candidate.weather.includes(need.weather)) {
+      const targets = (need.targets || []).slice(0, 2);
+      add(20 + targets.length * 8, targets.length
+        ? `activa ${weatherLabel(need.weather)} para ${localizedList(targets)}`
+        : need.reason);
+    } else if (candidate.weather.length && !candidate.weather.includes(need.weather)) {
+      add(-30, `pisa el plan de ${weatherLabel(need.weather)} con ${weatherLabel(candidate.weather[0])}`);
+    }
   }
 }
 
@@ -4203,8 +5267,8 @@ function weatherFromAbilities(abilities) {
 function synergyScore(candidate, synergy) {
   if (synergy.kind === "groundImmune" && (candidate.types.has("Flying") || candidate.abilities.has("Levitate") || candidate.abilities.has("Telepathy"))) return 12;
   if (synergy.kind === "waterImmune" && ["Water Absorb", "Storm Drain", "Dry Skin", "Telepathy"].some((ability) => candidate.abilities.has(ability))) return 10;
-  if (synergy.kind === "sun" && (candidate.abilities.has("Chlorophyll") || candidate.attackTypes.includes("Fire") || candidate.moveIds.has("solarbeam"))) return 10;
-  if (synergy.kind === "rain" && (candidate.abilities.has("Swift Swim") || candidate.moveIds.has("hurricane") || candidate.moveIds.has("thunder"))) return 10;
+  if (synergy.kind === "sun" && candidateBenefitsFromWeather(candidate, "Sun")) return 10;
+  if (synergy.kind === "rain" && candidateBenefitsFromWeather(candidate, "Rain")) return 10;
   if (synergy.kind === "sand" && (candidate.abilities.has("Sand Rush") || candidate.abilities.has("Sand Force") || candidate.types.has("Rock") || candidate.types.has("Steel") || candidate.types.has("Ground"))) return 9;
   if (synergy.kind === "setupSupport" && (candidate.roles.has("redirection") || candidate.roles.has("fakeOut") || candidate.roles.has("intimidate") || candidate.roles.has("support"))) return 9;
   return 0;
@@ -5200,26 +6264,31 @@ function topWeaknesses() {
 }
 
 function defensiveMultiplier(attackType, defenderTypes) {
-  return defenderTypes.reduce((mult, defType) => mult * (TYPE_CHART[attackType]?.[defType] ?? 1), 1);
+  const normalizedAttack = normalizeTypeName(attackType);
+  return (defenderTypes || []).reduce((mult, defType) => {
+    const normalizedDefense = normalizeTypeName(defType);
+    return mult * (TYPE_CHART[normalizedAttack]?.[normalizedDefense] ?? 1);
+  }, 1);
 }
 
 function battleMultiplier(attackType, defender, attacker = null) {
+  const normalizedAttack = normalizeTypeName(attackType);
   const defenderTypes = Array.isArray(defender) ? defender : defender?.types || [];
   const attackerAbilityIds = abilityIds(attacker);
   const defenderAbilityIds = abilityIds(defender);
   const abilityBroken = breaksDefensiveAbilities(attackerAbilityIds);
-  let multiplier = defensiveMultiplier(attackType, defenderTypes);
+  let multiplier = defensiveMultiplier(normalizedAttack, defenderTypes);
 
-  if (multiplier === 0 && ignoresTypeImmunity(attackType, attackerAbilityIds)) {
+  if (multiplier === 0 && ignoresTypeImmunity(normalizedAttack, attackerAbilityIds)) {
     multiplier = defenderTypes.reduce((mult, defType) => {
-      const value = TYPE_CHART[attackType]?.[defType] ?? 1;
+      const value = TYPE_CHART[normalizedAttack]?.[normalizeTypeName(defType)] ?? 1;
       return mult * (value === 0 ? 1 : value);
     }, 1);
   }
 
   if (!abilityBroken) {
-    if (isAbilityImmune(attackType, defenderAbilityIds)) return 0;
-    multiplier *= abilityDamageModifier(attackType, defenderAbilityIds, multiplier);
+    if (isAbilityImmune(normalizedAttack, defenderAbilityIds)) return 0;
+    multiplier *= abilityDamageModifier(normalizedAttack, defenderAbilityIds, multiplier);
   }
 
   return multiplier;
@@ -5306,48 +6375,82 @@ function typePlannerHtml() {
     b.resist - a.resist ||
     a.type.localeCompare(b.type)
   );
-  return `<details class="type-planner type-planner-collapse" data-detail-key="team:type-analysis"${detailsOpenAttr("team:type-analysis")}>
-    <summary class="type-planner-head">
-      <strong>${selectedLanguage === "es" ? "Análisis de tipos" : "Type analysis"}</strong>
-      <span><b>${selectedLanguage === "es" ? "D" : "W"}</b> ${selectedLanguage === "es" ? "débiles" : "weak"} · <b>R</b> ${selectedLanguage === "es" ? "resisten" : "resist"} · <b>I</b> ${selectedLanguage === "es" ? "inmunes" : "immune"}</span>
-    </summary>
-    <div class="type-planner-body">
-      ${typeBalanceSummaryHtml(sortedRows)}
-      <div class="type-balance-grid">
-        ${sortedRows.map(typeBalanceCardHtml).join("")}
-      </div>
-    </div>
-  </details>`;
-}
-
-function typeBalanceSummaryHtml(rows) {
-  const risky = rows
+  const weaknessRows = sortedRows
     .filter((row) => row.weak > 0)
-    .slice(0, 8)
-    .map((row) => `${typeLabel(row.type)} ${row.weak}${row.weak4 ? ` (${row.weak4} x4)` : ""}`);
-  const covered = [...rows]
+    .sort((a, b) =>
+      b.weak4 - a.weak4 ||
+      b.weak - a.weak ||
+      b.weak2 - a.weak2 ||
+      a.type.localeCompare(b.type)
+    );
+  const resistanceRows = [...rows]
     .filter((row) => row.resist > 0)
-    .sort((a, b) => b.resist - a.resist || a.weak - b.weak)
-    .slice(0, 5)
-    .map((row) => `${typeLabel(row.type)} ${row.resist}${row.immune ? `, ${row.immune} ${selectedLanguage === "es" ? "inm" : "imm"}` : ""}`);
-  return `<div class="type-balance-summary">
-    <span><b>${selectedLanguage === "es" ? "Riesgos" : "Risks"}:</b> ${risky.join(" · ") || (selectedLanguage === "es" ? "sin acumulaciones fuertes" : "no major stacking")}</span>
-    <span><b>${selectedLanguage === "es" ? "Entradas" : "Entries"}:</b> ${covered.join(" · ") || (selectedLanguage === "es" ? "faltan resistencias claras" : "no clear resistances")}</span>
+    .sort((a, b) =>
+      b.immune - a.immune ||
+      b.resist - a.resist ||
+      b.resistOnly - a.resistOnly ||
+      a.type.localeCompare(b.type)
+    );
+  const activeView = ["weaknesses", "resistances"].includes(typeAnalysisView) ? typeAnalysisView : "";
+  const weakTabLabel = selectedLanguage === "es" ? "Debilidades" : "Weaknesses";
+  const resistTabLabel = selectedLanguage === "es" ? "Resistencias" : "Resistances";
+  return `<section class="type-planner type-planner-compact" aria-label="${selectedLanguage === "es" ? "Análisis de tipos" : "Type analysis"}">
+    <div class="type-planner-body">
+      <div class="type-analysis-tabs" role="tablist" aria-label="${selectedLanguage === "es" ? "Vista del análisis de tipos" : "Type analysis view"}">
+        <button type="button" class="${activeView === "weaknesses" ? "active" : ""}" role="tab" aria-selected="${activeView === "weaknesses"}" data-type-analysis-tab="weaknesses">${weakTabLabel}</button>
+        <button type="button" class="${activeView === "resistances" ? "active" : ""}" role="tab" aria-selected="${activeView === "resistances"}" data-type-analysis-tab="resistances">${resistTabLabel}</button>
+      </div>
+      <section class="type-analysis-pane" data-type-analysis-pane="weaknesses" ${activeView === "weaknesses" ? "" : "hidden"}>
+        ${typeAnalysisListHtml(weaknessRows, "weaknesses")}
+      </section>
+      <section class="type-analysis-pane" data-type-analysis-pane="resistances" ${activeView === "resistances" ? "" : "hidden"}>
+        ${typeAnalysisListHtml(resistanceRows, "resistances")}
+      </section>
+    </div>
+  </section>`;
+}
+
+function typeAnalysisListHtml(rows, kind) {
+  if (!rows.length) {
+    return `<div class="type-analysis-empty">${kind === "weaknesses"
+      ? (selectedLanguage === "es" ? "Sin debilidades relevantes." : "No relevant weaknesses.")
+      : (selectedLanguage === "es" ? "Sin resistencias o inmunidades relevantes." : "No relevant resistances or immunities.")}</div>`;
+  }
+  return `<div class="type-analysis-list type-analysis-list-${kind}">
+    ${rows.map((row) => typeAnalysisRowHtml(row, kind)).join("")}
   </div>`;
 }
 
-function typeBalanceCardHtml(row) {
-  const status = row.weak >= 3 || row.weak4 ? "danger" : row.weak ? "warn" : row.resist ? "safe" : "neutral";
-  const weakLabel = selectedLanguage === "es" ? "D" : "W";
-  return `<div class="type-balance-card ${status}" title="${typeBalanceTitle(row)}">
+function typeAnalysisRowHtml(row, kind) {
+  const badges = kind === "weaknesses"
+    ? [
+        row.weak2 ? typeFactorHtml("weak", "x2", row.weak2) : "",
+        row.weak4 ? typeFactorHtml("severe", "x4", row.weak4) : "",
+      ]
+    : [
+        row.resistOnly ? typeFactorHtml("resist", "R", row.resistOnly) : "",
+        row.immune ? typeFactorHtml("immune", "I", row.immune) : "",
+      ];
+  return `<div class="type-analysis-row ${kind === "weaknesses" && row.weak4 ? "has-severe" : ""}" title="${typeBalanceTitle(row)}">
     ${typeIconHtml(row.type)}
-    <span class="balance-badges">
-      ${row.weak ? `<span class="balance-badge weak">${weakLabel} ${row.weak}${row.weak4 ? ` · ${row.weak4}x4` : ""}</span>` : ""}
-      ${row.resistOnly ? `<span class="balance-badge resist">R ${row.resistOnly}</span>` : ""}
-      ${row.immune ? `<span class="balance-badge immune">I ${row.immune}</span>` : ""}
-      ${!row.weak && !row.resist ? `<span class="balance-badge neutral">${selectedLanguage === "es" ? "neutral" : "neutral"}</span>` : ""}
-    </span>
+    <span class="type-factor-row">${badges.filter(Boolean).join("")}</span>
   </div>`;
+}
+
+function typeFactorHtml(kind, label, count) {
+  return `<span class="type-factor ${kind}"><span>${label}</span><span class="type-factor-sep">-</span><b>${count}</b></span>`;
+}
+
+function wireTypeAnalysisTabs(root) {
+  root.querySelectorAll("[data-type-analysis-tab]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const nextView = button.dataset.typeAnalysisTab === "resistances" ? "resistances" : "weaknesses";
+      typeAnalysisView = typeAnalysisView === nextView ? "" : nextView;
+      renderTeam();
+    });
+  });
 }
 
 function typeBalanceTitle(row) {
@@ -5387,15 +6490,16 @@ function typeTable(title, rows, kind, detailText, helpText) {
 }
 
 function typeIconHtml(type, suffix = "", suffixTitle = "") {
-  const label = typeLabel(type);
+  const normalized = normalizeTypeName(type);
+  const label = typeLabel(normalized);
   const suffixHtml = suffix ? `<span class="type-count" title="${suffixTitle || label}">${suffix}</span>` : "";
-  return `<span class="type-icon type-${type}" title="${label}" aria-label="${label}">
+  return `<span class="type-icon type-${normalized}" title="${label}" aria-label="${label}">
     <span class="type-name">${label}</span>${suffixHtml}
   </span>`;
 }
 
 function typeIconRow(types) {
-  return `<span class="type-icon-row">${types.map((type) => typeIconHtml(type)).join("")}</span>`;
+  return `<span class="type-icon-row">${(types || []).map(normalizeTypeName).filter((type) => TYPE_CHART[type]).map((type) => typeIconHtml(type)).join("")}</span>`;
 }
 
 function baseStatsHtml(mon, labeled = false) {
@@ -5417,7 +6521,8 @@ function baseStatsText(mon) {
 }
 
 function typeLabel(type) {
-  if (selectedLanguage === "en") return type;
+  const normalized = normalizeTypeName(type);
+  if (selectedLanguage === "en") return normalized;
   return {
     Normal: "Normal",
     Fire: "Fuego",
@@ -5437,7 +6542,7 @@ function typeLabel(type) {
     Dark: "Siniestro",
     Steel: "Acero",
     Fairy: "Hada",
-  }[type] || type;
+  }[normalized] || normalized;
 }
 
 function formatTypeList(types) {
