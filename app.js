@@ -3078,6 +3078,7 @@ let moveOptionTooltipHideTimer;
 let moveOptionHoldTimer;
 let moveOptionSuppressClickUntil = 0;
 let moveOptionGlobalEventsWired = false;
+let moveOptionTouchState = null;
 
 function comboMoveOptionFromEvent(event) {
   const button = event.target.closest?.(".combo-option");
@@ -3178,22 +3179,56 @@ function wireMoveOptionTooltips(menu) {
     const button = comboMoveOptionFromEvent(event);
     if (!button || event.pointerType !== "touch") return;
     window.clearTimeout(moveOptionHoldTimer);
+    moveOptionTouchState = {
+      button,
+      pointerId: event.pointerId,
+      x: event.clientX,
+      y: event.clientY,
+      held: false,
+    };
     moveOptionHoldTimer = window.setTimeout(() => {
+      if (!moveOptionTouchState || moveOptionTouchState.button !== button) return;
+      moveOptionTouchState.held = true;
       button.dataset.comboTooltipHold = "true";
+      moveOptionSuppressClickUntil = Date.now() + 1400;
       showMoveOptionTooltip(button);
-    }, 420);
+    }, 520);
   });
-  const endHold = () => {
+  menu.addEventListener("pointermove", (event) => {
+    if (!moveOptionTouchState || event.pointerType !== "touch" || event.pointerId !== moveOptionTouchState.pointerId) return;
+    const dx = Math.abs(event.clientX - moveOptionTouchState.x);
+    const dy = Math.abs(event.clientY - moveOptionTouchState.y);
+    if (dx > 12 || dy > 12) {
+      window.clearTimeout(moveOptionHoldTimer);
+      moveOptionTouchState = null;
+    }
+  }, { passive: true });
+  const endHold = (event) => {
     window.clearTimeout(moveOptionHoldTimer);
+    const wasHeld = Boolean(moveOptionTouchState?.held);
     const held = menu.querySelector("[data-combo-tooltip-hold]");
     if (held) {
-      moveOptionSuppressClickUntil = Date.now() + 360;
+      moveOptionSuppressClickUntil = Date.now() + 1400;
       held.removeAttribute("data-combo-tooltip-hold");
-      hideMoveOptionTooltip(140);
+      hideMoveOptionTooltip(1600);
+    }
+    moveOptionTouchState = null;
+    if (wasHeld) {
+      event?.preventDefault?.();
+      event?.stopPropagation?.();
     }
   };
   menu.addEventListener("pointerup", endHold);
   menu.addEventListener("pointercancel", endHold);
+  menu.addEventListener("click", (event) => {
+    if (Date.now() >= moveOptionSuppressClickUntil) return;
+    event.preventDefault();
+    event.stopPropagation();
+  }, true);
+  menu.addEventListener("contextmenu", (event) => {
+    if (Date.now() >= moveOptionSuppressClickUntil) return;
+    event.preventDefault();
+  });
   menu.addEventListener("mouseleave", () => hideMoveOptionTooltip());
   menu.addEventListener("scroll", () => hideMoveOptionTooltip(), { passive: true });
 }
