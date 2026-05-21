@@ -3579,8 +3579,17 @@ function editorStrategy(mon, slot, stats) {
   const plan = editorPlanLine(mon, slot, stats, candidate, selectedMoves);
   if (plan) lines.push({ label: selectedLanguage === "es" ? "Plan" : "Plan", text: plan });
 
-  const support = editorTeamSupportLine(mon, slot, stats, candidate);
+  const lead = editorLeadLine(mon, slot, stats, candidate, selectedMoves);
+  if (lead) lines.push({ label: selectedLanguage === "es" ? "Salida" : "Lead", text: lead });
+
+  const support = editorTeamSupportLine(mon, slot, stats, candidate, selectedMoves);
   if (support) lines.push({ label: selectedLanguage === "es" ? "Con tu equipo" : "With your team", text: support });
+
+  const partner = editorPartnerLine(mon, slot, stats, candidate, selectedMoves);
+  if (partner) lines.push({ label: selectedLanguage === "es" ? "Pareja clave" : "Key partner", text: partner });
+
+  const improvement = editorMissingSupportLine(mon, slot, stats, candidate, selectedMoves);
+  if (improvement) lines.push({ label: selectedLanguage === "es" ? "Si ajustas" : "If you adjust", text: improvement });
 
   const caution = editorCautionLine(mon, slot, stats, candidate);
   if (caution) lines.push({ label: selectedLanguage === "es" ? "Cuidado" : "Watch out", text: caution, tone: "warn" });
@@ -3609,7 +3618,7 @@ function editorPlanLine(mon, slot, stats, candidate, selectedMoves) {
   return selectedLanguage === "es" ? "busca entrar tras un KO, un cambio seguro o un turno protegido para empezar a intercambiar daño favorable" : "try to bring it in after a KO, a safe switch, or a protected turn so it can start trading favorable damage";
 }
 
-function editorTeamSupportLine(mon, slot, stats, candidate) {
+function editorTeamSupportLine(mon, slot, stats, candidate, selectedMoves = []) {
   const others = team.filter((other) => other !== slot && other.pokemon);
   const findMove = (ids) => others.find((other) => other.moves.some((move) => ids.includes(toId(move))));
   const tailwind = findMove(["tailwind"]);
@@ -3618,8 +3627,27 @@ function editorTeamSupportLine(mon, slot, stats, candidate) {
   const redirection = findMove(["followme", "ragepowder"]);
   const speedDrop = findMove(["icywind", "electroweb", "thunderwave", "glare"]);
   const intimidate = others.find((other) => (other.ability || other.pokemon.popularAbility || other.pokemon.abilities?.[0]) === "Intimidate");
+  const weather = selectedSlotWeather(slot)[0] || "";
+  const weatherPartners = weather ? others.filter((other) => slotBenefitsFromWeather(other, weather)).slice(0, 2) : [];
+  const weatherSetter = others.find((other) => selectedSlotWeather(other).some((activeWeather) => slotBenefitsFromWeather(slot, activeWeather)));
+  const weatherSetterKind = weatherSetter ? selectedSlotWeather(weatherSetter).find((activeWeather) => slotBenefitsFromWeather(slot, activeWeather)) : "";
+  const spread = selectedMoves.find((entry) => entry.info?.role === "spread" && entry.info.category !== "Status");
   const strongAttack = Math.max(mon.baseStats.atk, mon.baseStats.spa) >= 115;
 
+  if (weatherSetter && weatherSetterKind) {
+    return selectedLanguage === "es"
+      ? `${weatherSetter.pokemon.name} ya te da ${weatherLabel(weatherSetterKind)}; con ese apoyo ${mon.name} puede jugar su plan de clima sin gastar tantos turnos en colocarse`
+      : `${weatherSetter.pokemon.name} already gives you ${weatherLabel(weatherSetterKind)}; with that support ${mon.name} can play its weather plan without spending as many turns setting up`;
+  }
+  if (weather && weatherPartners.length) {
+    const names = localizedList(weatherPartners.map((other) => other.pokemon.name));
+    return selectedLanguage === "es"
+      ? `${mon.name} aporta ${weatherLabel(weather)} y eso activa a ${names}; intenta no cambiar de clima mientras esos compañeros estén preparados para atacar`
+      : `${mon.name} brings ${weatherLabel(weather)} and enables ${names}; avoid overwriting that weather while those partners are ready to attack`;
+  }
+  if (spread && tailwind && tailwind !== slot) return selectedLanguage === "es"
+    ? `con el Viento Afín de ${tailwind.pokemon.name}, ${formatMoveWithUsage(spread)} deja de ser solo presión y puede forzar Protects o KOs antes de que el rival responda`
+    : `with ${tailwind.pokemon.name}'s Tailwind, ${formatMoveWithUsage(spread)} becomes more than pressure and can force Protects or KOs before the opponent answers`;
   if (tailwind && (stats.spe < 170 || strongAttack)) return selectedLanguage === "es" ? `usa el Tailwind de ${tailwind.pokemon.name} para compensar su velocidad y convertir sus golpes fuertes en presión real` : `use ${tailwind.pokemon.name}'s Tailwind to patch its Speed and turn strong attacks into real pressure`;
   if (stats.spe < 95 && trickRoom) return selectedLanguage === "es" ? `bajo el Trick Room de ${trickRoom.pokemon.name} puede moverse antes que amenazas rápidas` : `under ${trickRoom.pokemon.name}'s Trick Room it can move before faster threats`;
   if (stats.spe < 135 && speedDrop) return selectedLanguage === "es" ? `${speedDrop.pokemon.name} puede bajar velocidad rival para que ${mon.name} no dependa de ganar speed ties` : `${speedDrop.pokemon.name} can lower opposing Speed so ${mon.name} does not rely on winning speed ties`;
@@ -3648,6 +3676,160 @@ function editorCautionLine(mon, slot, stats, candidate) {
   const protectUsage = moveUsageFor(mon, "Protect");
   if (isDoublesFormat() && !slot.moves.some((move) => toId(move) === "protect") && protectUsage >= 40) return selectedLanguage === "es" ? "MunchStats lo juega mucho con Protect; quitarlo puede complicar el posicionamiento en dobles" : "MunchStats uses it with Protect very often; removing it can make doubles positioning harder";
   return "";
+}
+
+function editorLeadLine(mon, slot, stats, candidate, selectedMoves = []) {
+  const others = team.filter((other) => other !== slot && other.pokemon);
+  if (!others.length) return "";
+  const findMove = (ids) => others.find((other) => other.moves.some((move) => ids.includes(toId(move))));
+  const tailwind = findMove(["tailwind"]);
+  const trickRoom = findMove(["trickroom"]);
+  const fakeOut = findMove(["fakeout"]);
+  const redirection = findMove(["followme", "ragepowder"]);
+  const spread = selectedMoves.find((entry) => entry.info?.role === "spread" && entry.info.category !== "Status");
+  const setup = selectedMoves.find((entry) => entry.info?.role === "setup");
+  const strongAttack = Math.max(mon.baseStats.atk, mon.baseStats.spa) >= 115;
+
+  if (isDoublesFormat() && spread && tailwind && stats.spe < 170) {
+    return selectedLanguage === "es"
+      ? `si quieres abrir agresivo, sácalo junto a ${tailwind.pokemon.name}: primero aseguras Viento Afín y después ${mon.name} puede castigar los dos slots con ${formatMoveWithUsage(spread)}`
+      : `for an aggressive lead, pair it with ${tailwind.pokemon.name}: secure Tailwind first, then ${mon.name} can punish both slots with ${formatMoveWithUsage(spread)}`;
+  }
+  if (isDoublesFormat() && stats.spe <= 75 && trickRoom) {
+    return selectedLanguage === "es"
+      ? `puede salir con ${trickRoom.pokemon.name} si esperas equipos rápidos; cuando Espacio Raro esté activo, ${mon.name} pasa de lento a amenaza principal`
+      : `it can lead with ${trickRoom.pokemon.name} into fast teams; once Trick Room is active, ${mon.name} goes from slow to main threat`;
+  }
+  if (isDoublesFormat() && setup && (fakeOut || redirection)) {
+    const helper = fakeOut || redirection;
+    return selectedLanguage === "es"
+      ? `si ves un turno de setup, sácalo con ${helper.pokemon.name}: ese apoyo le compra el margen para usar ${formatMoveWithUsage(setup)} sin recibir doble presión`
+      : `if you see a setup turn, lead it with ${helper.pokemon.name}: that support buys room to use ${formatMoveWithUsage(setup)} without taking double pressure`;
+  }
+  const cover = editorBestDefensivePartner(mon, slot);
+  if (cover && strongAttack) {
+    return selectedLanguage === "es"
+      ? `si el rival enseña ${cover.typesText}, guárdalo como segundo o tercer Pokémon y deja que ${cover.partner.pokemon.name} absorba esa presión antes de colocarlo`
+      : `if the opponent shows ${cover.typesText}, keep it as a second or third Pokémon and let ${cover.partner.pokemon.name} absorb that pressure before placing it`;
+  }
+  return "";
+}
+
+function editorPartnerLine(mon, slot, stats, candidate, selectedMoves = []) {
+  const others = team.filter((other) => other !== slot && other.pokemon);
+  if (!others.length) return "";
+  const cover = editorBestDefensivePartner(mon, slot);
+  const offensive = editorBestOffensivePartner(mon, slot);
+  const monCovers = editorBestPartnerProtectedByMon(mon, slot);
+  const spread = selectedMoves.find((entry) => entry.info?.role === "spread" && entry.info.category !== "Status");
+
+  if (cover && monCovers) {
+    return selectedLanguage === "es"
+      ? `${cover.partner.pokemon.name} cubre ${cover.typesText} por ti, y ${mon.name} devuelve el favor entrando ante ${monCovers.typesText} para proteger a ${monCovers.partner.pokemon.name}; esa pareja puede pivotar sin regalar tantos turnos`
+      : `${cover.partner.pokemon.name} covers ${cover.typesText} for it, and ${mon.name} returns the favor by switching into ${monCovers.typesText} for ${monCovers.partner.pokemon.name}; that pair can pivot without giving away as many turns`;
+  }
+  if (cover) {
+    return selectedLanguage === "es"
+      ? `${cover.partner.pokemon.name} es la pareja más limpia cuando esperas ${cover.typesText}; úsalo para no exponer a ${mon.name} justo al tipo de golpe que peor encaja`
+      : `${cover.partner.pokemon.name} is the cleanest partner when you expect ${cover.typesText}; use it so ${mon.name} is not exposed to the hit it dislikes most`;
+  }
+  if (offensive && spread) {
+    return selectedLanguage === "es"
+      ? `${offensive.partner.pokemon.name} y ${mon.name} presionan defensas distintas; si fuerzas Protect con ${formatMoveWithUsage(spread)}, ${offensive.partner.pokemon.name} puede castigar el slot que intente aguantar`
+      : `${offensive.partner.pokemon.name} and ${mon.name} pressure different defensive angles; if ${formatMoveWithUsage(spread)} forces Protect, ${offensive.partner.pokemon.name} can punish the slot trying to hold`;
+  }
+  if (offensive) {
+    return selectedLanguage === "es"
+      ? `combínalo con ${offensive.partner.pokemon.name} para no depender de un solo tipo de daño; entre ambos atacan mejor ${offensive.typesText}`
+      : `pair it with ${offensive.partner.pokemon.name} so you do not rely on one damage angle; together they pressure ${offensive.typesText} better`;
+  }
+  return "";
+}
+
+function editorMissingSupportLine(mon, slot, stats, candidate, selectedMoves = []) {
+  const others = team.filter((other) => other !== slot && other.pokemon);
+  const hasMove = (ids) => team.some((other) => other.moves.some((move) => ids.includes(toId(move))));
+  const hasRedirection = hasMove(["followme", "ragepowder"]);
+  const hasFakeOut = hasMove(["fakeout"]);
+  const weatherNeed = editorWeatherWish(mon, slot, selectedMoves);
+  const setup = selectedMoves.find((entry) => entry.info?.role === "setup");
+  const spread = selectedMoves.find((entry) => entry.info?.role === "spread" && entry.info.category !== "Status");
+
+  if (weatherNeed) return weatherNeed;
+  if (isDoublesFormat() && setup && !hasFakeOut && !hasRedirection) {
+    return selectedLanguage === "es"
+      ? `si añades Fake Out o redirección, ${mon.name} tendrá turnos mucho más reales para convertir ${formatMoveWithUsage(setup)} en condición de victoria`
+      : `if you add Fake Out or redirection, ${mon.name} gets much more realistic turns to turn ${formatMoveWithUsage(setup)} into a win condition`;
+  }
+  if (isDoublesFormat() && spread && !hasMove(["tailwind", "trickroom", "icywind", "electroweb", "thunderwave", "glare"]) && stats.spe < 140) {
+    return selectedLanguage === "es"
+      ? `un control de velocidad haría que ${formatMoveWithUsage(spread)} castigara antes de recibir daño; ahora mismo depende bastante del posicionamiento`
+      : `speed control would let ${formatMoveWithUsage(spread)} punish before taking damage; right now it depends heavily on positioning`;
+  }
+  if (candidate.bulkScore < 240 && !others.some((other) => (other.ability || other.pokemon.popularAbility) === "Intimidate")) {
+    return selectedLanguage === "es"
+      ? `Intimidación en otro slot le daría turnos más cómodos, sobre todo contra atacantes físicos que intenten forzarle Protect`
+      : `Intimidate on another slot would give it cleaner turns, especially into physical attackers trying to force Protect`;
+  }
+  return "";
+}
+
+function editorWeatherWish(mon, slot, selectedMoves = []) {
+  const moveIds = new Set(selectedMoves.map((entry) => toId(entry.move)));
+  const abilityId = toId(slot.ability || mon.popularAbility || mon.abilities?.[0] || "");
+  const activeWeather = new Set(team.flatMap((other) => selectedSlotWeather(other)));
+  if ((abilityId === "swiftswim" || moveIds.has("hurricane") || moveIds.has("thunder")) && !activeWeather.has("Rain")) {
+    return selectedLanguage === "es"
+      ? `con lluvia sería mucho más fácil justificar este set: ganarías precisión o Velocidad y podrías jugarlo de forma más directa`
+      : `rain would make this set much easier to justify: it gains accuracy or Speed and can be played more directly`;
+  }
+  if ((abilityId === "chlorophyll" || abilityId === "solarpower" || moveIds.has("solarbeam")) && !activeWeather.has("Sun")) {
+    return selectedLanguage === "es"
+      ? `si añades sol, ${mon.name} deja de depender de turnos sueltos y sus herramientas de sol pasan a ser un plan real`
+      : `if you add sun, ${mon.name} stops relying on isolated turns and its sun tools become a real plan`;
+  }
+  if (abilityId === "sandrush" && !activeWeather.has("Sand")) {
+    return selectedLanguage === "es"
+      ? "con arena activa aprovecharía mucho mejor su Velocidad; sin ella, conviene jugarlo como breaker o cubrirlo con otro control de velocidad"
+      : "with sand active it uses its Speed much better; without it, play it as a breaker or support it with another form of speed control";
+  }
+  return "";
+}
+
+function editorBestDefensivePartner(mon, slot) {
+  const weaknesses = editorWeaknessTypes(mon, slot);
+  const options = team.filter((other) => other !== slot && other.pokemon).map((partner) => {
+    const covered = weaknesses.filter((type) => battleMultiplier(type, { ...partner.pokemon, ability: partner.ability || partner.pokemon.popularAbility || partner.pokemon.abilities?.[0] }) <= 0.5);
+    return { partner, covered };
+  }).filter((entry) => entry.covered.length).sort((a, b) => b.covered.length - a.covered.length);
+  const best = options[0];
+  if (!best) return null;
+  return { ...best, typesText: formatTypeList(best.covered.slice(0, 3)) };
+}
+
+function editorBestPartnerProtectedByMon(mon, slot) {
+  const options = team.filter((other) => other !== slot && other.pokemon).map((partner) => {
+    const covered = editorWeaknessTypes(partner.pokemon, partner).filter((type) => battleMultiplier(type, { ...mon, ability: slot.ability || mon.popularAbility || mon.abilities?.[0] }) <= 0.5);
+    return { partner, covered };
+  }).filter((entry) => entry.covered.length).sort((a, b) => b.covered.length - a.covered.length);
+  const best = options[0];
+  if (!best) return null;
+  return { ...best, typesText: formatTypeList(best.covered.slice(0, 3)) };
+}
+
+function editorBestOffensivePartner(mon, slot) {
+  const ownTypes = new Set(slotAttackTypes(slot));
+  const options = team.filter((other) => other !== slot && other.pokemon).map((partner) => {
+    const partnerTypes = slotAttackTypes(partner).filter((type) => !ownTypes.has(type));
+    return { partner, covered: partnerTypes };
+  }).filter((entry) => entry.covered.length).sort((a, b) => b.covered.length - a.covered.length);
+  const best = options[0];
+  if (!best) return null;
+  return { ...best, typesText: formatTypeList(best.covered.slice(0, 3)) };
+}
+
+function editorWeaknessTypes(mon, slot) {
+  return Object.keys(TYPE_CHART).filter((type) => battleMultiplier(type, { ...mon, ability: slot?.ability || mon.popularAbility || mon.abilities?.[0] }) > 1);
 }
 
 function speedControlSummary() {
