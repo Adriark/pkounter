@@ -137,6 +137,46 @@ const PSYCHIC_MOVE_LEARNERS = new Set([
   "zoroarkhisui",
 ]);
 
+// MunchStats reports these Pokemon using U-turn in Champions; patch the local
+// learnsets so usage-sorted selectors can surface it without loosening legality globally.
+const EXTRA_LEARNSET_MOVES = {
+  pelipper: ["U-turn"],
+  passimian: ["U-turn"],
+  megabeedrill: ["U-turn"],
+  meowscarada: ["U-turn"],
+  kleavor: ["U-turn"],
+  megapidgeot: ["U-turn"],
+  corviknight: ["U-turn"],
+  hydreigon: ["U-turn"],
+  dragapult: ["U-turn"],
+  tsareena: ["U-turn"],
+  scizor: ["U-turn"],
+  greninja: ["U-turn"],
+  megagreninja: ["U-turn"],
+  megalopunny: ["U-turn"],
+  diggersby: ["U-turn"],
+  noivern: ["U-turn"],
+  infernape: ["U-turn"],
+  talonflame: ["U-turn"],
+  flapple: ["U-turn"],
+  toucannon: ["U-turn"],
+  gliscor: ["U-turn"],
+  liepard: ["U-turn"],
+  sneasler: ["U-turn"],
+  emolga: ["U-turn"],
+  megascizor: ["U-turn"],
+  decidueye: ["U-turn"],
+  maushold: ["U-turn"],
+  clawitzer: ["U-turn"],
+  decidueyehisui: ["U-turn"],
+  whimsicott: ["U-turn"],
+  zoroark: ["U-turn"],
+  volcarona: ["U-turn"],
+  zoroarkhisui: ["U-turn"],
+  megahawlucha: ["U-turn"],
+  vivillon: ["U-turn"],
+};
+
 const UI_TEXT = {
   es: {
     addButton: "Añadir",
@@ -1504,12 +1544,14 @@ function buildChampionsDex() {
 function sanitizeLearnsetForForm(name, learnset) {
   const monId = toId(name);
   const blocked = new Set(FORM_MOVE_BLOCKLIST[toId(name)] || []);
-  return learnset.filter((move) => {
+  const clean = learnset.filter((move) => {
     const moveId = toId(move);
     if (blocked.has(moveId)) return false;
     if (moveId === "psychic" && !PSYCHIC_MOVE_LEARNERS.has(monId)) return false;
     return true;
   });
+  const extra = (EXTRA_LEARNSET_MOVES[monId] || []).filter((move) => !blocked.has(toId(move)));
+  return unique([...clean, ...extra]);
 }
 
 function canonicalPokemonName(raw) {
