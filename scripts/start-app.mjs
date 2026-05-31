@@ -24,10 +24,10 @@ const MIME = {
 const SECURITY_HEADERS = {
   "Content-Security-Policy": [
     "default-src 'self'",
-    "script-src 'self'",
+    "script-src 'self' https://cdn.jsdelivr.net",
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' https://play.pokemonshowdown.com https://raw.githubusercontent.com data:",
-    "connect-src 'self' https://munchstats.com https://*.munchstats.com",
+    "connect-src 'self' https://munchstats.com https://*.munchstats.com https://kjcyhauosltrdorpihoi.supabase.co",
     "font-src 'self'",
     "object-src 'none'",
     "base-uri 'self'",

@@ -5,6 +5,15 @@ const MAX_SP = 66;
 const MAX_SP_STAT = 32;
 const COUNTER_MOVE_USAGE_MIN = 5;
 const COUNTER_MOVE_FALLBACK_USAGE_MIN = 1;
+const TEAM_COUNTER_DISPLAY_LIMIT = 12;
+const MAJOR_THREAT_DIVERSITY_POOL = 72;
+const MAJOR_THREAT_SETUP_MOVE_IDS = new Set(["swordsdance", "nastyplot", "dragondance", "calmmind", "bulkup", "quiverdance", "shellsmash", "irondefense", "amnesia", "coil", "curse", "workup"]);
+const MAJOR_THREAT_SCREEN_MOVE_IDS = new Set(["reflect", "lightscreen", "auroraveil"]);
+const MAJOR_THREAT_HAZARD_MOVE_IDS = new Set(["stealthrock", "spikes", "toxicspikes", "stickyweb"]);
+const MAJOR_THREAT_TERRAIN_MOVE_IDS = new Set(["electricterrain", "grassyterrain", "mistyterrain", "psychicterrain"]);
+const MAJOR_THREAT_STATUS_MOVE_IDS = new Set(["willowisp", "thunderwave", "glare", "spore", "sleeppowder", "stunspore", "toxic", "toxicthread", "poisonpowder"]);
+const MAJOR_THREAT_ANTI_SETUP_MOVE_IDS = new Set(["haze", "clearsmog", "topsyturvy", "taunt", "encore", "disable", "roar", "whirlwind", "dragontail", "circlethrow", "perishsong", "imprison"]);
+const MAJOR_THREAT_FIELD_CLEAR_MOVE_IDS = new Set(["defog", "rapidspin", "brickbreak", "psychicfangs", "courtchange", "tidyup", "mortalspin", "screencleaner"]);
 const STAT_KEYS = ["hp", "atk", "def", "spa", "spd", "spe"];
 const STAT_LABELS = { hp: "HP", atk: "Atk", def: "Def", spa: "SpA", spd: "SpD", spe: "Spe" };
 const TYPE_COLORS = {
@@ -182,11 +191,32 @@ const UI_TEXT = {
     addButton: "Añadir",
     addPokemonPlaceholder: "Añadir Pokémon...",
     aboutButton: "Sobre Pkounter",
+    supportButtonText: "Usa Refuerzo",
+    supportButtonLabel: "Apoya el proyecto y ayuda a mantener el servidor online.",
     applyPopularSet: "Aplicar set popular",
+    authCreateAccount: "Crear cuenta",
+    authDiscord: "Entrar con Discord",
+    authEmail: "Email",
+    authEmailPlaceholder: "Tu email",
+    authForgot: "¿Has olvidado la contraseña?",
+    authGoogle: "Entrar con Google",
+    authLogin: "Entrar",
+    authLogout: "Cerrar sesión",
+    authLogoutBusy: "Cerrando...",
+    authPassword: "Contraseña",
+    authPasswordPlaceholder: "Contraseña",
+    authRegister: "Registro",
+    authResetPassword: "Cambiar contraseña",
+    authSignIn: "Entrar",
+    authUsername: "Usuario",
+    authUsernamePlaceholder: "Usuario",
     attributionNotice: "Pkounter no está afiliado a Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown, MunchStats ni PokéAPI.",
     clearButton: "Limpiar",
     closeButton: "Cerrar",
     configTitle: "Configuración",
+    confirmCancel: "Cancelar",
+    confirmDelete: "Borrar",
+    confirmUpdate: "Actualizar",
     copiedButton: "Copiado",
     countersTitle: "Mayores counters",
     dataSources: "Datos y recursos:",
@@ -202,6 +232,7 @@ const UI_TEXT = {
     importTeamButton: "Importar equipo",
     languageLabel: "Idioma",
     levelRule: "Nivel 50",
+    confirmSaveButton: "Guardar",
     majorCountersHint: "Se activa al completar 6 Pokémon",
     madeBy: "Hecho por Adriark.",
     megaAlreadyUsed: "Mega ya usada",
@@ -210,6 +241,13 @@ const UI_TEXT = {
     megaRule: "1 Mega",
     megaToggle: "Megaevolucionar",
     duplicateItemNotice: "Ese objeto ya lo lleva otro Pokémon del equipo. En este formato no puedes repetir objeto.",
+    deleteTeamTitle: "Borrar equipo",
+    deleteTeamMessage: "¿Seguro que quieres borrar este equipo? Esta acción no se puede deshacer.",
+    updateTeamTitle: "Sobrescribir equipo",
+    updateTeamMessage: "¿Quieres sobrescribir este equipo guardado con el equipo actual?",
+    clearTeamTitle: "Eliminar equipo",
+    clearTeamMessage: "¿Seguro que quieres eliminar todo tu equipo?",
+    clearTeamConfirm: "Eliminar",
     megaTeamMetric: "Megas llevadas",
     movePlaceholder: "Movimiento {n}",
     noItem: "Sin objeto",
@@ -217,10 +255,22 @@ const UI_TEXT = {
     pokemonCount: "{count}/6 Pokémon",
     randomButton: "Aleatorio",
     readyButton: "Listo",
+    renameTeam: "Renombrar equipo",
+    renameTeamEmpty: "El nombre del equipo no puede estar vacío.",
+    renameTeamSuccess: "Nombre actualizado.",
+    saveTeamNameAction: "Guardar nombre",
+    cancelRenameTeam: "Cancelar",
+    myTeamsButton: "Mis equipos",
+    myTeamsHint: "Carga, actualiza o borra tus equipos guardados.",
+    savedTeamEditing: "Editando: {name}",
+    savedTeamEditingDirty: "Editando: {name} · cambios sin guardar",
+    saveTeamButton: "Guardar",
+    unsavedTeam: "Equipo sin guardar",
     selectedHintEmpty: "Elige un slot para editarlo",
     slotHint: "Añade un Pokémon",
     slotLabel: "Slot libre",
     spRule: "66 EVs · 32/stat",
+    teamNameLabel: "Nombre del equipo",
     suggestionsTitle: "Sugerencias en tiempo real",
     suggestionsTab: "Teambuilding",
     teamFull: "Equipo lleno",
@@ -241,11 +291,32 @@ const UI_TEXT = {
     addButton: "Add",
     addPokemonPlaceholder: "Add Pokémon...",
     aboutButton: "About Pkounter",
+    supportButtonText: "Use Helping Hand",
+    supportButtonLabel: "Support the project and help keep the server online.",
     applyPopularSet: "Apply popular set",
+    authCreateAccount: "Create account",
+    authDiscord: "Continue with Discord",
+    authEmail: "Email",
+    authEmailPlaceholder: "Your email",
+    authForgot: "Forgot password?",
+    authGoogle: "Continue with Google",
+    authLogin: "Log in",
+    authLogout: "Sign out",
+    authLogoutBusy: "Signing out...",
+    authPassword: "Password",
+    authPasswordPlaceholder: "Password",
+    authRegister: "Register",
+    authResetPassword: "Update password",
+    authSignIn: "Sign in",
+    authUsername: "Username",
+    authUsernamePlaceholder: "Username",
     attributionNotice: "Pkounter is not affiliated with Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown, MunchStats, or PokéAPI.",
     clearButton: "Clear",
     closeButton: "Close",
     configTitle: "Configuration",
+    confirmCancel: "Cancel",
+    confirmDelete: "Delete",
+    confirmUpdate: "Update",
     copiedButton: "Copied",
     countersTitle: "Biggest counters",
     dataSources: "Data and resources:",
@@ -261,6 +332,7 @@ const UI_TEXT = {
     importTeamButton: "Import team",
     languageLabel: "Language",
     levelRule: "Level 50",
+    confirmSaveButton: "Save",
     majorCountersHint: "Active after filling all 6 Pokémon",
     madeBy: "Made by Adriark.",
     megaAlreadyUsed: "Mega already used",
@@ -269,6 +341,13 @@ const UI_TEXT = {
     megaRule: "1 Mega",
     megaToggle: "Mega evolve",
     duplicateItemNotice: "Another teammate is already holding that item. This format does not allow duplicate items.",
+    deleteTeamTitle: "Delete team",
+    deleteTeamMessage: "Are you sure you want to delete this team? This action cannot be undone.",
+    updateTeamTitle: "Overwrite team",
+    updateTeamMessage: "Do you want to overwrite this saved team with the current team?",
+    clearTeamTitle: "Clear team",
+    clearTeamMessage: "Are you sure you want to delete your whole team?",
+    clearTeamConfirm: "Delete",
     megaTeamMetric: "Held Megas",
     movePlaceholder: "Move {n}",
     noItem: "No item",
@@ -276,10 +355,22 @@ const UI_TEXT = {
     pokemonCount: "{count}/6 Pokémon",
     randomButton: "Random",
     readyButton: "Done",
+    renameTeam: "Rename team",
+    renameTeamEmpty: "Team name cannot be empty.",
+    renameTeamSuccess: "Team name updated.",
+    saveTeamNameAction: "Save name",
+    cancelRenameTeam: "Cancel",
+    myTeamsButton: "My teams",
+    myTeamsHint: "Load, update, or delete your saved teams.",
+    savedTeamEditing: "Editing: {name}",
+    savedTeamEditingDirty: "Editing: {name} · unsaved changes",
+    saveTeamButton: "Save",
+    unsavedTeam: "Unsaved team",
     selectedHintEmpty: "Choose a slot to edit it",
     slotHint: "Add a Pokémon",
     slotLabel: "Empty slot",
     spRule: "66 EVs · 32/stat",
+    teamNameLabel: "Team name",
     suggestionsTitle: "Real-time suggestions",
     suggestionsTab: "Teambuilding",
     teamFull: "Team full",
@@ -889,6 +980,20 @@ const threatCounterCustomSlots = {};
 const majorThreatCustomSlots = {};
 const detailsOpenState = new Map();
 let editorNotice = "";
+let authSession = null;
+let authUser = null;
+let authProfile = null;
+let authMode = "login";
+let authSignOutInProgress = false;
+let saveTeamMode = "update";
+let currentSavedTeamId = "";
+let currentSavedTeamName = "";
+let savedTeams = [];
+let renamingTeamId = "";
+let lastSavedTeamFingerprint = "";
+let savedTeamTooltipEl = null;
+let activeSavedTeamTooltipTarget = null;
+let confirmModalResolve = null;
 
 const els = {
   pokemonSearch: document.querySelector("#pokemonSearch"),
@@ -898,6 +1003,7 @@ const els = {
   randomTeam: document.querySelector("#randomTeam"),
   teamSlots: document.querySelector("#teamSlots"),
   teamStatus: document.querySelector("#teamStatus"),
+  savedTeamStatus: document.querySelector("#savedTeamStatus"),
   teamSummary: document.querySelector("#teamSummary"),
   selectedHint: document.querySelector("#selectedHint"),
   applyPopularSet: document.querySelector("#applyPopularSet"),
@@ -915,6 +1021,38 @@ const els = {
   importTeam: document.querySelector("#importTeam"),
   exportBox: document.querySelector("#exportBox"),
   copyExport: document.querySelector("#copyExport"),
+  openAuth: document.querySelector("#openAuth"),
+  authModal: document.querySelector("#authModal"),
+  authTitle: document.querySelector("#auth-title"),
+  authSubtitle: document.querySelector("#auth-subtitle"),
+  authMessage: document.querySelector("#authMessage"),
+  authContent: document.querySelector("#authContent"),
+  closeAuth: document.querySelector("#closeAuth"),
+  authUserChip: document.querySelector("#authUserChip"),
+  authUserName: document.querySelector("#authUserName"),
+  authUserMenu: document.querySelector("#authUserMenu"),
+  authMenuTeams: document.querySelector("#authMenuTeams"),
+  logoutButton: document.querySelector("#logoutButton"),
+  saveTeam: document.querySelector("#saveTeam"),
+  showMyTeams: document.querySelector("#showMyTeams"),
+  teamsModal: document.querySelector("#teamsModal"),
+  teamsList: document.querySelector("#teamsList"),
+  teamsMessage: document.querySelector("#teamsMessage"),
+  closeTeams: document.querySelector("#closeTeams"),
+  saveTeamModal: document.querySelector("#saveTeamModal"),
+  saveTeamName: document.querySelector("#saveTeamName"),
+  confirmSaveTeam: document.querySelector("#confirmSaveTeam"),
+  cancelSaveTeam: document.querySelector("#cancelSaveTeam"),
+  closeSaveTeam: document.querySelector("#closeSaveTeam"),
+  saveTeamTitle: document.querySelector("#save-team-title"),
+  saveTeamSubtitle: document.querySelector("#save-team-subtitle"),
+  saveTeamMessage: document.querySelector("#saveTeamMessage"),
+  confirmModal: document.querySelector("#confirmModal"),
+  confirmTitle: document.querySelector("#confirm-title"),
+  confirmMessage: document.querySelector("#confirmMessage"),
+  confirmAccept: document.querySelector("#confirmAccept"),
+  confirmCancel: document.querySelector("#confirmCancel"),
+  closeConfirm: document.querySelector("#closeConfirm"),
   formatSelect: document.querySelector("#formatSelect"),
   formatButton: document.querySelector("#formatButton"),
   formatMenu: document.querySelector("#formatMenu"),
@@ -930,6 +1068,7 @@ init();
 
 function init() {
   mountImportModal();
+  mountAppModals();
   mountHeaderMenus();
   loadTeam();
   applyStaticTranslations();
@@ -939,6 +1078,7 @@ function init() {
   bindEvents();
   syncResponsiveSideLayout({ render: false });
   renderAll();
+  initSupabaseAuth();
 }
 
 function mountImportModal() {
@@ -947,8 +1087,14 @@ function mountImportModal() {
   }
 }
 
+function mountAppModals() {
+  [els.authModal, els.teamsModal, els.saveTeamModal, els.confirmModal].forEach((modal) => {
+    if (modal && modal.parentElement !== document.body) document.body.appendChild(modal);
+  });
+}
+
 function mountHeaderMenus() {
-  [els.formatMenu, els.languageMenu].forEach((menu) => {
+  [els.formatMenu, els.languageMenu, els.authUserMenu].forEach((menu) => {
     if (menu && menu.parentElement !== document.body) {
       document.body.appendChild(menu);
     }
@@ -962,12 +1108,21 @@ function bindEvents() {
       els.pokemonSearch.value = "";
     }
   });
-  els.clearTeam.addEventListener("click", () => {
+  els.clearTeam.addEventListener("click", async () => {
+    const ok = await showConfirmModal({
+      title: t("clearTeamTitle"),
+      message: t("clearTeamMessage"),
+      confirmText: t("clearTeamConfirm"),
+      cancelText: t("confirmCancel"),
+      variant: "danger",
+    });
+    if (!ok) return;
     for (let i = 0; i < MAX_TEAM; i++) team[i] = emptySlot();
     selectedSlot = 0;
     threatSearchMode = "auto";
     editorNotice = "";
     els.threatSearch.value = "";
+    resetSavedTeamLink();
     persist();
     renderAll();
   });
@@ -980,7 +1135,7 @@ function bindEvents() {
     const slot = team[selectedSlot];
     if (!slot.pokemon) return;
     editorNotice = "";
-    applyPopularSet(slot, slot.pokemon);
+    applyPopularSet(slot, activePokemonForSlot(slot) || slot.pokemon);
     persist();
     renderAll();
   });
@@ -995,6 +1150,7 @@ function bindEvents() {
       importShowdown(els.importBox.value);
       els.importBox.value = "";
       editorNotice = "";
+      resetSavedTeamLink();
       persist();
       renderAll();
     } finally {
@@ -1018,6 +1174,44 @@ function bindEvents() {
     });
     els.copyExport.textContent = t("copiedButton");
     setTimeout(() => (els.copyExport.textContent = t("exportButton")), 1200);
+  });
+  els.openAuth?.addEventListener("click", () => {
+    if (!authUser) openAuthModal("login");
+  });
+  els.authUserChip?.addEventListener("click", (event) => {
+    event.stopPropagation();
+    toggleUserMenu();
+  });
+  els.authMenuTeams?.addEventListener("click", () => {
+    closeUserMenu();
+    openTeamsFlow();
+  });
+  els.closeAuth?.addEventListener("click", () => closeAuthModal());
+  els.authModal?.addEventListener("click", (event) => {
+    if (event.target === els.authModal) closeAuthModal();
+  });
+  els.logoutButton?.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    signOutCurrentUser();
+  });
+  els.saveTeam?.addEventListener("click", () => saveCurrentTeam());
+  els.showMyTeams?.addEventListener("click", () => openTeamsFlow());
+  els.closeTeams?.addEventListener("click", () => closeTeamsModal());
+  els.teamsModal?.addEventListener("click", (event) => {
+    if (event.target === els.teamsModal) closeTeamsModal();
+  });
+  els.closeSaveTeam?.addEventListener("click", () => closeSaveTeamModal());
+  els.cancelSaveTeam?.addEventListener("click", () => closeSaveTeamModal());
+  els.saveTeamModal?.addEventListener("click", (event) => {
+    if (event.target === els.saveTeamModal) closeSaveTeamModal();
+  });
+  els.confirmSaveTeam?.addEventListener("click", () => confirmSaveTeamFlow());
+  els.confirmAccept?.addEventListener("click", () => resolveConfirmModal(true));
+  els.confirmCancel?.addEventListener("click", () => resolveConfirmModal(false));
+  els.closeConfirm?.addEventListener("click", () => resolveConfirmModal(false));
+  els.confirmModal?.addEventListener("click", (event) => {
+    if (event.target === els.confirmModal) resolveConfirmModal(false);
   });
   els.formatSelect?.addEventListener("change", () => updateSelectedFormat(els.formatSelect.value));
   els.formatButton?.addEventListener("click", (event) => {
@@ -1048,19 +1242,38 @@ function bindEvents() {
       closeFormatMenu();
       closeLanguageMenu();
     }
+    if (!event.target.closest?.(".auth-control") && !event.target.closest?.("#authUserMenu")) {
+      closeUserMenu();
+    }
   });
   window.addEventListener?.("resize", () => {
     if (!els.formatMenu?.hidden) positionHeaderMenu(els.formatMenu, els.formatButton);
     if (!els.languageMenu?.hidden) positionHeaderMenu(els.languageMenu, els.languageButton);
+    if (!els.authUserMenu?.hidden) positionHeaderMenu(els.authUserMenu, els.authUserChip);
     syncResponsiveSideLayout();
   });
   document.addEventListener?.("keydown", (event) => {
     if (event.key === "Escape") {
+      if (els.confirmModal && !els.confirmModal.hidden) {
+        resolveConfirmModal(false);
+        return;
+      }
       closeFormatMenu();
       closeLanguageMenu();
+      closeUserMenu();
       closeImportModal();
+      closeAuthModal();
+      closeTeamsModal();
+      closeSaveTeamModal();
+      hideSavedTeamTooltip();
     }
   });
+  document.addEventListener?.("pointerdown", (event) => {
+    if (!activeSavedTeamTooltipTarget) return;
+    if (event.target.closest?.(".saved-team-sprite") || event.target.closest?.(".saved-team-tooltip")) return;
+    hideSavedTeamTooltip();
+  });
+  document.addEventListener?.("scroll", () => hideSavedTeamTooltip(), true);
 }
 
 function openImportModal() {
@@ -1073,9 +1286,976 @@ function openImportModal() {
 }
 
 function closeImportModal() {
-  document.body.classList.remove("modal-open");
   if (!els.importTray) return;
   els.importTray.hidden = true;
+  syncModalOpenClass();
+}
+
+function supabaseBridge() {
+  return window.PKOUNTER_SUPABASE || { available: false, error: "Supabase is not configured." };
+}
+
+function supabaseAuth() {
+  const bridge = supabaseBridge();
+  if (!bridge.available) throw new Error(bridge.error || "Supabase is not available.");
+  return bridge.auth;
+}
+
+function supabaseTeams() {
+  const bridge = supabaseBridge();
+  if (!bridge.available) throw new Error(bridge.error || "Supabase is not available.");
+  return bridge.teams;
+}
+
+function supabaseError(error) {
+  const raw = supabaseBridge().formatError?.(error) || error?.message || String(error || "");
+  return translateSupabaseError(raw);
+}
+
+function translateSupabaseError(message) {
+  const raw = String(message || "").trim();
+  const id = toId(raw);
+  const isEs = selectedLanguage === "es";
+  if (!raw) return "";
+  if (id.includes("invalidlogincredentials")) {
+    return isEs ? "Email o contraseña incorrectos." : "Invalid email or password.";
+  }
+  if (id.includes("emailnotconfirmed") || id.includes("confirm") && id.includes("email")) {
+    return isEs ? "Revisa tu email para confirmar la cuenta." : "Please confirm your account from your email.";
+  }
+  if (id.includes("invalidemail") || id.includes("validemail")) {
+    return isEs ? "Introduce un email válido." : "Use a valid email address.";
+  }
+  if (id.includes("password") && (id.includes("atleast8") || id.includes("8characters") || id.includes("minimum"))) {
+    return isEs ? "La contraseña debe tener al menos 8 caracteres." : "Password must be at least 8 characters.";
+  }
+  if (id.includes("usernamemust")) {
+    return isEs
+      ? "El usuario debe tener 3-24 caracteres: minúsculas, números o guion bajo."
+      : "Username must be 3-24 characters using lowercase letters, numbers, or underscore.";
+  }
+  if (id.includes("useralreadyregistered") || id.includes("alreadyregistered") || id.includes("alreadyexists")) {
+    return isEs ? "Ya existe una cuenta con ese email." : "An account with that email already exists.";
+  }
+  return raw;
+}
+
+async function initSupabaseAuth() {
+  if (!supabaseBridge().available) {
+    renderAuthStatus();
+    return;
+  }
+  try {
+    authSession = await supabaseAuth().getSession();
+    authUser = authSession?.user || null;
+    await refreshAuthProfile();
+    supabaseAuth().onAuthStateChange((event, session) => {
+      authSession = session || null;
+      authUser = session?.user || null;
+      if (event === "SIGNED_OUT" || !authUser) {
+        applySignedOutState({ closeModals: event === "SIGNED_OUT" });
+        return;
+      }
+      refreshAuthProfile()
+        .catch(() => {
+          authProfile = null;
+        })
+        .finally(() => {
+          renderAuthStatus();
+          if (event === "PASSWORD_RECOVERY") openAuthModal("reset");
+        });
+    });
+    if (window.location.hash.includes("type=recovery") || window.location.search.includes("type=recovery")) {
+      openAuthModal("reset");
+    }
+  } catch (error) {
+    showAppToast(supabaseError(error), "error");
+  } finally {
+    renderAuthStatus();
+  }
+}
+
+async function refreshAuthProfile() {
+  authProfile = null;
+  const userId = authUser?.id;
+  if (!userId) return;
+  try {
+    let profile = await supabaseAuth().getProfile(userId);
+    profile = await syncProfileDisplayName(profile);
+    if (authUser?.id === userId) authProfile = profile;
+  } catch {
+    authProfile = null;
+  }
+}
+
+function cleanDisplayName(value) {
+  const text = String(value || "").trim().replace(/\s+/g, " ");
+  if (!text || text.includes("@")) return "";
+  return text.slice(0, 80);
+}
+
+function comparableDisplayName(value) {
+  return String(value || "")
+    .trim()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "");
+}
+
+function authMetadataDisplayName(user = authUser) {
+  const meta = user?.user_metadata || {};
+  const candidates = [
+    meta.display_name,
+    meta.full_name,
+    meta.name,
+    meta.global_name,
+    meta.preferred_username,
+    meta.user_name,
+    meta.nickname,
+  ];
+  return candidates.map(cleanDisplayName).find(Boolean) || "";
+}
+
+function isTechnicalDisplayName(profile, displayName) {
+  const visible = cleanDisplayName(displayName);
+  const username = cleanDisplayName(profile?.username);
+  if (!visible) return true;
+  if (username && comparableDisplayName(visible) === comparableDisplayName(username)) return true;
+  return /^[a-z0-9_]+$/i.test(visible) && visible.includes("_");
+}
+
+function authEmailFallback(user = authUser) {
+  return cleanDisplayName(String(user?.email || "").split("@")[0]);
+}
+
+async function syncProfileDisplayName(profile) {
+  const displayName = cleanDisplayName(profile?.display_name);
+  const oauthName = authMetadataDisplayName(authUser);
+  const shouldUseOauthName = oauthName
+    && comparableDisplayName(oauthName) !== comparableDisplayName(displayName)
+    && isTechnicalDisplayName(profile, displayName);
+  if (!authUser?.id || !profile || !shouldUseOauthName) return profile;
+  try {
+    const updated = await supabaseAuth().updateProfile?.(authUser.id, { display_name: oauthName });
+    return updated || { ...profile, display_name: oauthName };
+  } catch {
+    return { ...profile, display_name: oauthName };
+  }
+}
+
+function authDisplayName() {
+  const profileName = cleanDisplayName(authProfile?.display_name);
+  const oauthName = authMetadataDisplayName(authUser);
+  if (profileName && (!oauthName || !isTechnicalDisplayName(authProfile, profileName))) return profileName;
+  return oauthName
+    || profileName
+    || cleanDisplayName(authProfile?.username)
+    || cleanDisplayName(authUser?.user_metadata?.username)
+    || authEmailFallback(authUser)
+    || "Trainer";
+}
+
+function renderAuthStatus() {
+  if (!els.openAuth || !els.authUserChip) return;
+  const available = supabaseBridge().available;
+  els.openAuth.setAttribute("aria-label", t("authSignIn"));
+  els.openAuth.title = t("authSignIn");
+  els.openAuth.hidden = Boolean(authUser);
+  els.openAuth.style.display = authUser ? "none" : "";
+  els.openAuth.disabled = !available;
+  els.authUserChip.hidden = !authUser;
+  els.authUserChip.style.display = authUser ? "" : "none";
+  els.authUserChip.disabled = !available || !authUser;
+  els.authUserChip.setAttribute("aria-expanded", els.authUserMenu && !els.authUserMenu.hidden ? "true" : "false");
+  els.authUserChip.setAttribute("aria-label", selectedLanguage === "es" ? "Cuenta de usuario" : "User account");
+  if (els.authUserName) els.authUserName.textContent = authDisplayName();
+  if (els.logoutButton) {
+    els.logoutButton.disabled = authSignOutInProgress;
+    els.logoutButton.textContent = authSignOutInProgress ? t("authLogoutBusy") : t("authLogout");
+    els.logoutButton.setAttribute("aria-busy", String(authSignOutInProgress));
+  }
+  if (!authUser) closeUserMenu();
+  if (!available) els.openAuth.title = supabaseBridge().error || "Supabase is not available.";
+}
+
+function applySignedOutState({ closeModals = false } = {}) {
+  authSignOutInProgress = false;
+  authSession = null;
+  authUser = null;
+  authProfile = null;
+  savedTeams = [];
+  resetSavedTeamLink();
+  closeUserMenu();
+  if (closeModals) {
+    closeAuthModal();
+    closeTeamsModal();
+    closeSaveTeamModal();
+    resolveConfirmModal(false);
+  }
+  updateSavedTeamStatus();
+  renderAuthStatus();
+}
+
+async function signOutCurrentUser() {
+  if (authSignOutInProgress) return;
+  authSignOutInProgress = true;
+  renderAuthStatus();
+  try {
+    await supabaseAuth().signOut();
+    applySignedOutState({ closeModals: true });
+    showAppToast(selectedLanguage === "es" ? "Sesión cerrada." : "Signed out.", "success");
+  } catch (error) {
+    authSignOutInProgress = false;
+    renderAuthStatus();
+    showAppToast(supabaseError(error), "error");
+  }
+}
+
+function openPkModal(modal) {
+  if (!modal) return;
+  closeFormatMenu();
+  closeLanguageMenu();
+  closeUserMenu();
+  modal.hidden = false;
+  document.body.classList.add("modal-open");
+}
+
+function closePkModal(modal) {
+  if (!modal) return;
+  modal.hidden = true;
+  syncModalOpenClass();
+}
+
+function syncModalOpenClass() {
+  const anyOpen = [els.importTray, els.authModal, els.teamsModal, els.saveTeamModal, els.confirmModal].some((item) => item && !item.hidden);
+  if (!anyOpen) document.body.classList.remove("modal-open");
+  else document.body.classList.add("modal-open");
+}
+
+function openAuthModal(mode = "login", message = "") {
+  authMode = mode;
+  renderAuthModal(message);
+  openPkModal(els.authModal);
+}
+
+function closeAuthModal() {
+  closePkModal(els.authModal);
+}
+
+function setAuthMessage(message = "", tone = "") {
+  if (!els.authMessage) return;
+  els.authMessage.hidden = !message;
+  els.authMessage.textContent = message;
+  els.authMessage.dataset.tone = tone;
+}
+
+function renderAuthModal(message = "") {
+  if (!els.authContent) return;
+  const isEs = selectedLanguage === "es";
+  const titles = {
+    login: isEs ? "Entrar en Pkounter" : "Sign in to Pkounter",
+    register: isEs ? "Crear cuenta" : "Create account",
+    forgot: isEs ? "Recuperar contraseña" : "Reset password",
+    reset: isEs ? "Nueva contraseña" : "New password",
+  };
+  const subtitles = {
+    login: isEs ? "Guarda equipos y recupéralos desde cualquier dispositivo." : "Save teams and load them from any device.",
+    register: isEs ? "Username, email y contraseña. Google y Discord también están disponibles." : "Username, email, and password. Google and Discord are also available.",
+    forgot: isEs ? "Te enviaremos un enlace para cambiar la contraseña." : "We will send a password reset link.",
+    reset: isEs ? "Introduce tu nueva contraseña para terminar el reset." : "Enter your new password to finish the reset.",
+  };
+  els.authTitle.textContent = titles[authMode] || titles.login;
+  els.authSubtitle.textContent = subtitles[authMode] || subtitles.login;
+  setAuthMessage(message);
+
+  if (!supabaseBridge().available) {
+    els.authContent.innerHTML = `<div class="editor-empty compact">${escapeHtml(supabaseBridge().error || "Supabase is not available.")}</div>`;
+    return;
+  }
+
+  if (authMode === "register") {
+    els.authContent.innerHTML = `
+      <form class="auth-form" data-auth-form="register">
+        <label>${t("authUsername")}<input name="username" autocomplete="username" placeholder="${t("authUsernamePlaceholder")}" required></label>
+        <label>${t("authEmail")}<input name="email" type="email" autocomplete="email" placeholder="${t("authEmailPlaceholder")}" required></label>
+        <label>${t("authPassword")}<input name="password" type="password" autocomplete="new-password" minlength="8" placeholder="${t("authPasswordPlaceholder")}" required></label>
+        <button type="submit" class="accent-button">${t("authCreateAccount")}</button>
+      </form>
+      ${authProviderButtonsHtml()}
+      ${authSecondaryActionsHtml([
+        { text: isEs ? "¿Ya tienes cuenta?" : "Already have an account?", action: t("authLogin"), mode: "login" },
+      ])}`;
+  } else if (authMode === "forgot") {
+    els.authContent.innerHTML = `
+      <form class="auth-form" data-auth-form="forgot">
+        <label>${t("authEmail")}<input name="email" type="email" autocomplete="email" placeholder="${t("authEmailPlaceholder")}" required></label>
+        <button type="submit" class="accent-button">${isEs ? "Enviar email" : "Send email"}</button>
+      </form>
+      ${authSecondaryActionsHtml([
+        { text: isEs ? "¿Recuerdas tu contraseña?" : "Remember your password?", action: t("authLogin"), mode: "login" },
+      ])}`;
+  } else if (authMode === "reset") {
+    els.authContent.innerHTML = `
+      <form class="auth-form" data-auth-form="reset">
+        <label>${t("authPassword")}<input name="password" type="password" autocomplete="new-password" minlength="8" placeholder="${t("authPasswordPlaceholder")}" required></label>
+        <label>${isEs ? "Repite la contraseña" : "Repeat password"}<input name="confirm" type="password" autocomplete="new-password" minlength="8" placeholder="${t("authPasswordPlaceholder")}" required></label>
+        <button type="submit" class="accent-button">${t("authResetPassword")}</button>
+      </form>
+      ${authSecondaryActionsHtml([
+        { text: isEs ? "¿Recuerdas tu contraseña?" : "Remember your password?", action: t("authLogin"), mode: "login" },
+      ])}`;
+  } else {
+    els.authContent.innerHTML = `
+      <form class="auth-form" data-auth-form="login">
+        <label>${t("authEmail")}<input name="email" type="email" autocomplete="email" placeholder="${t("authEmailPlaceholder")}" required></label>
+        <label>${t("authPassword")}<input name="password" type="password" autocomplete="current-password" minlength="8" placeholder="${t("authPasswordPlaceholder")}" required></label>
+        <button type="submit" class="accent-button">${t("authLogin")}</button>
+      </form>
+      ${authProviderButtonsHtml()}
+      ${authSecondaryActionsHtml([
+        { action: t("authForgot"), mode: "forgot", solo: true },
+        { text: isEs ? "¿No tienes cuenta?" : "No account yet?", action: t("authCreateAccount"), mode: "register" },
+      ])}`;
+  }
+
+  els.authContent.querySelectorAll("[data-auth-mode]").forEach((button) => {
+    button.addEventListener("click", () => openAuthModal(button.dataset.authMode));
+  });
+  els.authContent.querySelectorAll("[data-auth-provider]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      try {
+        await supabaseAuth().signInWithProvider(button.dataset.authProvider);
+      } catch (error) {
+        setAuthMessage(supabaseError(error), "error");
+      }
+    });
+  });
+  els.authContent.querySelector("[data-auth-form]")?.addEventListener("submit", handleAuthFormSubmit);
+}
+
+function authProviderButtonsHtml() {
+  return `<div class="auth-provider-grid">
+    ${authProviderButtonHtml("discord", t("authDiscord"))}
+    ${authProviderButtonHtml("google", t("authGoogle"))}
+  </div>`;
+}
+
+function authProviderButtonHtml(provider, label) {
+  return `<button type="button" class="auth-button auth-button--${escapeHtml(provider)}" data-auth-provider="${escapeHtml(provider)}" aria-label="${escapeHtml(label)}">
+    <span class="auth-button__icon" aria-hidden="true">${authProviderIconSvg(provider)}</span>
+    <span class="auth-button__text">${escapeHtml(label)}</span>
+  </button>`;
+}
+
+function authProviderIconSvg(provider) {
+  if (provider === "discord") {
+    return `<svg viewBox="0 0 127.14 96.36" role="img" focusable="false">
+      <path fill="currentColor" d="M107.7 8.07A105.15 105.15 0 0 0 81.47 0a72.06 72.06 0 0 0-3.36 6.83 97.68 97.68 0 0 0-29.11 0A72.37 72.37 0 0 0 45.64 0a105.89 105.89 0 0 0-26.25 8.09C2.79 32.65-1.71 56.6.54 80.21a105.73 105.73 0 0 0 32.17 16.15 77.7 77.7 0 0 0 6.89-11.05 68.42 68.42 0 0 1-10.85-5.18c.91-.66 1.8-1.35 2.66-2.05a75.57 75.57 0 0 0 64.32 0c.87.71 1.76 1.39 2.66 2.05a68.68 68.68 0 0 1-10.87 5.19 77 77 0 0 0 6.89 11 105.25 105.25 0 0 0 32.19-16.14c2.64-27.36-4.51-51.09-18.9-72.11ZM42.45 65.69C36.18 65.69 31 60 31 53s5-12.74 11.43-12.74S54 46 53.89 53s-5.05 12.69-11.44 12.69Zm42.24 0C78.41 65.69 73.25 60 73.25 53s5-12.74 11.44-12.74S96.23 46 96.12 53s-5.04 12.69-11.43 12.69Z"/>
+    </svg>`;
+  }
+  return `<svg viewBox="0 0 48 48" role="img" focusable="false">
+    <path fill="#FFC107" d="M43.61 20.08H42V20H24v8h11.3C33.65 32.66 29.22 36 24 36c-6.63 0-12-5.37-12-12s5.37-12 12-12c3.06 0 5.84 1.15 7.96 3.04l5.66-5.66C34.05 6.05 29.27 4 24 4 12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20c0-1.34-.14-2.65-.39-3.92Z"/>
+    <path fill="#FF3D00" d="m6.31 14.69 6.57 4.82C14.65 15.11 18.96 12 24 12c3.06 0 5.84 1.15 7.96 3.04l5.66-5.66C34.05 6.05 29.27 4 24 4 16.32 4 9.66 8.34 6.31 14.69Z"/>
+    <path fill="#4CAF50" d="M24 44c5.16 0 9.86-1.98 13.41-5.2l-6.18-5.23C29.21 35.09 26.71 36 24 36c-5.2 0-9.61-3.32-11.28-7.95l-6.52 5.02C9.51 39.56 16.23 44 24 44Z"/>
+    <path fill="#1976D2" d="M43.61 20.08H42V20H24v8h11.3a12.04 12.04 0 0 1-4.08 5.57l6.18 5.23C36.97 39.19 44 34 44 24c0-1.34-.14-2.65-.39-3.92Z"/>
+  </svg>`;
+}
+
+function authSecondaryActionsHtml(lines = []) {
+  return `<div class="auth-secondary-actions">
+    ${lines.map((line) => `
+      <div class="auth-secondary-line${line.solo ? " solo" : ""}">
+        ${line.text ? `<span>${escapeHtml(line.text)}</span>` : ""}
+        <button class="auth-link" type="button" data-auth-mode="${escapeHtml(line.mode)}">${escapeHtml(line.action)}</button>
+      </div>
+    `).join("")}
+  </div>`;
+}
+
+async function handleAuthFormSubmit(event) {
+  event.preventDefault();
+  const form = event.currentTarget;
+  const data = Object.fromEntries(new FormData(form).entries());
+  const submit = form.querySelector("button[type='submit']");
+  submit.disabled = true;
+  setAuthMessage("");
+  try {
+    if (form.dataset.authForm === "register") {
+      const result = await supabaseAuth().signUp(data);
+      const needsEmail = !result.session;
+      setAuthMessage(needsEmail
+        ? (selectedLanguage === "es" ? "Cuenta creada. Revisa tu email para confirmarla." : "Account created. Please check your email.")
+        : (selectedLanguage === "es" ? "Cuenta creada. Ya has iniciado sesión." : "Account created. You are now signed in."), "success");
+      if (!needsEmail) closeAuthModal();
+    } else if (form.dataset.authForm === "forgot") {
+      await supabaseAuth().resetPassword(data.email);
+      setAuthMessage(selectedLanguage === "es" ? "Email de recuperación enviado." : "Password reset email sent.", "success");
+    } else if (form.dataset.authForm === "reset") {
+      if (data.password !== data.confirm) throw new Error(selectedLanguage === "es" ? "Las contraseñas no coinciden." : "Passwords do not match.");
+      await supabaseAuth().updatePassword(data.password);
+      setAuthMessage(selectedLanguage === "es" ? "Contraseña actualizada." : "Password updated.", "success");
+      setTimeout(() => closeAuthModal(), 700);
+    } else {
+      await supabaseAuth().signIn(data);
+      closeAuthModal();
+      showAppToast(selectedLanguage === "es" ? "Sesión iniciada." : "Signed in.", "success");
+    }
+  } catch (error) {
+    setAuthMessage(supabaseError(error), "error");
+  } finally {
+    submit.disabled = false;
+  }
+}
+
+function userCanSaveTeam() {
+  if (authUser) return true;
+  openAuthModal("login", selectedLanguage === "es" ? "Inicia sesión para guardar equipos." : "Sign in to save teams.");
+  return false;
+}
+
+function teamHasPokemon() {
+  return team.some((slot) => slot.pokemon);
+}
+
+function defaultTeamName() {
+  return nextNewTeamName();
+}
+
+function savedTeamFallbackName() {
+  return selectedLanguage === "es" ? "Equipo guardado" : "Saved team";
+}
+
+function nextNewTeamName() {
+  const base = selectedLanguage === "es" ? "Equipo nuevo" : "New team";
+  const usedNumbers = new Set();
+  const matcher = new RegExp(`^${escapeRegExp(base)}\\s+(\\d+)$`, "i");
+  savedTeams.forEach((record) => {
+    const match = String(record?.name || "").trim().match(matcher);
+    if (match) usedNumbers.add(Number(match[1]));
+  });
+  let index = Math.max(1, savedTeams.length + 1);
+  while (usedNumbers.has(index)) index += 1;
+  return `${base} ${index}`;
+}
+
+function currentTeamFingerprint() {
+  return JSON.stringify({
+    selectedFormat,
+    team: team.map(serializeSlot),
+  });
+}
+
+function savedTeamIsDirty() {
+  return Boolean(currentSavedTeamId && lastSavedTeamFingerprint && currentTeamFingerprint() !== lastSavedTeamFingerprint);
+}
+
+function updateSavedTeamStatus() {
+  if (!els.savedTeamStatus) return;
+  if (!currentSavedTeamId) {
+    els.savedTeamStatus.textContent = t("unsavedTeam");
+    els.savedTeamStatus.dataset.dirty = "false";
+    return;
+  }
+  els.savedTeamStatus.textContent = savedTeamIsDirty()
+    ? t("savedTeamEditingDirty", { name: currentSavedTeamName || savedTeamFallbackName() })
+    : t("savedTeamEditing", { name: currentSavedTeamName || savedTeamFallbackName() });
+  els.savedTeamStatus.dataset.dirty = String(savedTeamIsDirty());
+}
+
+function resetSavedTeamLink() {
+  currentSavedTeamId = "";
+  currentSavedTeamName = "";
+  lastSavedTeamFingerprint = "";
+}
+
+async function saveCurrentTeam() {
+  if (!userCanSaveTeam()) return;
+  if (!teamHasPokemon()) {
+    showAppToast(selectedLanguage === "es" ? "Añade al menos un Pokémon antes de guardar." : "Add at least one Pokémon before saving.", "error");
+    return;
+  }
+  if (!currentSavedTeamId) {
+    await openSaveTeamFlow({ asNew: true });
+    return;
+  }
+  try {
+    const saved = await supabaseTeams().updateTeam({
+      userId: authUser.id,
+      teamId: currentSavedTeamId,
+      name: currentSavedTeamName || defaultTeamName(),
+      teamJson: getCurrentPkounterTeamState(),
+    });
+    currentSavedTeamName = saved.name || currentSavedTeamName;
+    lastSavedTeamFingerprint = currentTeamFingerprint();
+    updateSavedTeamStatus();
+    showAppToast(selectedLanguage === "es" ? "Equipo actualizado." : "Team updated.", "success");
+  } catch (error) {
+    showAppToast(supabaseError(error), "error");
+  }
+}
+
+async function openSaveTeamFlow({ asNew = false } = {}) {
+  if (!userCanSaveTeam()) return;
+  if (!teamHasPokemon()) {
+    showAppToast(selectedLanguage === "es" ? "Añade al menos un Pokémon antes de guardar." : "Add at least one Pokémon before saving.", "error");
+    return;
+  }
+  await ensureSavedTeamsLoaded();
+  saveTeamMode = asNew || !currentSavedTeamId ? "new" : "update";
+  els.saveTeamTitle.textContent = saveTeamMode === "new"
+    ? (selectedLanguage === "es" ? "Guardar como nuevo" : "Save as new")
+    : (selectedLanguage === "es" ? "Guardar equipo" : "Save team");
+  els.saveTeamSubtitle.textContent = selectedLanguage === "es"
+    ? "Ponle un nombre para encontrarlo rápido después."
+    : "Name it so you can find it quickly later.";
+  els.saveTeamName.value = saveTeamMode === "new" ? defaultTeamName() : (currentSavedTeamName || defaultTeamName());
+  setSaveTeamMessage("");
+  openPkModal(els.saveTeamModal);
+  requestAnimationFrame(() => els.saveTeamName?.focus());
+}
+
+function closeSaveTeamModal() {
+  closePkModal(els.saveTeamModal);
+}
+
+function showConfirmModal({ title, message, confirmText, cancelText, variant = "default" } = {}) {
+  if (!els.confirmModal || !els.confirmAccept || !els.confirmCancel) {
+    return Promise.resolve(false);
+  }
+  if (confirmModalResolve) resolveConfirmModal(false);
+  els.confirmTitle.textContent = title || "";
+  els.confirmMessage.textContent = message || "";
+  els.confirmAccept.textContent = confirmText || t("confirmUpdate");
+  els.confirmCancel.textContent = cancelText || t("confirmCancel");
+  els.confirmModal.dataset.variant = variant;
+  els.confirmAccept.className = `confirm-primary ${variant === "danger" ? "danger-button" : "accent-button"}`;
+  openPkModal(els.confirmModal);
+  requestAnimationFrame(() => els.confirmCancel?.focus());
+  return new Promise((resolve) => {
+    confirmModalResolve = resolve;
+  });
+}
+
+function resolveConfirmModal(value) {
+  const resolver = confirmModalResolve;
+  confirmModalResolve = null;
+  if (els.confirmModal && !els.confirmModal.hidden) {
+    closePkModal(els.confirmModal);
+  }
+  if (resolver) resolver(Boolean(value));
+}
+
+function setSaveTeamMessage(message = "", tone = "") {
+  if (!els.saveTeamMessage) return;
+  els.saveTeamMessage.hidden = !message;
+  els.saveTeamMessage.textContent = message;
+  els.saveTeamMessage.dataset.tone = tone;
+}
+
+async function confirmSaveTeamFlow() {
+  if (!authUser) return;
+  const name = els.saveTeamName.value.trim() || defaultTeamName();
+  els.confirmSaveTeam.disabled = true;
+  setSaveTeamMessage("");
+  try {
+    const payload = { userId: authUser.id, name, teamJson: getCurrentPkounterTeamState() };
+    const saved = saveTeamMode === "update" && currentSavedTeamId
+      ? await supabaseTeams().updateTeam({ ...payload, teamId: currentSavedTeamId })
+      : await supabaseTeams().createTeam(payload);
+    currentSavedTeamId = saved.id;
+    currentSavedTeamName = saved.name || name;
+    lastSavedTeamFingerprint = currentTeamFingerprint();
+    savedTeams = [saved, ...savedTeams.filter((record) => String(record.id) !== String(saved.id))];
+    updateSavedTeamStatus();
+    closeSaveTeamModal();
+    showAppToast(selectedLanguage === "es" ? "Equipo guardado." : "Team saved.", "success");
+  } catch (error) {
+    setSaveTeamMessage(supabaseError(error), "error");
+  } finally {
+    els.confirmSaveTeam.disabled = false;
+  }
+}
+
+async function openTeamsFlow() {
+  if (!userCanSaveTeam()) return;
+  openPkModal(els.teamsModal);
+  await refreshSavedTeams();
+}
+
+function closeTeamsModal() {
+  renamingTeamId = "";
+  closePkModal(els.teamsModal);
+}
+
+function setTeamsMessage(message = "", tone = "") {
+  if (!els.teamsMessage) return;
+  els.teamsMessage.hidden = !message;
+  els.teamsMessage.textContent = message;
+  els.teamsMessage.dataset.tone = tone;
+}
+
+async function refreshSavedTeams() {
+  if (!authUser) return;
+  els.teamsList.innerHTML = `<div class="editor-empty compact">${selectedLanguage === "es" ? "Cargando equipos..." : "Loading teams..."}</div>`;
+  setTeamsMessage("");
+  try {
+    savedTeams = await supabaseTeams().listTeams(authUser.id);
+    renderSavedTeamsList();
+  } catch (error) {
+    els.teamsList.innerHTML = "";
+    setTeamsMessage(supabaseError(error), "error");
+  }
+}
+
+async function ensureSavedTeamsLoaded() {
+  if (!authUser) return;
+  try {
+    savedTeams = await supabaseTeams().listTeams(authUser.id);
+  } catch {
+    // If the list cannot be refreshed, saving still goes through and Supabase returns the real error if needed.
+  }
+}
+
+function renderSavedTeamsList() {
+  if (!savedTeams.length) {
+    renamingTeamId = "";
+    els.teamsList.innerHTML = `<div class="editor-empty compact">${selectedLanguage === "es" ? "Aún no tienes equipos guardados." : "You do not have saved teams yet."}</div>`;
+    return;
+  }
+  els.teamsList.innerHTML = savedTeams.map((record) => {
+    const state = normalizeStoredTeamJson(record.team_json);
+    const count = state?.team?.filter((slot) => slot.pokemon).length || 0;
+    const format = availableFormats().find((item) => item.id === state?.selectedFormat)?.label || state?.selectedFormat || "";
+    const title = record.name || savedTeamFallbackName();
+    const preview = savedTeamPreviewHtml(state, record.id);
+    const id = String(record.id);
+    const isRenaming = id === String(renamingTeamId);
+    const titleBlock = isRenaming
+      ? `<form class="saved-team-rename-form" data-team-rename-form="${escapeHtml(id)}">
+          <input class="saved-team-rename-input" type="text" value="${escapeHtml(title)}" maxlength="80" data-team-rename-input aria-label="${escapeHtml(t("teamNameLabel"))}">
+          <button type="submit" class="saved-team-icon-button save" title="${escapeHtml(t("saveTeamNameAction"))}" aria-label="${escapeHtml(t("saveTeamNameAction"))}">✓</button>
+          <button type="button" class="saved-team-icon-button cancel" data-team-rename-cancel="${escapeHtml(id)}" title="${escapeHtml(t("cancelRenameTeam"))}" aria-label="${escapeHtml(t("cancelRenameTeam"))}">×</button>
+        </form>`
+      : `<div class="saved-team-title-row">
+          <strong title="${escapeHtml(title)}">${escapeHtml(title)}</strong>
+          <button type="button" class="saved-team-rename-button" data-team-rename="${escapeHtml(id)}" title="${escapeHtml(t("renameTeam"))}" aria-label="${escapeHtml(t("renameTeam"))}">✎</button>
+        </div>`;
+    return `<article class="saved-team-card">
+      <div class="saved-team-main">
+        ${titleBlock}
+        <span>${count}/6 · ${escapeHtml(format)}</span>
+        ${preview}
+      </div>
+      <div class="saved-team-actions">
+        <button type="button" class="ghost-button" data-team-load="${escapeHtml(record.id)}" title="${selectedLanguage === "es" ? "Cargar este equipo en el builder" : "Load this team into the builder"}">${selectedLanguage === "es" ? "Cargar" : "Load"}</button>
+        <button type="button" class="ghost-button" data-team-update="${escapeHtml(record.id)}" title="${selectedLanguage === "es" ? "Sobrescribir este guardado con el equipo actual" : "Overwrite this save with the current team"}">${selectedLanguage === "es" ? "Actualizar" : "Update"}</button>
+        <button type="button" class="danger-button" data-team-delete="${escapeHtml(record.id)}" title="${selectedLanguage === "es" ? "Borrar este equipo guardado" : "Delete this saved team"}">${selectedLanguage === "es" ? "Borrar" : "Delete"}</button>
+      </div>
+    </article>`;
+  }).join("");
+  els.teamsList.querySelectorAll("[data-team-load]").forEach((button) => button.addEventListener("click", () => loadSavedTeam(button.dataset.teamLoad)));
+  els.teamsList.querySelectorAll("[data-team-update]").forEach((button) => button.addEventListener("click", () => updateSavedTeam(button.dataset.teamUpdate)));
+  els.teamsList.querySelectorAll("[data-team-delete]").forEach((button) => button.addEventListener("click", () => deleteSavedTeam(button.dataset.teamDelete)));
+  els.teamsList.querySelectorAll("[data-team-rename]").forEach((button) => button.addEventListener("click", () => startRenameTeam(button.dataset.teamRename)));
+  els.teamsList.querySelectorAll("[data-team-rename-cancel]").forEach((button) => button.addEventListener("click", () => cancelRenameTeam()));
+  els.teamsList.querySelectorAll("[data-team-rename-form]").forEach((form) => {
+    form.addEventListener("submit", handleRenameTeamSubmit);
+    form.querySelector("[data-team-rename-input]")?.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        cancelRenameTeam();
+      }
+    });
+  });
+  wireSpriteFallbacks(els.teamsList);
+  wireSavedTeamTooltips(els.teamsList);
+}
+
+function startRenameTeam(teamId) {
+  renamingTeamId = String(teamId || "");
+  setTeamsMessage("");
+  renderSavedTeamsList();
+  requestAnimationFrame(() => {
+    const form = [...els.teamsList.querySelectorAll("[data-team-rename-form]")]
+      .find((node) => String(node.dataset.teamRenameForm) === String(renamingTeamId));
+    const input = form?.querySelector("[data-team-rename-input]");
+    input?.focus();
+    input?.select();
+  });
+}
+
+function cancelRenameTeam() {
+  renamingTeamId = "";
+  setTeamsMessage("");
+  renderSavedTeamsList();
+}
+
+async function handleRenameTeamSubmit(event) {
+  event.preventDefault();
+  if (!authUser) return;
+  const form = event.currentTarget;
+  const teamId = form.dataset.teamRenameForm;
+  const input = form.querySelector("[data-team-rename-input]");
+  const newName = String(input?.value || "").trim();
+  if (!newName) {
+    setTeamsMessage(t("renameTeamEmpty"), "error");
+    input?.focus();
+    return;
+  }
+  form.querySelectorAll("button, input").forEach((control) => {
+    control.disabled = true;
+  });
+  setTeamsMessage("");
+  try {
+    const saved = await supabaseTeams().renameTeam({ userId: authUser.id, teamId, name: newName });
+    const updatedName = saved.name || newName;
+    savedTeams = savedTeams.map((record) => String(record.id) === String(teamId)
+      ? { ...record, name: updatedName, updated_at: saved.updated_at || record.updated_at }
+      : record);
+    if (String(currentSavedTeamId) === String(teamId)) {
+      currentSavedTeamName = updatedName;
+      updateSavedTeamStatus();
+    }
+    renamingTeamId = "";
+    renderSavedTeamsList();
+    setTeamsMessage(t("renameTeamSuccess"), "success");
+  } catch (error) {
+    setTeamsMessage(supabaseError(error), "error");
+    form.querySelectorAll("button, input").forEach((control) => {
+      control.disabled = false;
+    });
+    input?.focus();
+  }
+}
+
+function savedTeamPreviewHtml(state, teamId) {
+  const slots = Array.from({ length: MAX_TEAM }, (_, index) => state?.team?.[index] || {});
+  return `<div class="saved-team-preview">
+    ${slots.map((slot, index) => {
+      const storedMon = slot.pokemon ? findPokemon(slot.pokemon) : null;
+      const displaySlot = storedMon ? normalizedStoredSlotForDisplay(slot, storedMon) : null;
+      const mon = displaySlot ? activePokemonForSlot(displaySlot) || storedMon : null;
+      if (!mon) return `<span class="saved-team-sprite empty"></span>`;
+      return `<button type="button" class="saved-team-sprite" data-saved-team-id="${escapeHtml(teamId)}" data-saved-slot-index="${index}" aria-label="${escapeHtml(mon.name)}">
+        <img src="${pokemonSprite(mon)}" alt="${escapeHtml(mon.name)}" data-fallback="${plannerSprite(mon)}">
+      </button>`;
+    }).join("")}
+  </div>`;
+}
+
+function wireSavedTeamTooltips(root) {
+  root.querySelectorAll(".saved-team-sprite[data-saved-team-id]").forEach((sprite) => {
+    sprite.addEventListener("mouseenter", () => showSavedTeamTooltip(sprite));
+    sprite.addEventListener("focus", () => showSavedTeamTooltip(sprite));
+    sprite.addEventListener("mouseleave", () => hideSavedTeamTooltip());
+    sprite.addEventListener("blur", () => hideSavedTeamTooltip());
+    sprite.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      if (activeSavedTeamTooltipTarget === sprite && savedTeamTooltipEl && !savedTeamTooltipEl.hidden) {
+        hideSavedTeamTooltip();
+      } else {
+        showSavedTeamTooltip(sprite);
+      }
+    });
+  });
+}
+
+function ensureSavedTeamTooltip() {
+  if (savedTeamTooltipEl) return savedTeamTooltipEl;
+  savedTeamTooltipEl = document.createElement("div");
+  savedTeamTooltipEl.className = "saved-team-tooltip";
+  savedTeamTooltipEl.setAttribute("role", "tooltip");
+  savedTeamTooltipEl.hidden = true;
+  document.body.appendChild(savedTeamTooltipEl);
+  return savedTeamTooltipEl;
+}
+
+function showSavedTeamTooltip(target) {
+  const html = savedTeamTooltipHtml(target.dataset.savedTeamId, Number(target.dataset.savedSlotIndex));
+  if (!html) return;
+  const tooltip = ensureSavedTeamTooltip();
+  activeSavedTeamTooltipTarget = target;
+  tooltip.innerHTML = html;
+  tooltip.hidden = false;
+  tooltip.classList.remove("is-visible");
+  positionSavedTeamTooltip(target, tooltip);
+  requestAnimationFrame(() => tooltip.classList.add("is-visible"));
+}
+
+function hideSavedTeamTooltip() {
+  if (!savedTeamTooltipEl) return;
+  savedTeamTooltipEl.classList.remove("is-visible");
+  savedTeamTooltipEl.hidden = true;
+  activeSavedTeamTooltipTarget = null;
+}
+
+function positionSavedTeamTooltip(target, tooltip) {
+  const margin = 10;
+  tooltip.style.left = "0px";
+  tooltip.style.top = "0px";
+  const rect = target.getBoundingClientRect();
+  const tip = tooltip.getBoundingClientRect();
+  let left = rect.right + 12;
+  if (left + tip.width > window.innerWidth - margin) left = rect.left - tip.width - 12;
+  left = clamp(left, margin, Math.max(margin, window.innerWidth - tip.width - margin));
+  let top = rect.top + rect.height / 2 - tip.height / 2;
+  top = clamp(top, margin, Math.max(margin, window.innerHeight - tip.height - margin));
+  tooltip.style.left = `${left}px`;
+  tooltip.style.top = `${top}px`;
+}
+
+function savedTeamTooltipHtml(teamId, slotIndex) {
+  const record = savedTeams.find((teamRecord) => String(teamRecord.id) === String(teamId));
+  const state = normalizeStoredTeamJson(record?.team_json);
+  const rawSlot = state?.team?.[slotIndex];
+  const mon = rawSlot?.pokemon ? findPokemon(rawSlot.pokemon) : null;
+  if (!mon) return "";
+  const slot = normalizedStoredSlotForDisplay(rawSlot, mon);
+  const activeMon = activePokemonForSlot(slot) || mon;
+  const stats = calculateStats(activeMon, slot);
+  const moves = [...(slot.moves || [])].slice(0, 4);
+  const filledMoves = moves.length ? moves : ["", "", "", ""];
+  const labels = selectedLanguage === "es"
+    ? {
+      item: "Objeto",
+      noItem: "Sin objeto",
+      ability: "Habilidad",
+      nature: "Naturaleza",
+      moves: "Movimientos",
+      spread: "Reparto",
+      finalStats: "Stats finales",
+    }
+    : {
+      item: "Item",
+      noItem: "No item",
+      ability: "Ability",
+      nature: "Nature",
+      moves: "Moves",
+      spread: "Spread",
+      finalStats: "Final stats",
+    };
+  const movesHtml = filledMoves
+    .map((move) => `<li>${escapeHtml(move ? moveUiName(move) : "—")}</li>`)
+    .join("");
+  return `<div class="saved-team-tooltip-head">
+      <strong>${escapeHtml(activeMon.name)}</strong>
+      ${typeIconRow(activeMon.types)}
+    </div>
+    <div class="saved-team-tooltip-grid">
+      <span>${labels.item}</span><strong>${escapeHtml(slot.item ? itemUiName(slot.item) : labels.noItem)}</strong>
+      <span>${labels.ability}</span><strong>${escapeHtml(slot.ability ? abilityUiName(slot.ability) : "—")}</strong>
+      <span>${labels.nature}</span><strong>${escapeHtml(natureUiName(slot.nature))}</strong>
+      <span>${labels.spread}</span><strong>${escapeHtml(spreadText(slot.sp))}</strong>
+    </div>
+    <div class="saved-team-tooltip-section">
+      <span>${labels.moves}</span>
+      <ul>${movesHtml}</ul>
+    </div>
+    <div class="saved-team-tooltip-section">
+      <span>${labels.finalStats}</span>
+      <p>${escapeHtml(STAT_KEYS.map((key) => `${STAT_LABELS[key]} ${stats[key]}`).join(" · "))}</p>
+    </div>`;
+}
+
+function normalizedStoredSlotForDisplay(rawSlot, mon) {
+  const sp = Object.fromEntries(STAT_KEYS.map((key) => [key, clamp(Number(rawSlot?.sp?.[key] || 0), 0, MAX_SP_STAT)]));
+  return {
+    pokemon: mon,
+    item: normalizeItemName(rawSlot?.item || ""),
+    ability: rawSlot?.ability || "",
+    nature: natureName(rawSlot?.nature || "") || "Hardy",
+    moves: [...(rawSlot?.moves || [])].slice(0, 4),
+    sp,
+  };
+}
+
+async function loadSavedTeam(teamId) {
+  try {
+    const record = await supabaseTeams().loadTeam({ userId: authUser.id, teamId });
+    applyPkounterTeamState(record.team_json);
+    currentSavedTeamId = record.id;
+    currentSavedTeamName = record.name || "";
+    lastSavedTeamFingerprint = currentTeamFingerprint();
+    updateSavedTeamStatus();
+    closeTeamsModal();
+    showAppToast(selectedLanguage === "es" ? "Equipo cargado." : "Team loaded.", "success");
+  } catch (error) {
+    setTeamsMessage(supabaseError(error), "error");
+  }
+}
+
+async function updateSavedTeam(teamId) {
+  const ok = await showConfirmModal({
+    title: t("updateTeamTitle"),
+    message: t("updateTeamMessage"),
+    confirmText: t("confirmUpdate"),
+    cancelText: t("confirmCancel"),
+    variant: "update",
+  });
+  if (!ok) return;
+  const record = savedTeams.find((item) => String(item.id) === String(teamId));
+  try {
+    const saved = await supabaseTeams().updateTeam({
+      userId: authUser.id,
+      teamId,
+      name: record?.name || currentSavedTeamName || defaultTeamName(),
+      teamJson: getCurrentPkounterTeamState(),
+    });
+    currentSavedTeamId = saved.id;
+    currentSavedTeamName = saved.name || "";
+    lastSavedTeamFingerprint = currentTeamFingerprint();
+    await refreshSavedTeams();
+    setTeamsMessage(selectedLanguage === "es" ? "Equipo actualizado." : "Team updated.", "success");
+  } catch (error) {
+    setTeamsMessage(supabaseError(error), "error");
+  }
+}
+
+async function deleteSavedTeam(teamId) {
+  const ok = await showConfirmModal({
+    title: t("deleteTeamTitle"),
+    message: t("deleteTeamMessage"),
+    confirmText: t("confirmDelete"),
+    cancelText: t("confirmCancel"),
+    variant: "danger",
+  });
+  if (!ok) return;
+  try {
+    await supabaseTeams().deleteTeam({ userId: authUser.id, teamId });
+    if (String(currentSavedTeamId) === String(teamId)) {
+      currentSavedTeamId = "";
+      currentSavedTeamName = "";
+      lastSavedTeamFingerprint = "";
+      updateSavedTeamStatus();
+    }
+    await refreshSavedTeams();
+    setTeamsMessage(selectedLanguage === "es" ? "Equipo borrado." : "Team deleted.", "success");
+  } catch (error) {
+    setTeamsMessage(supabaseError(error), "error");
+  }
+}
+
+function normalizeStoredTeamJson(value) {
+  if (!value) return null;
+  if (typeof value === "string") {
+    try { return JSON.parse(value); } catch { return null; }
+  }
+  return value;
+}
+
+function showAppToast(message, tone = "success") {
+  if (!message) return;
+  const toast = document.createElement("div");
+  toast.className = `app-toast ${tone}`;
+  toast.textContent = message;
+  document.body.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add("show"));
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 220);
+  }, 2600);
 }
 
 function setActiveSideTab(tabName, options = {}) {
@@ -1157,11 +2337,15 @@ function updateSelectedLanguage(language) {
   applyStaticTranslations();
   renderPokemonList();
   renderAll();
+  if (els.authModal && !els.authModal.hidden) renderAuthModal();
+  if (els.teamsModal && !els.teamsModal.hidden) renderSavedTeamsList();
+  renderAuthStatus();
 }
 
 function toggleFormatMenu() {
   if (!els.formatMenu || !els.formatButton) return;
   closeLanguageMenu();
+  closeUserMenu();
   const willOpen = els.formatMenu.hidden;
   els.formatMenu.hidden = !willOpen;
   if (willOpen) positionHeaderMenu(els.formatMenu, els.formatButton);
@@ -1178,6 +2362,7 @@ function closeFormatMenu() {
 function toggleLanguageMenu() {
   if (!els.languageMenu || !els.languageButton) return;
   closeFormatMenu();
+  closeUserMenu();
   const willOpen = els.languageMenu.hidden;
   els.languageMenu.hidden = !willOpen;
   if (willOpen) positionHeaderMenu(els.languageMenu, els.languageButton);
@@ -1191,12 +2376,30 @@ function closeLanguageMenu() {
   els.languageButton.setAttribute("aria-expanded", "false");
 }
 
+function toggleUserMenu() {
+  if (!authUser || !els.authUserMenu || !els.authUserChip) return;
+  closeFormatMenu();
+  closeLanguageMenu();
+  const willOpen = els.authUserMenu.hidden;
+  els.authUserMenu.hidden = !willOpen;
+  if (willOpen) positionHeaderMenu(els.authUserMenu, els.authUserChip);
+  els.authUserChip.setAttribute("aria-expanded", String(willOpen));
+}
+
+function closeUserMenu() {
+  if (!els.authUserMenu || !els.authUserChip) return;
+  els.authUserMenu.hidden = true;
+  clearHeaderMenuPosition(els.authUserMenu);
+  els.authUserChip.setAttribute("aria-expanded", "false");
+}
+
 function positionHeaderMenu(menu, button) {
   if (!menu || !button) return;
   resetHeaderMenuInlinePosition(menu);
   const rect = button.getBoundingClientRect();
   const compact = window.matchMedia?.("(max-width: 760px)")?.matches;
   const isLanguageMenu = menu.id === "languageMenu";
+  const isAuthMenu = menu.id === "authUserMenu";
   const top = Math.max(8, Math.min(window.innerHeight - 180, rect.bottom + 8));
   menu.classList.add("header-menu-floating");
   menu.style.top = `${top}px`;
@@ -1204,8 +2407,9 @@ function positionHeaderMenu(menu, button) {
   menu.style.removeProperty("min-width");
   menu.style.removeProperty("max-width");
   if (compact) {
-    if (isLanguageMenu) {
-      const width = Math.min(Math.max(rect.width, 140), window.innerWidth - 20);
+    if (isLanguageMenu || isAuthMenu) {
+      const baseWidth = isAuthMenu ? 178 : 140;
+      const width = Math.min(Math.max(rect.width, baseWidth), window.innerWidth - 20);
       const left = Math.max(10, Math.min(window.innerWidth - width - 10, rect.left));
       menu.style.setProperty("left", `${left}px`, "important");
       menu.style.setProperty("right", "auto", "important");
@@ -1219,7 +2423,8 @@ function positionHeaderMenu(menu, button) {
     menu.style.setProperty("width", "auto", "important");
     return;
   }
-  const width = Math.min(Math.max(rect.width, 220), window.innerWidth - 20);
+  const minWidth = isAuthMenu || isLanguageMenu ? 154 : 220;
+  const width = Math.min(Math.max(rect.width, minWidth), window.innerWidth - 20);
   const left = Math.max(10, Math.min(window.innerWidth - width - 10, rect.right - width));
   menu.style.setProperty("left", `${left}px`);
   menu.style.setProperty("right", "auto");
@@ -1314,6 +2519,12 @@ function applyStaticTranslations() {
     const node = document.querySelector(selector);
     if (node) node.textContent = t(key);
   }
+  const supportLink = document.querySelector(".header-helping-link");
+  if (supportLink) {
+    const label = t("supportButtonLabel");
+    supportLink.title = label;
+    supportLink.setAttribute("aria-label", label);
+  }
   if (els.pokemonSearch) els.pokemonSearch.placeholder = t("addPokemonPlaceholder");
   if (els.importBox) els.importBox.placeholder = t("importPlaceholder");
   if (els.threatSearch) els.threatSearch.placeholder = t("threatPlaceholder");
@@ -1364,7 +2575,15 @@ function renderLanguageSelect() {
     .map(([code, label]) => `<option value="${code}" ${code === selectedLanguage ? "selected" : ""}>${languageOptionLabel(code) || label}</option>`)
     .join("");
   els.languageSelect.value = selectedLanguage;
-  if (els.languageButton) els.languageButton.textContent = languageOptionLabel(selectedLanguage) || LANGUAGES[selectedLanguage] || selectedLanguage;
+  if (els.languageButton) {
+    const label = languageOptionLabel(selectedLanguage) || LANGUAGES[selectedLanguage] || selectedLanguage;
+    if (els.languageButton.classList.contains("header-icon-button")) {
+      els.languageButton.setAttribute("aria-label", `${t("languageLabel")}: ${label}`);
+      els.languageButton.title = label;
+    } else {
+      els.languageButton.textContent = label;
+    }
+  }
   if (els.languageMenu) {
     els.languageMenu.innerHTML = options
       .map(([code, label]) => `<button class="format-option ${code === selectedLanguage ? "active" : ""}" type="button" role="option" aria-selected="${code === selectedLanguage}" data-language-option="${code}">${languageOptionLabel(code) || label}</button>`)
@@ -1454,6 +2673,32 @@ function megaFormsFor(mon) {
 
 function preferredMegaFormFor(mon) {
   return megaFormsFor(mon)[0] || null;
+}
+
+function megaFormFromItemFor(mon, item) {
+  if (!mon || !item) return null;
+  const megaName = megaNameFromStone(item);
+  if (!megaName) return null;
+  const mega = findPokemon(megaName);
+  if (!mega || !mega.isMega) return null;
+  return speciesClauseKey(mega) === speciesClauseKey(mon) ? mega : null;
+}
+
+function activePokemonForSlot(slotOrMon) {
+  if (!slotOrMon) return null;
+  const mon = slotOrMon.pokemon || slotOrMon;
+  if (!mon) return null;
+  if (mon.isMega) return mon;
+  return megaFormFromItemFor(mon, slotOrMon.item) || mon;
+}
+
+function usageForSlot(slotOrMon) {
+  const activeMon = activePokemonForSlot(slotOrMon);
+  if (!activeMon) return 0;
+  const activeUsage = pokemonUsage(activeMon);
+  if (activeMon.isMega && activeUsage > 0) return activeUsage;
+  const baseMon = slotOrMon?.pokemon || slotOrMon;
+  return activeUsage || pokemonUsage(baseMon);
 }
 
 function isPokemonSelected(mon, exceptIndex = -1) {
@@ -1839,6 +3084,7 @@ function addPokemonByName(name) {
 function generateRandomTeam() {
   const archetype = randomTeamArchetype();
   editorNotice = "";
+  resetSavedTeamLink();
   for (let i = 0; i < MAX_TEAM; i++) team[i] = emptySlot();
 
   const seed = chooseRandomTeamMember(archetype, { seed: true });
@@ -2287,15 +3533,15 @@ function renderAll() {
   renderLanguageSelect();
   renderTeam();
   renderEditor();
-  renderActiveSidePanel();
   setActiveSideTab(activeSideTab, { render: false });
+  renderActiveSidePanel();
   els.exportBox.value = exportShowdown();
   persist();
 }
 
 function syncThreatSearchFromSelected() {
   if (threatSearchMode !== "auto") return;
-  const mon = team[selectedSlot]?.pokemon;
+  const mon = activePokemonForSlot(team[selectedSlot]);
   els.threatSearch.value = mon ? mon.name : "";
 }
 
@@ -2304,6 +3550,8 @@ function sanitizeTeam() {
   const usedItemKeys = new Set();
   for (const slot of team) {
     if (!slot.pokemon) continue;
+    const activeMon = activePokemonForSlot(slot);
+    if (activeMon && activeMon !== slot.pokemon) slot.pokemon = activeMon;
     const speciesKey = speciesClauseKey(slot.pokemon);
     if (seen.has(speciesKey)) {
       Object.assign(slot, emptySlot());
@@ -2323,6 +3571,7 @@ function sanitizeTeam() {
 function renderTeam() {
   const filled = team.filter((slot) => slot.pokemon).length;
   els.teamStatus.textContent = t("pokemonCount", { count: filled });
+  updateSavedTeamStatus();
   els.teamSlots.innerHTML = team
     .map((slot, index) => {
       if (!slot.pokemon) {
@@ -2332,12 +3581,13 @@ function renderTeam() {
           <span></span>
         </button>`;
       }
+      const activeMon = activePokemonForSlot(slot) || slot.pokemon;
       return `<button class="slot-card ${index === selectedSlot ? "active" : ""}" type="button" data-slot="${index}">
-        <span class="sprite-frame"><img src="${pokemonSprite(slot.pokemon)}" alt="${slot.pokemon.name}" data-fallback="${plannerSprite(slot.pokemon)}"></span>
+        <span class="sprite-frame"><img src="${pokemonSprite(activeMon)}" alt="${activeMon.name}" data-fallback="${plannerSprite(activeMon)}"></span>
         <span>
-          <span class="slot-name">${slot.pokemon.name}</span>
+          <span class="slot-name">${activeMon.name}</span>
           <span class="slot-meta">${slot.item ? `${itemIconHtml(slot.item)}${itemUiName(slot.item)}` : t("noItem")} · ${natureUiName(slot.nature)}</span>
-          ${baseStatsHtml(slot.pokemon)}
+          ${baseStatsHtml(activeMon)}
         </span>
         <span class="remove-slot" data-remove="${index}" aria-label="${selectedLanguage === "es" ? "Quitar" : "Remove"}">x</span>
       </button>`;
@@ -3053,20 +4303,49 @@ function comboOptionButtonsHtml(options, labelFor, aliasesFor = () => [], option
     .join("");
 }
 
-function pokemonPickerOptionsHtml(options) {
+function megaUsageLabel(mon, forms) {
+  if (!mon) return "";
+  const baseName = baseFormFor(mon)?.name || baseSpeciesName(mon.name);
+  if (forms?.length === 1) return selectedLanguage === "es" ? "Forma Mega" : "Mega form";
+  const suffix = mon.name.replace(/^Mega\s+/i, "").replace(baseName, "").trim();
+  if (/^[XY]$/i.test(suffix)) return `Mega ${suffix.toUpperCase()}`;
+  const showdownSuffix = mon.name.match(/-Mega-([XY])$/i)?.[1];
+  if (showdownSuffix) return `Mega ${showdownSuffix.toUpperCase()}`;
+  return mon.name.replace(/^Mega\s+/i, "Mega ");
+}
+
+function pokemonMegaUsageChipsHtml(mon, activeMon = null) {
+  const forms = megaFormsFor(mon);
+  if (!forms.length) return "";
+  return `<span class="pokemon-option-mega-usages">
+    ${forms.map((mega) => {
+      const usage = pokemonUsage(mega);
+      const active = activeMon && mega.id === activeMon.id;
+      return `<span class="pokemon-option-mega-usage ${active ? "active" : ""}">
+        ${escapeHtml(megaUsageLabel(mega, forms))}: ${formatUsagePercent(usage)}%
+      </span>`;
+    }).join("")}
+  </span>`;
+}
+
+function pokemonPickerOptionsHtml(options, settings = {}) {
   const megaText = selectedLanguage === "es" ? "Mega disponible" : "Mega available";
   const emptyText = selectedLanguage === "es" ? "Sin resultados" : "No results";
+  const activeSlot = settings.activeSlot || null;
+  const activeMon = activeSlot ? activePokemonForSlot(activeSlot) : null;
   if (!options.length) return `<span class="combo-empty">${emptyText}</span>`;
   return options
     .map((mon, index) => {
       const usage = pokemonUsage(mon);
       const search = pokemonPickerSearchText(mon);
-      const megaBadge = megaFormsFor(mon).length ? `<span class="pokemon-option-mega">${megaText}</span>` : "";
-      return `<button class="combo-option pokemon-option" type="button" data-combo-option="${index}" data-pokemon-option="${escapeHtml(mon.name)}" data-combo-search="${escapeHtml(search)}" title="${escapeHtml(baseStatsText(mon))}">
+      const forms = megaFormsFor(mon);
+      const megaBadge = forms.length ? `<span class="pokemon-option-mega">${megaText}</span>` : "";
+      return `<button class="combo-option pokemon-option" type="button" data-combo-option="${index}" data-combo-value="${escapeHtml(mon.name)}" data-pokemon-option="${escapeHtml(mon.name)}" data-combo-search="${escapeHtml(search)}" title="${escapeHtml(baseStatsText(mon))}">
         <span class="sprite-frame"><img src="${pokemonSprite(mon)}" alt="" data-fallback="${plannerSprite(mon)}"></span>
         <span class="pokemon-option-main">
           <strong>${escapeHtml(mon.name)}</strong>
           <span class="pokemon-option-meta">${typeIconRow(mon.types)} <span>${selectedLanguage === "es" ? "uso" : "usage"} ${formatUsagePercent(usage)}%</span></span>
+          ${pokemonMegaUsageChipsHtml(mon, activeMon)}
           ${baseStatsHtml(mon)}
         </span>
         ${megaBadge}
@@ -3079,15 +4358,14 @@ function pokemonPickerSearchText(mon) {
   return [mon.name, pokemonOptionLabel(mon), ...nameKeys(mon.name), ...(megaFormsFor(mon).map((mega) => mega.name))].join(" ");
 }
 
-function comboInputHtml({ listId, value, options, labelFor, aliasesFor = () => [], optionClassFor = () => "", optionDetailsFor = () => "", field = "", moveIndex = null, className = "", placeholder = "" }) {
+function comboInputHtml({ listId, value, options, labelFor, aliasesFor = () => [], optionClassFor = () => "", optionDetailsFor = () => "", optionRenderer = null, menuClass = "", field = "", moveIndex = null, className = "", placeholder = "" }) {
   const dataAttr = field ? `data-field="${field}"` : `data-move="${moveIndex}"`;
   const emptyText = selectedLanguage === "es" ? "Sin resultados" : "No results";
   return `<div class="combo-picker" data-combo-list="${escapeHtml(listId)}">
     <input class="combo-input ${className}" ${dataAttr} value="${escapeHtml(value)}" placeholder="${escapeHtml(placeholder)}" autocomplete="off" spellcheck="false" role="combobox" aria-expanded="false">
     <button class="combo-toggle" type="button" aria-label="${selectedLanguage === "es" ? "Abrir opciones" : "Open options"}"></button>
-    <div class="combo-menu" hidden>
-      ${comboOptionButtonsHtml(options, labelFor, aliasesFor, optionClassFor, optionDetailsFor)}
-      <span class="combo-empty" hidden>${emptyText}</span>
+    <div class="combo-menu ${menuClass}" hidden>
+      ${optionRenderer ? optionRenderer(options) : `${comboOptionButtonsHtml(options, labelFor, aliasesFor, optionClassFor, optionDetailsFor)}<span class="combo-empty" hidden>${emptyText}</span>`}
     </div>
   </div>`;
 }
@@ -3472,9 +4750,26 @@ function natureUsageFor(mon, nature) {
   return usageFromMap(munchStatsForName(mon?.name)?.natureUsage || mon?.natureUsage, nature);
 }
 
-function pokemonOptionLabel(mon) {
-  const usage = pokemonUsage(mon);
-  return usage > 0 ? `${mon.name} · ${selectedLanguage === "es" ? "uso" : "usage"} ${formatUsagePercent(usage)}%` : mon.name;
+function pokemonOptionLabel(mon, slot = null) {
+  const activeMon = slot ? activePokemonForSlot(slot) || mon : mon;
+  const usage = slot ? usageForSlot(slot) : pokemonUsage(mon);
+  const usageLabel = selectedLanguage === "es" ? "uso" : "usage";
+  const name = slot && activeMon && activeMon.name !== mon?.name
+    ? `${mon.name} → ${activeMon.name}`
+    : activeMon?.name || mon?.name || "";
+  return usage > 0 ? `${name} · ${usageLabel} ${formatUsagePercent(usage)}%` : name;
+}
+
+function activeFormUsageHtml(slot) {
+  const activeMon = activePokemonForSlot(slot);
+  const baseMon = slot?.pokemon ? baseFormFor(slot.pokemon) : null;
+  if (!activeMon || !baseMon || activeMon.id === baseMon.id || !activeMon.isMega) return "";
+  const usage = pokemonUsage(activeMon);
+  const label = selectedLanguage === "es" ? "Uso de la forma activa" : "Active form usage";
+  return `<div class="active-form-usage">
+    <span>${label}</span>
+    <strong>${escapeHtml(activeMon.name)} · ${formatUsagePercent(usage)}%</strong>
+  </div>`;
 }
 
 function itemOptionLabel(mon, item) {
@@ -3566,14 +4861,16 @@ function spreadRecommendationsHtml(mon) {
   </details>`;
 }
 
-function megaControlHtml(mon) {
-  const forms = megaFormsFor(mon);
+function megaControlHtml(mon, slot = null) {
+  const baseMon = baseFormFor(mon);
+  const activeMon = slot ? activePokemonForSlot(slot) || mon : mon;
+  const forms = megaFormsFor(baseMon);
   if (!forms.length) return "";
-  const active = Boolean(mon.isMega);
+  const active = Boolean(activeMon?.isMega);
   const label = t("megaToggle");
   const formButtons = active && forms.length > 1
     ? `<div class="mega-form-picker" aria-label="${t("megaFormLabel")}">
-        ${forms.map((form) => `<button type="button" class="mega-form-button ${form.id === mon.id ? "active" : ""}" data-mega-form="${escapeHtml(form.name)}">
+        ${forms.map((form) => `<button type="button" class="mega-form-button ${form.id === activeMon?.id ? "active" : ""}" data-mega-form="${escapeHtml(form.name)}">
           <span class="sprite-frame mini-sprite"><img src="${pokemonSprite(form)}" alt="" data-fallback="${plannerSprite(form)}"></span>
           <span>${escapeHtml(form.name.replace(/^Mega\s+/, "Mega "))}</span>
         </button>`).join("")}
@@ -3582,7 +4879,7 @@ function megaControlHtml(mon) {
   return `<div class="mega-control">
     <button class="mode-switch mega-switch ${active ? "active" : ""}" type="button" data-mega-toggle>
       <span class="mode-switch-track"><span></span></span>
-      <span class="mode-switch-text"><strong>${label}</strong><small>${active ? itemUiName(megaStoneName(mon.name, mon.types)) : forms.map((form) => form.name.replace(/^Mega\s+/, "Mega ")).join(" / ")}</small></span>
+      <span class="mode-switch-text"><strong>${label}</strong><small>${active ? itemUiName(megaStoneName(activeMon.name, activeMon.types)) : forms.map((form) => form.name.replace(/^Mega\s+/, "Mega ")).join(" / ")}</small></span>
     </button>
     ${formButtons}
   </div>`;
@@ -3908,7 +5205,7 @@ function renderEditor() {
     return;
   }
 
-  const mon = slot.pokemon;
+  const mon = activePokemonForSlot(slot) || slot.pokemon;
   const pickerMon = baseFormFor(mon);
   els.selectedHint.textContent = selectedLanguage === "es"
     ? `${mon.name} · stats finales a nivel 50`
@@ -3933,16 +5230,19 @@ function renderEditor() {
           <span class="select-art pokemon-art"><img src="${pokemonSprite(mon)}" alt="" data-fallback="${plannerSprite(mon)}"></span>
           ${comboInputHtml({
             listId: pokemonListId,
-            value: pokemonOptionLabel(pickerMon),
+            value: pickerMon?.name || "",
             options: pokemonOptions,
-            labelFor: (pmon) => pokemonOptionLabel(pmon),
-            aliasesFor: (pmon) => [pmon.name],
+            labelFor: (pmon) => pmon.name,
+            aliasesFor: (pmon) => [pmon.name, pokemonOptionLabel(pmon), ...megaFormsFor(pmon).map((mega) => mega.name)],
+            optionRenderer: (options) => pokemonPickerOptionsHtml(options, { activeSlot: slot }),
+            menuClass: "pokemon-picker-menu config-pokemon-picker-menu",
             field: "pokemon",
-            className: "has-art",
+            className: "has-art pokemon-combo-input",
             placeholder: selectedLanguage === "es" ? "Buscar Pokémon..." : "Search Pokémon...",
           })}
         </div>
-        ${megaControlHtml(mon)}
+        ${activeFormUsageHtml(slot)}
+        ${megaControlHtml(mon, slot)}
       </div>
       <div>
         <label class="label-with-info">
@@ -4029,8 +5329,8 @@ function renderEditor() {
   const fieldResolvers = {
     pokemon: {
       options: pokemonOptions,
-      labelFor: (pmon) => pokemonOptionLabel(pmon),
-      aliasesFor: (pmon) => [pmon.name],
+      labelFor: (pmon) => pmon.name,
+      aliasesFor: (pmon) => [pmon.name, pokemonOptionLabel(pmon), ...megaFormsFor(pmon).map((mega) => mega.name)],
     },
     nature: {
       options: natureOptions,
@@ -4111,12 +5411,14 @@ function renderEditor() {
   });
   els.editor.querySelector("[data-mega-toggle]")?.addEventListener("click", () => {
     if (!slot.pokemon) return;
-    if (slot.pokemon.isMega) {
-      const base = baseFormFor(slot.pokemon);
+    const currentActiveMon = activePokemonForSlot(slot) || slot.pokemon;
+    if (currentActiveMon.isMega) {
+      const base = baseFormFor(currentActiveMon);
       slot.pokemon = base;
+      slot.item = "";
       applyPopularSet(slot, base);
     } else {
-      const nextMega = preferredMegaFormFor(slot.pokemon);
+      const nextMega = preferredMegaFormFor(currentActiveMon);
       if (!nextMega) return;
       slot.pokemon = nextMega;
       applyPopularSet(slot, nextMega);
@@ -4822,7 +6124,11 @@ function suggestionTagLabel(reason) {
   const weatherPartner = reason.match(/^aprovecha (.+) de (.+)$/);
   if (weatherPartner) return selectedLanguage === "es" ? `${sentenceCase(weatherPartner[1])} de ${weatherPartner[2]}` : `${weatherPartner[2]}'s ${weatherPartner[1]}`;
   const activatesFor = reason.match(/^activa (.+) para (.+)$/);
-  if (activatesFor) return selectedLanguage === "es" ? `Activa ${activatesFor[1]} para ${activatesFor[2]}` : `Sets ${activatesFor[1]} for ${activatesFor[2]}`;
+  if (activatesFor) {
+    const weatherKey = suggestionWeatherKey(activatesFor[1]);
+    if (weatherKey) return selectedLanguage === "es" ? `Activa ${suggestionWeatherNoun(weatherKey)}` : `Sets ${suggestionWeatherNoun(weatherKey)}`;
+    return selectedLanguage === "es" ? `Activa ${activatesFor[1]} para ${activatesFor[2]}` : `Sets ${activatesFor[1]} for ${activatesFor[2]}`;
+  }
   const protects = reason.match(/^protege a (.+) de (.+)$/);
   if (protects) return selectedLanguage === "es" ? `Protege a ${protects[1]} de ${protects[2]}` : `Protects ${protects[1]} from ${protects[2]}`;
   const punishes = reason.match(/^castiga atacantes de (.+) que molestan a (.+)$/);
@@ -4903,103 +6209,264 @@ function suggestionTagLabel(reason) {
   return sentenceCase(reason);
 }
 
-function suggestionChipKey(reason) {
-  if (/^aprovecha el Trick Room de /.test(reason)) return "speed:tr-partner";
-  if (/^protege el Trick Room de /.test(reason)) return "speed:tr-protect";
-  if (/^aprovecha el Tailwind de /.test(reason)) return "speed:tailwind-partner";
-  if (/^(aprovecha Tailwind|necesita Tailwind|convierte Tailwind en presión ofensiva)$/.test(reason)) return "speed:tailwind-generic";
-  if (reason === "presiona incluso sin Tailwind") return "speed:no-support";
-  if (reason === "aprovecha bajadas de Velocidad") return "speed:drops";
-  if (/^aprovecha (lluvia|sol|arena|nieve|rain|sun|sand|snow) de /.test(reason)) return `weather:${weatherKeyFromReason(reason)}:partner`;
-  if (/^(abusa de la lluvia|activa lluvia para tu plan ofensivo|potencia daño de Agua|aprovecha precisión con lluvia)$/.test(reason)) return "weather:rain";
-  if (/^(abusa del sol|activa sol para tu plan ofensivo|potencia daño de Fuego|aprovecha Solar Beam con sol)$/.test(reason)) return "weather:sun";
-  if (/^(abusa de la arena|activa arena para tus atacantes|encaja con arena)$/.test(reason)) return "weather:sand";
-  if (/^(abusa de la nieve|activa nieve para tu plan defensivo|encaja con nieve)$/.test(reason)) return "weather:snow";
-  if (/^entra bien ante /.test(reason)) return "defensive-entry";
-  if (/^abre cobertura /.test(reason)) return "coverage";
-  if (/^presiona amenazas /.test(reason)) return "threat-pressure";
-  if (/^protege a .+ de /.test(reason)) return "protect-partner";
-  if (/^castiga atacantes de .+ que molestan a /.test(reason)) return "punish-partner-check";
-  if (/^(encaje estratégico completo|encaje estratégico claro)$/.test(reason)) return "strategic-fit";
-  if (/^(atacante especial necesario|atacante físico necesario)$/.test(reason)) return "damage-profile";
-  if (/^(puede activar Trick Room o Tailwind|añade Tailwind, Icy Wind o parálisis|ayuda a mover primero)$/.test(reason)) return "speed-control";
-  return toId(suggestionTagLabel(reason));
-}
-
-function weatherKeyFromReason(reason) {
-  const match = String(reason || "").match(/^aprovecha (.+?) de /);
-  const weather = match?.[1]?.toLowerCase() || "";
+function suggestionWeatherKey(value) {
+  const weather = String(value || "").toLowerCase();
   if (/lluvia|rain/.test(weather)) return "rain";
   if (/sol|sun/.test(weather)) return "sun";
   if (/arena|sand/.test(weather)) return "sand";
   if (/nieve|snow/.test(weather)) return "snow";
-  return weather || "weather";
+  return "";
 }
 
-function suggestionChipPriority(reason) {
-  if (/^protege a .+ de |^castiga atacantes de /.test(reason)) return 100;
-  if (/^entra bien ante |^abre cobertura |^presiona amenazas /.test(reason)) return 94;
-  if (/^aprovecha el Trick Room de |^protege el Trick Room de /.test(reason)) return 90;
-  if (/^aprovecha el Tailwind de /.test(reason)) return 88;
-  if (/^aprovecha (lluvia|sol|arena|nieve|rain|sun|sand|snow) de /.test(reason)) return 86;
-  if (/^(abusa de la lluvia|activa lluvia|abusa del sol|activa sol|abusa de la arena|activa arena|abusa de la nieve|activa nieve)/.test(reason)) return 82;
-  if (/^(aprovecha Tailwind|necesita Tailwind|convierte Tailwind|aprovecha bajadas)/.test(reason)) return 76;
-  if (/^(atacante especial necesario|atacante físico necesario|resistencia para estabilizar|protege atacantes)/.test(reason)) return 70;
-  if (/^(encaje estratégico completo|encaje estratégico claro)/.test(reason)) return 40;
-  if (isWarningReason(reason)) return 25;
-  return 55;
+function weatherKeyFromReason(reason) {
+  const match = String(reason || "").match(/^aprovecha (.+?) de /);
+  return suggestionWeatherKey(match?.[1]) || "weather";
 }
 
-function shouldHideSuggestionChip(reason, reasons) {
-  if (!reason) return true;
-  if (/^(encaja con|pareja probada con|pareja frecuente con) /.test(reason)) return true;
-  const concreteCount = reasons.filter((item) => !isWarningReason(item) && !/^(encaje estratégico completo|encaje estratégico claro)$/.test(item)).length;
-  if (/^(encaje estratégico completo|encaje estratégico claro)$/.test(reason) && concreteCount >= 2) return true;
-  if (/^(aprovecha Tailwind|necesita Tailwind|convierte Tailwind en presión ofensiva)$/.test(reason) && reasons.some((item) => /^aprovecha el Tailwind de /.test(item))) return true;
-  if (reason === "aprovecha Tailwind" && reasons.includes("convierte Tailwind en presión ofensiva")) return true;
-  if (reason === "aprovecha bajadas de Velocidad" && reasons.some((item) => /^aprovecha el Tailwind de /.test(item))) return true;
-  const weatherPartners = reasons
-    .filter((item) => /^aprovecha (lluvia|sol|arena|nieve|rain|sun|sand|snow) de /.test(item))
-    .map(weatherKeyFromReason)
-    .filter((key) => key && key !== "weather");
-  if (/^(abusa de la lluvia|potencia daño de Agua|aprovecha precisión con lluvia)$/.test(reason) && weatherPartners.includes("rain")) return true;
-  if (/^(abusa del sol|potencia daño de Fuego|aprovecha Solar Beam con sol)$/.test(reason) && weatherPartners.includes("sun")) return true;
-  if (/^(abusa de la arena|encaja con arena)$/.test(reason) && weatherPartners.includes("sand")) return true;
-  if (/^(abusa de la nieve|encaja con nieve)$/.test(reason) && weatherPartners.includes("snow")) return true;
-  return false;
+function suggestionWeatherNoun(weatherKey) {
+  return {
+    rain: selectedLanguage === "es" ? "lluvia" : "rain",
+    sun: selectedLanguage === "es" ? "sol" : "sun",
+    sand: selectedLanguage === "es" ? "arena" : "sand",
+    snow: selectedLanguage === "es" ? "nieve" : "snow",
+  }[weatherKey] || weatherKey;
+}
+
+function suggestionWeatherPhrase(weatherKey) {
+  return {
+    rain: selectedLanguage === "es" ? "la lluvia" : "rain",
+    sun: selectedLanguage === "es" ? "el sol" : "sun",
+    sand: selectedLanguage === "es" ? "la arena" : "sand",
+    snow: selectedLanguage === "es" ? "la nieve" : "snow",
+  }[weatherKey] || suggestionWeatherNoun(weatherKey);
+}
+
+function suggestionChipTypeLabel(value) {
+  const labels = String(value || "")
+    .split(/[\/,]+/)
+    .map((type) => typeLabel(type.trim()))
+    .filter(Boolean);
+  return unique(labels).slice(0, 2).join("/");
+}
+
+function suggestionChipDescriptor(reason) {
+  reason = typeof reason === "string" ? reason : "";
+  if (!reason) return null;
+
+  const trAbuse = reason.match(/^aprovecha el Trick Room de (.+)$/);
+  if (trAbuse) return { type: "team_mode", mode: "trick_room", priority: 98 };
+  const trProtect = reason.match(/^protege el Trick Room de (.+)$/);
+  if (trProtect) return { type: "support", kind: "protect_trick_room", priority: 94 };
+  const tailwindPartner = reason.match(/^aprovecha el Tailwind de (.+)$/);
+  if (tailwindPartner) return { type: "team_mode", mode: "tailwind", priority: 98 };
+  const weatherPartner = reason.match(/^aprovecha (.+) de (.+)$/);
+  if (weatherPartner) {
+    const weather = suggestionWeatherKey(weatherPartner[1]);
+    if (weather) return { type: "weather_support", weather, priority: 96 };
+  }
+  const activatesFor = reason.match(/^activa (.+) para (.+)$/);
+  if (activatesFor) {
+    const weather = suggestionWeatherKey(activatesFor[1]);
+    if (weather) return { type: "weather_setter", weather, priority: 100 };
+  }
+  const protects = reason.match(/^protege a (.+) de (.+)$/);
+  if (protects) return { type: "type_coverage", value: protects[2], priority: 95 };
+  const punishes = reason.match(/^castiga atacantes de (.+) que molestan a (.+)$/);
+  if (punishes) return { type: "threat_pressure", value: punishes[1], priority: 94 };
+  if (/^(pareja probada con|pareja frecuente con|encaja con) /.test(reason)) {
+    return { type: "supports_core", priority: 30 };
+  }
+  const enters = reason.match(/^entra bien ante (.+)$/);
+  if (enters) return { type: "type_coverage", value: enters[1], priority: 92 };
+  const coverage = reason.match(/^abre cobertura (.+)$/);
+  if (coverage) return { type: "type_coverage", value: coverage[1], priority: 90 };
+  const pressure = reason.match(/^presiona amenazas (.+)$/);
+  if (pressure) return { type: "threat_pressure", value: pressure[1], priority: 90 };
+  const repeats = reason.match(/^repite tipo (.+)$/);
+  if (repeats) return { type: "warning_repeat", value: repeats[1], priority: 24 };
+  const worsens = reason.match(/^empeora (.+)$/);
+  if (worsens) return { type: "warning_weakness", value: worsens[1], priority: 26 };
+  const stacks = reason.match(/^apila debilidad (.+)$/);
+  if (stacks) return { type: "warning_weakness", value: stacks[1], priority: 28 };
+  if (/^pisa tu clima con /.test(reason) || /^pisa el plan de .+ con /.test(reason)) {
+    return { type: "warning_weather", priority: 26 };
+  }
+  if (/^(se acelera demasiado para el Trick Room de|no aprovecha bien el Tailwind de) /.test(reason)) {
+    return { type: "warning_speed", priority: 25 };
+  }
+
+  if (reason === "atacante especial necesario") return { type: "damage_profile", profile: "special", priority: 84 };
+  if (reason === "atacante físico necesario") return { type: "damage_profile", profile: "physical", priority: 84 };
+  if (reason === "ayuda a mover primero" || reason === "puede activar Trick Room o Tailwind" || reason === "añade Tailwind, Icy Wind o parálisis") {
+    return { type: "team_mode", mode: "speed_control", priority: 82 };
+  }
+  if (reason === "abusa de tu Trick Room" || reason === "aprovecha Trick Room" || reason === "funciona en Trick Room" || reason === "presiona en Trick Room") {
+    return { type: "team_mode", mode: "trick_room", priority: 90 };
+  }
+  if (reason === "segundo setter de Trick Room") return { type: "support", kind: "trick_room_setter", priority: 88 };
+  if (reason === "va contra tu Trick Room") return { type: "warning_speed", priority: 25 };
+  if (reason === "aprovecha Tailwind" || reason === "necesita Tailwind para brillar" || reason === "convierte Tailwind en presión ofensiva") {
+    return { type: "team_mode", mode: "tailwind", priority: 88 };
+  }
+  if (reason === "presiona incluso sin Tailwind") return { type: "offensive_synergy", priority: 72 };
+  if (reason === "aprovecha bajadas de Velocidad") return { type: "team_mode", mode: "speed_drops", priority: 84 };
+  if (reason === "remata tras control de velocidad") return { type: "team_mode", mode: "priority", priority: 78 };
+
+  const weatherReasons = {
+    "abusa de la lluvia": ["weather_support", "rain", 90],
+    "activa lluvia para tu plan ofensivo": ["weather_setter", "rain", 100],
+    "potencia daño de Agua": ["weather_support", "rain", 84],
+    "aprovecha precisión con lluvia": ["weather_support", "rain", 84],
+    "puede jugar Adaptability sin lluvia": ["weather_alternative", "rain", 68],
+    "abusa del sol": ["weather_support", "sun", 90],
+    "activa sol para tu plan ofensivo": ["weather_setter", "sun", 100],
+    "potencia daño de Fuego": ["weather_support", "sun", 84],
+    "aprovecha Solar Beam con sol": ["weather_support", "sun", 84],
+    "abusa de la arena": ["weather_support", "sand", 90],
+    "activa arena para tus atacantes": ["weather_setter", "sand", 100],
+    "encaja con arena": ["weather_support", "sand", 84],
+    "abusa de la nieve": ["weather_support", "snow", 90],
+    "activa nieve para tu plan defensivo": ["weather_setter", "snow", 100],
+    "encaja con nieve": ["weather_support", "snow", 84],
+    "aprovecha el sol": ["weather_support", "sun", 82],
+    "benefits from sun": ["weather_support", "sun", 82],
+    "aprovecha la lluvia": ["weather_support", "rain", 82],
+    "benefits from rain": ["weather_support", "rain", 82],
+    "aprovecha la arena": ["weather_support", "sand", 82],
+    "benefits from sand": ["weather_support", "sand", 82],
+  }[reason];
+  if (weatherReasons) return { type: weatherReasons[0], weather: weatherReasons[1], priority: weatherReasons[2] };
+
+  if (reason === "resistencia para estabilizar el equipo") return { type: "defensive_synergy", priority: 80 };
+  if (reason === "protege atacantes frágiles" || reason === "protege turnos de setup" || reason === "protects setup turns") {
+    return { type: "support", kind: "protect_plan", priority: 78 };
+  }
+  if (reason === "inmune a Terremoto aliado" || reason === "immune to allied Earthquake") {
+    return { type: "defensive_synergy", kind: "earthquake_immunity", priority: 82 };
+  }
+  if (reason === "absorbe ataques de Agua aliados" || reason === "absorbs allied Water attacks") {
+    return { type: "defensive_synergy", kind: "water_absorb", priority: 82 };
+  }
+  if (reason === "compite por Mega") return { type: "warning_mega", priority: 24 };
+  if (reason === "segunda Mega opcional" || reason === "usa tu slot Mega") return { type: "support", kind: "mega", priority: 42 };
+  if (reason === "Pokémon flexible") return { type: "flexible", priority: 36 };
+  if (/^amenaza del meta/.test(reason)) return { type: "meta_threat", priority: 38 };
+  if (/^(encaje estratégico completo|encaje estratégico claro)$/.test(reason)) return { type: "strategic_fit", priority: 34 };
+
+  return { type: "custom", label: suggestionTagLabel(reason), priority: isWarningReason(reason) ? 20 : 50 };
+}
+
+function suggestionChipKey(chip) {
+  if (!chip) return "";
+  if (chip.type === "weather_setter" || chip.type === "weather_support" || chip.type === "weather_alternative") return `weather:${chip.weather || "weather"}`;
+  if (chip.type === "team_mode") return `mode:${chip.mode || "speed"}`;
+  if (chip.type === "damage_profile") return `damage:${chip.profile || "profile"}`;
+  if (chip.type === "type_coverage" || chip.type === "threat_pressure") return `coverage:${toId(chip.value || "")}`;
+  if (chip.type === "defensive_synergy") return `defense:${chip.kind || "generic"}`;
+  if (chip.type === "support") return `support:${chip.kind || "generic"}`;
+  if (chip.type.startsWith("warning_")) return `warning:${chip.type}:${toId(chip.value || "")}`;
+  return `${chip.type}:${toId(chip.label || chip.value || chip.mode || chip.weather || "")}`;
+}
+
+function suggestionChipLabel(chip) {
+  if (!chip) return "";
+  if (chip.type === "weather_setter") return selectedLanguage === "es" ? `Activa ${suggestionWeatherNoun(chip.weather)}` : `Sets ${suggestionWeatherNoun(chip.weather)}`;
+  if (chip.type === "weather_support") return selectedLanguage === "es" ? `Apoya ${suggestionWeatherPhrase(chip.weather)}` : `Supports ${suggestionWeatherPhrase(chip.weather)}`;
+  if (chip.type === "weather_alternative") return selectedLanguage === "es" ? `Plan sin ${suggestionWeatherNoun(chip.weather)}` : `No-${suggestionWeatherNoun(chip.weather)} plan`;
+  if (chip.type === "team_mode") {
+    return {
+      trick_room: selectedLanguage === "es" ? "Aprovecha Espacio Raro" : "Uses Trick Room",
+      tailwind: selectedLanguage === "es" ? "Aprovecha Viento Afín" : "Benefits from Tailwind",
+      speed_control: selectedLanguage === "es" ? "Control de velocidad" : "Speed control",
+      speed_drops: selectedLanguage === "es" ? "Aprovecha bajadas de Velocidad" : "Uses Speed drops",
+      priority: selectedLanguage === "es" ? "Prioridad" : "Priority",
+    }[chip.mode] || (selectedLanguage === "es" ? "Control de velocidad" : "Speed control");
+  }
+  if (chip.type === "damage_profile") {
+    if (chip.profile === "mixed") return selectedLanguage === "es" ? "Daño mixto" : "Mixed damage";
+    return chip.profile === "physical"
+      ? (selectedLanguage === "es" ? "Daño físico" : "Physical damage")
+      : (selectedLanguage === "es" ? "Daño especial" : "Special damage");
+  }
+  if (chip.type === "type_coverage") {
+    const label = suggestionChipTypeLabel(chip.value);
+    return label ? (selectedLanguage === "es" ? `Cubre ${label}` : `Covers ${label}`) : "";
+  }
+  if (chip.type === "threat_pressure") {
+    const label = suggestionChipTypeLabel(chip.value);
+    return label ? (selectedLanguage === "es" ? `Presiona ${label}` : `Pressures ${label}`) : "";
+  }
+  if (chip.type === "defensive_synergy") {
+    if (chip.kind === "earthquake_immunity") return selectedLanguage === "es" ? "Inmune a Terremoto" : "Earthquake immunity";
+    if (chip.kind === "water_absorb") return selectedLanguage === "es" ? "Absorbe Agua aliada" : "Absorbs allied Water";
+    if (chip.kind === "bulk") return selectedLanguage === "es" ? "Más aguante" : "More bulk";
+    return selectedLanguage === "es" ? "Cubre debilidades" : "Covers weaknesses";
+  }
+  if (chip.type === "support") {
+    return {
+      fake_out: moveUiName("Fake Out"),
+      intimidate: abilityUiName("Intimidate"),
+      redirection: selectedLanguage === "es" ? "Redirección" : "Redirection",
+      protect_trick_room: selectedLanguage === "es" ? "Protege Espacio Raro" : "Protects Trick Room",
+      trick_room_setter: selectedLanguage === "es" ? "Segundo Espacio Raro" : "Second Trick Room",
+      protect_plan: selectedLanguage === "es" ? "Protege el plan" : "Protects your plan",
+      support: selectedLanguage === "es" ? "Apoyo" : "Support",
+      mega: selectedLanguage === "es" ? "Opción de Mega" : "Mega option",
+    }[chip.kind] || (selectedLanguage === "es" ? "Apoyo" : "Support");
+  }
+  if (chip.type === "offensive_synergy") return selectedLanguage === "es" ? "Refuerza el ataque" : "Boosts offense";
+  if (chip.type === "supports_core") return selectedLanguage === "es" ? "Apoya tu equipo" : "Supports your team";
+  if (chip.type === "warning_weakness") {
+    const label = suggestionChipTypeLabel(chip.value);
+    return label ? (selectedLanguage === "es" ? `Apila debilidad ${label}` : `Stacks ${label} weakness`) : "";
+  }
+  if (chip.type === "warning_repeat") {
+    const label = suggestionChipTypeLabel(chip.value);
+    return label ? (selectedLanguage === "es" ? `Repite ${label}` : `Stacks ${label}`) : "";
+  }
+  if (chip.type === "warning_weather") return selectedLanguage === "es" ? "Choca con tu clima" : "Clashes with weather";
+  if (chip.type === "warning_speed") return selectedLanguage === "es" ? "Mal encaje de velocidad" : "Poor speed fit";
+  if (chip.type === "warning_mega") return selectedLanguage === "es" ? "Conflicto de Mega" : "Mega conflict";
+  if (chip.type === "flexible") return selectedLanguage === "es" ? "Flexible" : "Flexible";
+  if (chip.type === "meta_threat") return selectedLanguage === "es" ? "Amenaza del meta" : "Meta threat";
+  if (chip.type === "strategic_fit") return selectedLanguage === "es" ? "Buen encaje" : "Good fit";
+  return chip.label || "";
 }
 
 function candidateSummaryChipOptions(candidate, usedKeys) {
   if (!candidate) return [];
   const chips = [];
   const roles = new Set([...(candidate.roles || []), ...(candidate.setRoles || [])]);
-  const hasSpeedChip = [...usedKeys].some((key) => key.startsWith("speed:"));
+  const hasModeChip = [...usedKeys].some((key) => key.startsWith("mode:"));
   const hasWeatherChip = [...usedKeys].some((key) => key.startsWith("weather:"));
-  const add = (key, label, priority = 50) => {
-    if (!label || usedKeys.has(key)) return;
-    chips.push({ key, label, priority });
+  const hasDamageChip = [...usedKeys].some((key) => key.startsWith("damage:"));
+  const add = (chip) => {
+    const key = suggestionChipKey(chip);
+    if (!key || usedKeys.has(key)) return;
+    chips.push(chip);
   };
 
-  if (roles.has("fakeOut")) add("role:fakeout", moveUiName("Fake Out"), 92);
-  if (roles.has("intimidate")) add("role:intimidate", abilityUiName("Intimidate"), 90);
-  if (roles.has("redirection")) add("role:redirection", selectedLanguage === "es" ? "Redirección" : "Redirection", 88);
-  if (roles.has("priority")) add("role:priority", selectedLanguage === "es" ? "Prioridad" : "Priority", 84);
-  if (roles.has("trickRoom") && !hasSpeedChip) add("role:trickroom", moveUiName("Trick Room"), 82);
-  if (roles.has("speedControl") && !hasSpeedChip) add("role:speedcontrol", selectedLanguage === "es" ? "Control de velocidad" : "Speed control", 80);
-  if (roles.has("spreadDamage")) add("role:spread", selectedLanguage === "es" ? "Daño en área" : "Spread damage", 74);
+  if (roles.has("fakeOut")) add({ type: "support", kind: "fake_out", priority: 92 });
+  if (roles.has("intimidate")) add({ type: "support", kind: "intimidate", priority: 90 });
+  if (roles.has("redirection")) add({ type: "support", kind: "redirection", priority: 88 });
+  if (roles.has("priority")) add({ type: "team_mode", mode: "priority", priority: 84 });
+  if (roles.has("trickRoom") && !hasModeChip) add({ type: "support", kind: "trick_room_setter", priority: 82 });
+  if (roles.has("speedControl") && !hasModeChip) add({ type: "team_mode", mode: "speed_control", priority: 80 });
+  if (roles.has("spreadDamage")) add({ type: "offensive_synergy", priority: 74 });
   if (candidate.weather?.length && !hasWeatherChip) {
-    add("role:weather", selectedLanguage === "es" ? `Setter de ${weatherLabel(candidate.weather[0])}` : `${weatherLabel(candidate.weather[0])} setter`, 86);
+    const weather = suggestionWeatherKey(candidate.weather[0]) || suggestionWeatherKey(weatherLabel(candidate.weather[0]));
+    if (weather) add({ type: "weather_setter", weather, priority: 86 });
   }
-  if (!usedKeys.has("damage-profile") && candidate.physicalDamage && candidate.specialDamage) {
-    add("damage:mixed", selectedLanguage === "es" ? "Daño mixto" : "Mixed damage", 79);
-  } else if (candidate.physicalDamage && !usedKeys.has("damage-profile")) {
-    add("damage:physical", selectedLanguage === "es" ? "Daño físico" : "Physical damage", 78);
-  } else if (candidate.specialDamage && !usedKeys.has("damage-profile")) {
-    add("damage:special", selectedLanguage === "es" ? "Daño especial" : "Special damage", 77);
+  if (!hasDamageChip && candidate.physicalDamage && candidate.specialDamage) {
+    add({ type: "damage_profile", profile: "mixed", priority: 79 });
+  } else if (!hasDamageChip && candidate.physicalDamage) {
+    add({ type: "damage_profile", profile: "physical", priority: 78 });
+  } else if (!hasDamageChip && candidate.specialDamage) {
+    add({ type: "damage_profile", profile: "special", priority: 77 });
   }
-  if (candidate.bulkScore >= 315) add("bulk:high", selectedLanguage === "es" ? "Más aguante" : "More bulk", 62);
-  if (roles.has("support")) add("role:support", selectedLanguage === "es" ? "Apoyo" : "Support", 58);
-  if (roles.has("mega")) add("role:mega", selectedLanguage === "es" ? "Opción de Mega" : "Mega option", 48);
+  if (candidate.bulkScore >= 315) add({ type: "defensive_synergy", kind: "bulk", priority: 62 });
+  if (roles.has("support")) add({ type: "support", kind: "support", priority: 58 });
+  if (roles.has("mega")) add({ type: "support", kind: "mega", priority: 48 });
 
   return chips.sort((a, b) => b.priority - a.priority);
 }
@@ -5007,24 +6474,37 @@ function candidateSummaryChipOptions(candidate, usedKeys) {
 function suggestionReasonChips(reasons, candidate = null) {
   const selected = [];
   const usedKeys = new Set();
-  const ordered = unique(reasons)
-    .filter((reason) => !shouldHideSuggestionChip(reason, reasons))
-    .sort((a, b) => suggestionChipPriority(b) - suggestionChipPriority(a));
+  const rawChips = unique(reasons)
+    .map(suggestionChipDescriptor)
+    .filter(Boolean)
+    .sort((a, b) => (b.priority || 0) - (a.priority || 0));
+  const concreteChipCount = rawChips.filter((chip) => !["strategic_fit", "supports_core", "custom"].includes(chip.type)).length;
 
-  for (const reason of ordered) {
-    const label = suggestionTagLabel(reason);
-    if (!label) continue;
-    const key = suggestionChipKey(reason);
-    if (usedKeys.has(key)) continue;
+  for (const chip of rawChips) {
+    if (selected.length >= 4) break;
+    if ((chip.type === "strategic_fit" || chip.type === "supports_core") && concreteChipCount > 0) continue;
+    const label = suggestionChipLabel(chip);
+    const key = suggestionChipKey(chip);
+    if (!label || !key || usedKeys.has(key)) continue;
     usedKeys.add(key);
     selected.push(label);
   }
   for (const chip of candidateSummaryChipOptions(candidate, usedKeys)) {
     if (selected.length >= 4) break;
-    usedKeys.add(chip.key);
-    selected.push(chip.label);
+    const label = suggestionChipLabel(chip);
+    const key = suggestionChipKey(chip);
+    if (!label || !key || usedKeys.has(key)) continue;
+    usedKeys.add(key);
+    selected.push(label);
   }
   return selected;
+}
+
+function reasonChipRowHtml(reasons, labeler, limit = 4) {
+  return unique((reasons || []).map((reason) => localizeInlineTerms(labeler(reason))).filter(Boolean))
+    .slice(0, limit)
+    .map((label) => `<span class="tag">${label}</span>`)
+    .join("");
 }
 
 function reasonExplanationPhrases(reasons) {
@@ -5807,7 +7287,7 @@ function renderThreatCounters() {
         ${targetSetSummaryHtml(mon, counterSlot, counterAdvanced)}
         ${threatCounterControlsHtml(mon)}
         ${collapsibleDetailsHtml(selectedLanguage === "es" ? "Análisis del counter" : "Counter analysis", `<p class="suggestion-explain">${localizeInlineTerms(explanation)}</p>${insightListHtml(advice)}`, "card-details", { detailScope: "threatCounter", detailId: mon.id, open: threatCounterDetailOpenIds.has(mon.id) })}
-        <div class="tag-row">${reasons.slice(0, 4).map((reason) => `<span class="tag">${localizeInlineTerms(counterReasonLabel(reason))}</span>`).join("")}</div>
+        <div class="tag-row">${reasonChipRowHtml(reasons, counterReasonLabel)}</div>
       </div>
     </article>`).join("")}
   `;
@@ -6047,8 +7527,13 @@ function renderCounters() {
     return;
   }
 
-  els.counters.innerHTML = analyzeCounters()
-    .slice(0, 6)
+  const counters = analyzeCounters().slice(0, TEAM_COUNTER_DISPLAY_LIMIT);
+  if (!counters.length) {
+    els.counters.innerHTML = `<div class="editor-empty">${selectedLanguage === "es" ? "Tu equipo no muestra amenazas destacadas con el filtro actual." : "Your team does not show clear major threats with the current filter."}</div>`;
+    return;
+  }
+
+  els.counters.innerHTML = counters
     .map(({ mon, score, reasons, explanation, advice, targetSlot, advanced }) => `<article class="counter-card">
       <span class="sprite-frame"><img src="${pokemonSprite(mon)}" alt="${mon.name}" data-fallback="${plannerSprite(mon)}"></span>
       <div>
@@ -6058,7 +7543,7 @@ function renderCounters() {
         ${targetSetSummaryHtml(mon, targetSlot, advanced)}
         ${majorThreatSetControlsHtml(mon)}
         ${collapsibleDetailsHtml(selectedLanguage === "es" ? "Análisis de amenaza" : "Threat analysis", `<p class="suggestion-explain">${localizeInlineTerms(explanation)}</p>${insightListHtml(advice)}`, "card-details", { detailScope: "majorThreat", detailId: mon.id, open: majorThreatDetailOpenIds.has(mon.id) })}
-        <div class="tag-row">${reasons.slice(0, 4).map((reason) => `<span class="tag">${localizeInlineTerms(majorThreatReasonLabel(reason))}</span>`).join("")}</div>
+        <div class="tag-row">${reasonChipRowHtml(reasons, majorThreatReasonLabel)}</div>
       </div>
     </article>`)
     .join("");
@@ -6077,72 +7562,414 @@ function renderCounters() {
 
 function analyzeCounters() {
   const filled = team.filter((slot) => slot.pokemon);
-  const teamMoveTypes = new Set(filled.flatMap((slot) => slot.moves.map((move) => moveInfo(move)?.type).filter(Boolean)));
   const teamIds = new Set(filled.map((slot) => slot.pokemon.id));
-  const avgSpeed = filled.reduce((sum, slot) => sum + calculateStats(slot.pokemon, slot).spe, 0) / filled.length;
-  const hasSpeedControl = filled.some((slot) => slot.moves.some((move) => moveInfo(move)?.role === "speedControl"));
-
-  return POKEDEX.filter((mon) => !teamIds.has(mon.id))
+  const context = majorThreatTeamContext(filled);
+  const scored = POKEDEX.filter((mon) => !teamIds.has(mon.id))
     .map((mon) => {
       const advanced = majorThreatAdvancedIds.has(mon.id);
       const targetSlot = majorThreatSlot(mon);
       const targetStats = advanced ? calculateStats(mon, targetSlot) : neutralStats(mon);
-      let score = pokemonUsage(mon) * 1.2;
-      const reasons = [];
-      const attackTypes = unique(mon.moves.map((move) => moveInfo(move)?.type).filter(Boolean));
-      const damageAnswers = teamDamageAnswersTo(mon, filled, targetSlot, { advanced });
-      const pressured = attackTypes.reduce((count, type) => count + filled.filter((slot) => battleMultiplier(type, { ...slot.pokemon, ability: slot.ability }, mon) > 1).length, 0);
-      score += pressured * 5;
-      if (pressured >= 4) reasons.push("golpea varias debilidades");
-
-      const covered = damageAnswers.some((answer) => answer.calc.koTurns <= 2 || answer.calc.maxPercent >= 45);
-      if (!covered) {
-        score += 16;
-        reasons.push("poca cobertura directa");
-      }
-
-      const monSpeed = targetStats.spe;
-      if (monSpeed > avgSpeed + 20 && !hasSpeedControl) {
-        score += 12;
-        reasons.push("te supera en velocidad");
-      }
-      if (mon.roles.includes("weather") && !roleCounts().weather) {
-        score += 8;
-        reasons.push("clima incómodo");
-      }
-      if (isDoublesFormat() && mon.roles.includes("redirection") && !teamMoveTypes.has("Flying") && !teamMoveTypes.has("Poison")) {
-        score += 5;
-        reasons.push("redirección molesta");
-      }
-      if (reasons.length === 0) reasons.push("amenaza muy usada");
-      const cleanReasons = unique(reasons);
+      const metrics = majorThreatMetrics(mon, targetSlot, targetStats, context);
+      const score = majorThreatScore(metrics);
+      if (!majorThreatPassesViabilityGate(score, metrics)) return null;
+      const reasons = unique(majorThreatReasons(metrics));
       return {
         mon,
         score,
-        reasons: cleanReasons,
-        explanation: majorThreatExplanation(mon, cleanReasons, filled),
-        advice: majorThreatAdvice(mon, cleanReasons, filled, targetSlot, advanced),
+        reasons,
+        explanation: majorThreatExplanation(mon, reasons, filled, metrics),
+        advice: majorThreatAdvice(mon, reasons, filled, targetSlot, advanced, metrics),
         targetSlot,
         advanced,
+        metrics,
       };
     })
-    .sort((a, b) => b.score - a.score);
+    .filter(Boolean)
+    .sort((a, b) => b.score - a.score || pokemonUsage(b.mon) - pokemonUsage(a.mon) || a.mon.name.localeCompare(b.mon.name));
+  return diversifyMajorThreats(scored);
 }
 
-function majorThreatExplanation(mon, reasons, filled) {
-  const attackLine = reasons.includes("golpea varias debilidades")
-    ? (selectedLanguage === "es" ? `${mon.name} amenaza demasiados slots de tu equipo con sus tipos de ataque habituales.` : `${mon.name} threatens too many slots on your team with its common attacking types.`)
-    : (selectedLanguage === "es" ? `${mon.name} aparece como amenaza por uso y por cómo encaja contra tu equipo.` : `${mon.name} shows up as a threat because of usage and how it lines up into your team.`);
-  const coverage = reasons.includes("poca cobertura directa")
-    ? (selectedLanguage === "es" ? " Tu equipo no muestra una respuesta supereficaz clara en los moves actuales." : " Your current moves do not show a clear super-effective answer.")
-    : "";
-  const speed = reasons.includes("te supera en velocidad")
-    ? (selectedLanguage === "es" ? " Además puede jugar por delante si no impones Tailwind, Trick Room o prioridad." : " It can also move first if you do not impose Tailwind, Trick Room, or priority.")
-    : "";
-  return `${attackLine}${coverage}${speed}`;
+function majorThreatTeamContext(filled) {
+  const slotStats = new Map(filled.map((slot) => [slot.pokemon.id, calculateStats(slot.pokemon, slot)]));
+  const allMoves = filled.flatMap((slot) => slot.moves.filter(Boolean).map((move) => ({ slot, move, info: moveInfo(move), id: toId(move) })).filter((entry) => entry.info));
+  const moveIds = new Set(allMoves.map((entry) => entry.id));
+  const attackMoves = allMoves.filter((entry) => entry.info.category !== "Status");
+  const speedValues = filled.map((slot) => slotStats.get(slot.pokemon.id)?.spe || neutralStats(slot.pokemon).spe).sort((a, b) => a - b);
+  return {
+    filled,
+    slotStats,
+    allMoves,
+    moveIds,
+    attackMoves,
+    teamMoveTypes: new Set(attackMoves.map((entry) => entry.info.type).filter(Boolean)),
+    avgSpeed: filled.reduce((sum, slot) => sum + (slotStats.get(slot.pokemon.id)?.spe || 0), 0) / Math.max(1, filled.length),
+    medianSpeed: speedValues.length ? speedValues[Math.floor(speedValues.length / 2)] : 0,
+    maxSpeed: speedValues[speedValues.length - 1] || 0,
+    hasSpeedControl: filled.some((slot) => slot.moves.some((move) => moveInfo(move)?.role === "speedControl")),
+    hasPriority: filled.some((slot) => slot.moves.some((move) => moveInfo(move)?.role === "priority")),
+    hasSetup: allMoves.some((entry) => entry.info.role === "setup") || [...moveIds].some((id) => MAJOR_THREAT_SETUP_MOVE_IDS.has(id)),
+    hasTrickRoom: moveIds.has("trickroom"),
+    hasTailwind: moveIds.has("tailwind"),
+    hasScreens: [...moveIds].some((id) => MAJOR_THREAT_SCREEN_MOVE_IDS.has(id)),
+    hasHazards: [...moveIds].some((id) => MAJOR_THREAT_HAZARD_MOVE_IDS.has(id)),
+    hasTerrain: [...moveIds].some((id) => MAJOR_THREAT_TERRAIN_MOVE_IDS.has(id)),
+    hasStatusPlan: [...moveIds].some((id) => MAJOR_THREAT_STATUS_MOVE_IDS.has(id)),
+    currentWeather: currentWeather(filled),
+    roles: roleCounts(),
+  };
 }
 
-function majorThreatAdvice(mon, reasons, filled, targetSlot = null, advanced = false) {
+function majorThreatMetrics(mon, targetSlot, targetStats, context) {
+  const usage = pokemonUsage(mon);
+  const candidate = analyzeCandidate(mon);
+  const threatEntity = { ...mon, ability: targetSlot?.ability || mon.popularAbility || mon.abilities?.[0] || "" };
+  const attackTypes = majorThreatAttackTypes(mon, candidate);
+  const pressure = majorThreatPressureOnTeam(attackTypes, context.filled, threatEntity);
+  const advanced = majorThreatAdvancedIds.has(mon.id);
+  const damageAnswers = teamDamageAnswersTo(mon, context.filled, targetSlot, { advanced });
+  const strongAnswers = damageAnswers.filter((answer) => answer.calc.koTurns <= 2 || answer.calc.maxPercent >= 55);
+  const solidAnswers = damageAnswers.filter((answer) => answer.calc.koTurns <= 3 || answer.calc.maxPercent >= 42);
+  const fasterAnswers = damageAnswers.filter((answer) => (context.slotStats.get(answer.mon.id)?.spe || 0) >= targetStats.spe && answer.calc.maxPercent >= 35);
+  const teamPressure = majorThreatTeamPressure(threatEntity, context);
+  const setRoles = new Set([...(candidate.setRoles || []), ...(mon.roles || [])]);
+  const rolePressure = majorThreatRolePressure(mon, candidate, setRoles, pressure, context, strongAnswers);
+  const antiStrategy = majorThreatAntiStrategy(mon, candidate, setRoles, pressure, context, strongAnswers);
+  const viability = majorThreatViability(usage);
+  const counterplay = majorThreatCounterplay(pressure, strongAnswers, solidAnswers, fasterAnswers, teamPressure, context);
+
+  return {
+    usage,
+    viability,
+    candidate,
+    targetStats,
+    attackTypes,
+    ...pressure,
+    damageAnswers,
+    strongAnswers,
+    solidAnswers,
+    fasterAnswers,
+    ...teamPressure,
+    setRoles,
+    rolePressure,
+    antiStrategy,
+    counterplay,
+  };
+}
+
+function majorThreatAttackTypes(mon, candidate) {
+  const popular = candidate?.popularMoves?.length ? candidate.popularMoves : popularMoveDetails(mon);
+  const fromPopular = popular.filter((entry) => relevantAttackMove(entry, mon)).map((entry) => entry.info.type).filter(Boolean);
+  const fallback = (mon.moves || []).map((move) => moveInfo(move)).filter((info) => info && info.category !== "Status").map((info) => info.type).filter(Boolean);
+  return unique([...fromPopular, ...(candidate?.attackTypes || []), ...(mon.types || []), ...fallback]).slice(0, 5);
+}
+
+function majorThreatPressureOnTeam(attackTypes, filled, threatEntity) {
+  let weakSlots = 0;
+  let x4Slots = 0;
+  let safeSwitches = 0;
+  let stabResists = 0;
+  const safeSwitchNames = [];
+  const weakNames = [];
+  const x4Names = [];
+
+  for (const slot of filled) {
+    const defender = { ...slot.pokemon, ability: slot.ability || slot.pokemon.popularAbility || slot.pokemon.abilities?.[0] || "" };
+    const multipliers = attackTypes.map((type) => battleMultiplier(type, defender, threatEntity));
+    const max = Math.max(1, ...multipliers);
+    const min = multipliers.length ? Math.min(...multipliers) : 1;
+    const stabMultipliers = (threatEntity.types || []).map((type) => battleMultiplier(type, defender, threatEntity));
+    const maxStab = stabMultipliers.length ? Math.max(...stabMultipliers) : 1;
+    if (max > 1) {
+      weakSlots += 1;
+      weakNames.push(slot.pokemon.name);
+    }
+    if (max >= 4) {
+      x4Slots += 1;
+      x4Names.push(slot.pokemon.name);
+    }
+    if (max <= 1 && min < 1) {
+      safeSwitches += 1;
+      safeSwitchNames.push(slot.pokemon.name);
+    }
+    if (maxStab < 1) stabResists += 1;
+  }
+
+  return { weakSlots, x4Slots, safeSwitches, stabResists, safeSwitchNames, weakNames, x4Names };
+}
+
+function majorThreatTeamPressure(threatEntity, context) {
+  let resistedMoves = 0;
+  let immuneMoves = 0;
+  let superEffectiveMoves = 0;
+  for (const entry of context.attackMoves) {
+    const multiplier = battleMultiplier(entry.info.type, threatEntity, { ...entry.slot.pokemon, ability: entry.slot.ability || entry.slot.pokemon.popularAbility || entry.slot.pokemon.abilities?.[0] || "" });
+    if (multiplier === 0) immuneMoves += 1;
+    else if (multiplier < 1) resistedMoves += 1;
+    if (multiplier > 1) superEffectiveMoves += 1;
+  }
+  const totalAttackMoves = Math.max(1, context.attackMoves.length);
+  return {
+    resistedMoveRatio: (resistedMoves + immuneMoves) / totalAttackMoves,
+    resistedMoves,
+    immuneMoves,
+    superEffectiveMoves,
+    superEffectiveMoveRatio: superEffectiveMoves / totalAttackMoves,
+  };
+}
+
+function majorThreatRolePressure(mon, candidate, setRoles, pressure, context, strongAnswers) {
+  let score = 0;
+  const roles = [];
+  if (setRoles.has("spreadDamage") && isDoublesFormat() && pressure.weakSlots >= 2) {
+    score += 8;
+    roles.push("daño en área incómodo");
+  }
+  if ((setRoles.has("setup") || setRoles.has("boosting")) && strongAnswers.length < 2) {
+    score += 9;
+    roles.push("setup difícil de frenar");
+  }
+  if (setRoles.has("speedControl") && !context.hasSpeedControl) {
+    score += 6;
+    roles.push("control de velocidad rival");
+  }
+  if (setRoles.has("weather") && !context.roles.weather) {
+    score += 6;
+    roles.push("clima incómodo");
+  }
+  if (isDoublesFormat() && setRoles.has("redirection") && !context.teamMoveTypes.has("Flying") && !context.teamMoveTypes.has("Poison")) {
+    score += 5;
+    roles.push("redirección molesta");
+  }
+  if (isDoublesFormat() && setRoles.has("fakeOut") && !context.hasPriority) {
+    score += 3;
+    roles.push("presión de Fake Out");
+  }
+  if ((candidate.physicalDamage || mon.baseStats.atk >= mon.baseStats.spa) && !context.roles.intimidate && mon.baseStats.atk >= 115) {
+    score += 4;
+    roles.push("presión física alta");
+  }
+  return { score, roles: unique(roles) };
+}
+
+function majorThreatHasAnyMove(candidate, ids) {
+  const setMoveIds = candidate?.setMoveIds || new Set();
+  const moveIds = candidate?.moveIds || new Set();
+  return ids.some((id) => setMoveIds.has(id) || moveIds.has(id));
+}
+
+function majorThreatHasAnyAbility(mon, candidate, ids) {
+  const abilities = new Set([
+    ...abilityIds(mon),
+    ...[...(candidate?.abilities || [])].map(toId),
+  ]);
+  return ids.some((id) => abilities.has(id));
+}
+
+function majorThreatAntiStrategy(mon, candidate, setRoles, pressure, context, strongAnswers) {
+  let score = 0;
+  const roles = [];
+  const add = (points, reason) => {
+    score += points;
+    roles.push(reason);
+  };
+
+  if (context.hasSetup && (
+    majorThreatHasAnyMove(candidate, ["haze", "clearsmog", "topsyturvy"]) ||
+    majorThreatHasAnyAbility(mon, candidate, ["unaware"])
+  )) {
+    add(strongAnswers.length < 2 ? 16 : 9, "corta boosts");
+  }
+
+  if ((context.hasSetup || context.hasTrickRoom || context.hasTailwind) && majorThreatHasAnyMove(candidate, [...MAJOR_THREAT_ANTI_SETUP_MOVE_IDS])) {
+    add(context.hasTrickRoom ? 12 : 8, "bloquea setup");
+  }
+
+  if (context.hasTrickRoom && majorThreatHasAnyMove(candidate, ["taunt", "encore", "imprison", "trickroom", "roar", "whirlwind"])) {
+    add(12, "rompe Espacio Raro");
+  }
+
+  if ((context.hasScreens || context.hasHazards) && majorThreatHasAnyMove(candidate, [...MAJOR_THREAT_FIELD_CLEAR_MOVE_IDS])) {
+    add(9, "rompe soporte de campo");
+  }
+
+  if (context.currentWeather.length && (
+    setRoles.has("weather") ||
+    majorThreatHasAnyAbility(mon, candidate, ["drought", "drizzle", "sandstream", "snowwarning", "cloudnine", "airlock"])
+  )) {
+    add(8, "cambia tu clima");
+  }
+
+  if (context.hasTerrain && (
+    majorThreatHasAnyMove(candidate, ["electricterrain", "grassyterrain", "mistyterrain", "psychicterrain", "terrainpulse"]) ||
+    majorThreatHasAnyAbility(mon, candidate, ["electricsurge", "grassysurge", "mistysurge", "psychicsurge"])
+  )) {
+    add(6, "pelea el terreno");
+  }
+
+  if (context.hasStatusPlan && majorThreatHasAnyAbility(mon, candidate, ["guts", "magicguard", "poisonheal", "naturalcure", "purifyingsalt", "goodasgold", "synchronize"])) {
+    add(7, "absorbe estados");
+  }
+
+  if (majorThreatHasAnyMove(candidate, ["roar", "whirlwind", "dragontail", "circlethrow", "partingshot", "perishsong"]) && (context.hasSetup || pressure.weakSlots >= 2)) {
+    add(7, "fuerza cambios clave");
+  }
+
+  if (isDoublesFormat() && setRoles.has("fakeOut") && (context.hasSetup || context.hasTrickRoom || context.hasTailwind)) {
+    add(4, "niega turnos clave");
+  }
+
+  return { score: Math.min(32, score), roles: unique(roles) };
+}
+
+function majorThreatViability(usage) {
+  if (usage >= 20) return { score: 10, penalty: 0, tier: "top" };
+  if (usage >= 8) return { score: 7, penalty: 0, tier: "high" };
+  if (usage >= 2) return { score: 4, penalty: 0, tier: "viable" };
+  if (usage >= 0.5) return { score: 2, penalty: 2, tier: "low" };
+  if (usage > 0) return { score: 0, penalty: 9, tier: "niche" };
+  return { score: 0, penalty: 12, tier: "unknown" };
+}
+
+function majorThreatPassesViabilityGate(score, metrics) {
+  const antiStrategyScore = metrics.antiStrategy?.score || 0;
+  const exceptionalMatchup = metrics.weakSlots >= 4 || metrics.x4Slots >= 2 || antiStrategyScore >= 18 || (metrics.strongAnswers.length === 0 && metrics.safeSwitches <= 1);
+  if (metrics.usage < 0.05) return score >= 82 || exceptionalMatchup;
+  if (metrics.usage < 0.2) return score >= 62 || exceptionalMatchup;
+  if (metrics.usage < 1) return score >= 42 || antiStrategyScore >= 14 || metrics.weakSlots >= 3;
+  if (metrics.usage < 2) return score >= 18 || antiStrategyScore >= 8 || metrics.weakSlots >= 2;
+  return score >= 8;
+}
+
+function majorThreatCounterplay(pressure, strongAnswers, solidAnswers, fasterAnswers, teamPressure, context) {
+  let score = 0;
+  if (strongAnswers.length >= 2) score += 22;
+  else if (strongAnswers.length === 1) score += 10;
+  if (solidAnswers.length >= 3) score += 10;
+  if (pressure.safeSwitches >= 3) score += 14;
+  else if (pressure.safeSwitches === 2) score += 8;
+  if (pressure.stabResists >= 2) score += 8;
+  if (fasterAnswers.length >= 2) score += 12;
+  else if (fasterAnswers.length === 1) score += 5;
+  if (teamPressure.superEffectiveMoveRatio >= 0.25) score += 8;
+  if (context.hasPriority && pressure.weakSlots <= 2) score += 3;
+  return score;
+}
+
+function majorThreatScore(metrics) {
+  // Offensive matchup: how much direct damage pressure this threat creates against the six slots.
+  const offensivePressureScore = metrics.weakSlots * 9 + metrics.x4Slots * 10;
+  const speedPressureScore = metrics.targetStats.spe >= 110 && metrics.fasterAnswers.length === 0 ? 10 : 0;
+
+  // Defensive matchup: whether the team has reliable switch-ins and enough direct pressure back.
+  const switchPressureScore = metrics.safeSwitches <= 1 ? 18 : metrics.safeSwitches === 2 ? 6 : 0;
+  const defensivePressureScore = metrics.resistedMoveRatio >= 0.55 ? 12 : metrics.resistedMoveRatio >= 0.35 ? 7 : 0;
+  const lowAnswerScore = metrics.strongAnswers.length === 0 ? 20 : metrics.strongAnswers.length === 1 ? 7 : 0;
+
+  // Anti-strategy: rewards Pokemon that can break the team's plan, even if they do not only click super-effective attacks.
+  const antiStrategyScore = metrics.antiStrategy.score;
+
+  // Usage / viability: realism modifier. It helps viable meta picks, but residual usage is penalized unless the matchup is exceptional.
+  const usageViabilityScore = metrics.viability.score;
+  const nichePenalty = metrics.viability.penalty;
+
+  const matchupScore = offensivePressureScore + switchPressureScore + defensivePressureScore + lowAnswerScore + speedPressureScore + metrics.rolePressure.score;
+  return Math.max(0, matchupScore + antiStrategyScore + usageViabilityScore - nichePenalty - metrics.counterplay);
+}
+
+function majorThreatReasons(metrics) {
+  const reasons = [];
+  if (metrics.weakSlots >= 3) reasons.push("golpea varios slots");
+  if (metrics.x4Slots > 0) reasons.push("amenaza x4");
+  if (metrics.safeSwitches <= 1) reasons.push("pocos cambios seguros");
+  if (metrics.resistedMoveRatio >= 0.45) reasons.push("resiste tu presión");
+  if (metrics.strongAnswers.length === 0) reasons.push("poca presión fiable");
+  if (metrics.targetStats.spe >= 110 && metrics.fasterAnswers.length === 0) reasons.push("presión de velocidad");
+  reasons.push(...metrics.rolePressure.roles);
+  reasons.push(...(metrics.antiStrategy?.roles || []));
+  if (metrics.viability?.tier === "top" || metrics.viability?.tier === "high") reasons.push("pick viable del meta");
+  if ((metrics.viability?.tier === "niche" || metrics.viability?.tier === "unknown") && (metrics.weakSlots >= 4 || (metrics.antiStrategy?.score || 0) >= 18)) reasons.push("nicho pero justificado");
+  if (metrics.usage >= 20 && metrics.counterplay < 18) reasons.push("amenaza común");
+  if (metrics.usage >= 20 && metrics.counterplay >= 22) reasons.push("alto uso parcialmente cubierto");
+  if (!reasons.length) reasons.push(metrics.counterplay >= 22 ? "controlado por tu equipo" : "matchup incómodo");
+  return reasons;
+}
+
+function diversifyMajorThreats(scored) {
+  // Diversity pass: keep the ranking deterministic, but avoid filling the 12 slots with the same role/type profile.
+  const remaining = scored.slice(0, MAJOR_THREAT_DIVERSITY_POOL);
+  const selected = [];
+  const roleCountsByBucket = new Map();
+  const typeCountsByBucket = new Map();
+  while (remaining.length) {
+    let bestIndex = 0;
+    let bestValue = -Infinity;
+    remaining.forEach((entry, index) => {
+      const role = majorThreatBucket(entry);
+      const rolePenalty = (roleCountsByBucket.get(role) || 0) * 7;
+      const typePenalty = (entry.mon.types || []).reduce((sum, type) => sum + (typeCountsByBucket.get(type) || 0) * 3, 0);
+      const value = entry.score - rolePenalty - typePenalty - index * 0.001;
+      if (value > bestValue) {
+        bestValue = value;
+        bestIndex = index;
+      }
+    });
+    const [picked] = remaining.splice(bestIndex, 1);
+    selected.push(picked);
+    const role = majorThreatBucket(picked);
+    roleCountsByBucket.set(role, (roleCountsByBucket.get(role) || 0) + 1);
+    for (const type of picked.mon.types || []) typeCountsByBucket.set(type, (typeCountsByBucket.get(type) || 0) + 1);
+  }
+  const visible = selected
+    .slice(0, TEAM_COUNTER_DISPLAY_LIMIT)
+    .sort((a, b) => b.score - a.score || pokemonUsage(b.mon) - pokemonUsage(a.mon) || a.mon.name.localeCompare(b.mon.name));
+  const deferred = selected.slice(TEAM_COUNTER_DISPLAY_LIMIT);
+  return visible.concat(deferred, scored.slice(MAJOR_THREAT_DIVERSITY_POOL));
+}
+
+function majorThreatBucket(entry) {
+  const roles = entry.metrics?.setRoles || new Set(entry.mon.roles || []);
+  if ((entry.metrics?.antiStrategy?.score || 0) >= 14) return "antiStrategy";
+  if (roles.has("weather")) return "weather";
+  if (roles.has("speedControl")) return "speed";
+  if (roles.has("redirection") || roles.has("fakeOut")) return "support";
+  if (roles.has("setup") || roles.has("boosting")) return "setup";
+  if ((entry.mon.baseStats.hp + entry.mon.baseStats.def + entry.mon.baseStats.spd) >= 290) return "bulk";
+  return entry.mon.baseStats.spe >= 100 ? "fastOffense" : "offense";
+}
+
+function majorThreatMemberText(count) {
+  return selectedLanguage === "es" ? `${count} miembro${count === 1 ? "" : "s"}` : `${count} member${count === 1 ? "" : "s"}`;
+}
+
+function majorThreatExplanation(mon, reasons, filled, metrics = null) {
+  if (!metrics) return selectedLanguage === "es"
+    ? `${mon.name} aparece como amenaza por uso y por cómo encaja contra tu equipo.`
+    : `${mon.name} shows up as a threat because of usage and how it lines up into your team.`;
+
+  const pieces = [];
+  if (metrics.weakSlots) {
+    pieces.push(selectedLanguage === "es"
+      ? `puede golpear supereficaz a ${majorThreatMemberText(metrics.weakSlots)}${metrics.x4Slots ? `, con ${majorThreatMemberText(metrics.x4Slots)} en x4` : ""}`
+      : `can hit ${majorThreatMemberText(metrics.weakSlots)} super effectively${metrics.x4Slots ? `, including ${majorThreatMemberText(metrics.x4Slots)} at x4` : ""}`);
+  }
+  if (metrics.safeSwitches <= 1) pieces.push(selectedLanguage === "es" ? "tienes pocos cambios seguros contra sus ataques habituales" : "you have very few safe switches into its usual attacks");
+  if (metrics.resistedMoveRatio >= 0.45) pieces.push(selectedLanguage === "es" ? "resiste o anula bastante presión ofensiva de tus movimientos actuales" : "it resists or blanks a lot of your current offensive pressure");
+  if (!metrics.strongAnswers.length) pieces.push(selectedLanguage === "es" ? "tu equipo no tiene dos líneas de daño fiables para castigarlo rápido" : "your team lacks two reliable damage lines to punish it quickly");
+  if (metrics.targetStats.spe >= 110 && !metrics.fasterAnswers.length) pieces.push(selectedLanguage === "es" ? "puede jugar por delante de casi todo si no impones control de velocidad" : "it can move before most of your team unless you impose speed control");
+  if (metrics.antiStrategy?.roles?.length) {
+    pieces.push(selectedLanguage === "es"
+      ? `también puede cortar tu plan con ${metrics.antiStrategy.roles.map(majorThreatReasonLabel).slice(0, 2).join(" y ").toLowerCase()}`
+      : `it can also disrupt your plan with ${metrics.antiStrategy.roles.map(majorThreatReasonLabel).slice(0, 2).join(" and ").toLowerCase()}`);
+  }
+  if (metrics.usage >= 20 && metrics.counterplay >= 22) pieces.push(selectedLanguage === "es" ? "tiene mucho uso, pero tu equipo ya muestra respuestas claras, así que baja en prioridad" : "it is highly used, but your team already shows clear answers, so it drops in priority");
+  if ((metrics.viability?.tier === "niche" || metrics.viability?.tier === "unknown") && pieces.length) pieces.push(selectedLanguage === "es" ? "su uso es bajo, así que solo sube si el matchup realmente lo justifica" : "its usage is low, so it only rises when the matchup really justifies it");
+  if (!pieces.length) pieces.push(selectedLanguage === "es"
+    ? "aparece por una mezcla de uso y pequeñas incomodidades de matchup, no porque sea automáticamente imparable"
+    : "appears from a mix of usage and small matchup issues, not because it is automatically overwhelming");
+  return selectedLanguage === "es" ? `${mon.name} preocupa porque ${pieces.join(". ")}.` : `${mon.name} is concerning because ${pieces.join(". ")}.`;
+}
+
+function majorThreatAdvice(mon, reasons, filled, targetSlot = null, advanced = false, metrics = null) {
   const answers = teamAnswersTo(mon, filled, targetSlot, advanced);
   const lines = [];
   if (answers.damage.length) {
@@ -6151,6 +7978,14 @@ function majorThreatAdvice(mon, reasons, filled, targetSlot = null, advanced = f
     lines.push({ label: selectedLanguage === "es" ? "Cómo frenarlo" : "How to stop it", text: isDoublesFormat()
       ? (selectedLanguage === "es" ? "busca doble target, daño previo o añade cobertura supereficaz en un slot flexible" : "look for a double target, prior chip, or add super-effective coverage in a flexible slot")
       : (selectedLanguage === "es" ? "busca daño previo, trampas, revenge kill o añade cobertura supereficaz en un slot flexible" : "look for chip, hazards, revenge-kill lines, or add super-effective coverage in a flexible slot"), tone: "warn" });
+  }
+  if (metrics?.safeSwitchNames?.length) {
+    lines.push({
+      label: selectedLanguage === "es" ? "Cambios cómodos" : "Safe entries",
+      text: selectedLanguage === "es"
+        ? `${metrics.safeSwitchNames.slice(0, 2).join(" y ")} ${metrics.safeSwitchNames.length === 1 ? "es tu entrada más limpia" : "son tus entradas más limpias"}`
+        : `${metrics.safeSwitchNames.slice(0, 2).join(" and ")} ${metrics.safeSwitchNames.length === 1 ? "is your cleanest entry" : "are your cleanest entries"}`,
+    });
   }
   if (answers.utility.length) lines.push({ label: selectedLanguage === "es" ? "Apoyo útil" : "Useful support", text: answers.utility.slice(0, 2).join(". ") });
   const caution = majorThreatCaution(mon, reasons, filled);
@@ -6161,11 +7996,37 @@ function majorThreatAdvice(mon, reasons, filled, targetSlot = null, advanced = f
 function majorThreatReasonLabel(reason) {
   const map = {
     "golpea varias debilidades": ["Golpea varias debilidades", "Hits several weaknesses"],
+    "golpea varios slots": ["Golpea varios slots", "Hits several slots"],
+    "amenaza x4": ["Amenaza x4", "x4 threat"],
     "poca cobertura directa": ["Poca cobertura directa", "Low direct coverage"],
+    "poca presión fiable": ["Poca presión fiable", "Low reliable pressure"],
+    "pocos cambios seguros": ["Pocos cambios seguros", "Few safe switches"],
+    "resiste tu presión": ["Resiste tu presión", "Resists your pressure"],
     "te supera en velocidad": ["Te supera en velocidad", "Outspeeds you"],
+    "presión de velocidad": ["Presión de velocidad", "Speed pressure"],
     "clima incómodo": ["Clima incómodo", "Awkward weather"],
     "redirección molesta": ["Redirección molesta", "Annoying redirection"],
+    "daño en área incómodo": ["Daño en área", "Spread pressure"],
+    "setup difícil de frenar": ["Setup peligroso", "Dangerous setup"],
+    "control de velocidad rival": ["Controla velocidad", "Speed control"],
+    "presión de Fake Out": ["Presión Fake Out", "Fake Out pressure"],
+    "presión física alta": ["Presión física", "Physical pressure"],
+    "corta boosts": ["Corta boosts", "Stops boosts"],
+    "bloquea setup": ["Bloquea setup", "Blocks setup"],
+    "rompe Espacio Raro": ["Rompe Espacio Raro", "Disrupts Trick Room"],
+    "rompe soporte de campo": ["Rompe pantallas/hazards", "Breaks field support"],
+    "cambia tu clima": ["Cambia tu clima", "Changes your weather"],
+    "pelea el terreno": ["Pelea el terreno", "Contests terrain"],
+    "absorbe estados": ["Absorbe estados", "Absorbs status"],
+    "fuerza cambios clave": ["Fuerza cambios", "Forces switches"],
+    "niega turnos clave": ["Niega turnos", "Denies key turns"],
+    "pick viable del meta": ["Pick viable del meta", "Viable meta pick"],
+    "nicho pero justificado": ["Nicho justificado", "Niche but justified"],
     "amenaza muy usada": ["Amenaza muy usada", "Very common threat"],
+    "amenaza común": ["Amenaza común", "Common threat"],
+    "alto uso parcialmente cubierto": ["Muy usado, cubierto", "Common but covered"],
+    "controlado por tu equipo": ["Cubierto por tu equipo", "Covered by your team"],
+    "matchup incómodo": ["Matchup incómodo", "Awkward matchup"],
   };
   const translated = map[reason];
   return translated ? translated[selectedLanguage === "es" ? 0 : 1] : sentenceCase(reason);
@@ -6295,7 +8156,7 @@ function majorThreatCaution(mon, reasons, filled) {
     : (selectedLanguage === "es" ? `su ${formatMoveWithUsage(spread)} fuerza cambios y castiga entrar sin resistencia` : `${formatMoveWithUsage(spread)} forces switches and punishes entries without a resistance`);
   const setup = popular.find((entry) => ["setup", "speedControl"].includes(entry.info.role));
   if (setup) return selectedLanguage === "es" ? `no le regales turno libre: ${formatMoveWithUsage(setup)} puede cambiar el ritmo` : `do not give it a free turn: ${formatMoveWithUsage(setup)} can change the tempo`;
-  if (reasons.includes("poca cobertura directa")) return isDoublesFormat()
+  if (reasons.includes("poca cobertura directa") || reasons.includes("poca presión fiable")) return isDoublesFormat()
     ? (selectedLanguage === "es" ? "si no puedes pegarle supereficaz, juega a negar turnos con Fake Out, Protect y posicionamiento" : "if you cannot hit it super effectively, deny turns with Fake Out, Protect, and positioning")
     : (selectedLanguage === "es" ? "si no puedes pegarle supereficaz, necesitas daño previo, trampas o una línea clara de revenge kill" : "if you cannot hit it super effectively, you need chip, hazards, or a clear revenge-kill line");
   return "";
@@ -7071,7 +8932,7 @@ function itemData(item) {
 }
 
 function isMegaSlot(slot) {
-  return Boolean(slot?.pokemon?.isMega || itemData(slot?.item)?.megaStone);
+  return Boolean(activePokemonForSlot(slot)?.isMega || itemData(slot?.item)?.megaStone);
 }
 
 function normalizeItemName(item) {
@@ -7211,32 +9072,102 @@ function unique(items) {
   return [...new Set(items.filter(Boolean))];
 }
 
+function serializeSlot(slot) {
+  const activeMon = activePokemonForSlot(slot) || slot.pokemon;
+  return {
+    pokemon: activeMon?.name || null,
+    item: slot.item || "",
+    ability: slot.ability || "",
+    nature: slot.nature || "Hardy",
+    moves: [...(slot.moves || [])].slice(0, 4),
+    sp: Object.fromEntries(STAT_KEYS.map((key) => [key, clamp(Number(slot.sp?.[key] || 0), 0, MAX_SP_STAT)])),
+  };
+}
+
+function getCurrentPkounterTeamState() {
+  return {
+    version: 2,
+    savedAt: new Date().toISOString(),
+    selectedFormat,
+    selectedLanguage,
+    selectedSlot,
+    activeSideTab,
+    secondarySideTab,
+    threatSearchMode,
+    threatSearch: els.threatSearch?.value || "",
+    suggestionLimit,
+    typeAnalysisView,
+    team: team.map(serializeSlot),
+  };
+}
+
+function applyPkounterTeamState(rawState, options = {}) {
+  const state = normalizeStoredTeamJson(rawState);
+  if (!state) return false;
+
+  const nextFormat = state.selectedFormat || state.format;
+  if (nextFormat && hasMunchFormat(nextFormat)) {
+    selectedFormat = nextFormat;
+    clearPerformanceCaches("format");
+  }
+  if (LANGUAGES[state.selectedLanguage]) {
+    selectedLanguage = state.selectedLanguage;
+    clearPerformanceCaches("language");
+  }
+
+  for (let index = 0; index < MAX_TEAM; index += 1) {
+    const source = state.team?.[index] || {};
+    const slot = emptySlot();
+    const mon = source.pokemon ? findPokemon(source.pokemon) : null;
+    if (mon) {
+      slot.pokemon = mon;
+      slot.item = normalizeItemName(source.item || "");
+      slot.ability = source.ability || "";
+      slot.nature = natureName(source.nature || "") || "Hardy";
+      slot.sp = Object.fromEntries(STAT_KEYS.map((key) => [key, clamp(Number(source.sp?.[key] || 0), 0, MAX_SP_STAT)]));
+      slot.moves = [...(source.moves || [])].slice(0, 4);
+      slot.moves = [...slot.moves, "", "", "", ""].slice(0, 4);
+      slot.moves = sanitizeMovesForSlot(slot);
+    }
+    team[index] = slot;
+  }
+
+  selectedSlot = clamp(Number(state.selectedSlot || 0), 0, MAX_TEAM - 1);
+  activeSideTab = ["suggestions", "counters", "threat"].includes(state.activeSideTab) ? state.activeSideTab : "suggestions";
+  secondarySideTab = ["counters", "threat"].includes(state.secondarySideTab) ? state.secondarySideTab : "counters";
+  threatSearchMode = ["manual", "auto"].includes(state.threatSearchMode) ? state.threatSearchMode : "auto";
+  suggestionLimit = clamp(Number(state.suggestionLimit || 8), 8, 80);
+  typeAnalysisView = ["weaknesses", "resistances"].includes(state.typeAnalysisView) ? state.typeAnalysisView : "";
+  if (els.threatSearch) els.threatSearch.value = state.threatSearch || "";
+  sanitizeTeam();
+  if (threatSearchMode === "auto") syncThreatSearchFromSelected();
+  if (options.persist !== false) persist();
+  if (options.render !== false) {
+    renderPokemonList();
+    renderAll();
+  }
+  return true;
+}
+
 function persist() {
-  localStorage.setItem(
-    "champions-core-builder",
-    JSON.stringify({
-      selectedSlot,
-      selectedFormat,
-      selectedLanguage,
-      team: team.map((slot) => ({ ...slot, pokemon: slot.pokemon?.name || null })),
-    })
-  );
+  try {
+    localStorage.setItem("champions-core-builder", JSON.stringify(getCurrentPkounterTeamState()));
+  } catch {
+    // localStorage can fail in private contexts; the builder should keep working.
+  }
 }
 
 function loadTeam() {
   const saved = localStorage.getItem("champions-core-builder");
   if (!saved) return;
   try {
-    const parsed = JSON.parse(saved);
-    if (parsed.selectedFormat && hasMunchFormat(parsed.selectedFormat)) selectedFormat = parsed.selectedFormat;
-    if (LANGUAGES[parsed.selectedLanguage]) selectedLanguage = parsed.selectedLanguage;
-    selectedSlot = parsed.selectedSlot || 0;
-    parsed.team?.slice(0, MAX_TEAM).forEach((slot, index) => {
-      team[index] = { ...emptySlot(), ...slot, pokemon: slot.pokemon ? findPokemon(slot.pokemon) : null };
-    });
+    applyPkounterTeamState(JSON.parse(saved), { render: false, persist: false });
   } catch {
     localStorage.removeItem("champions-core-builder");
   }
 }
+
+window.getCurrentPkounterTeamState = getCurrentPkounterTeamState;
+window.applyPkounterTeamState = applyPkounterTeamState;
 
 
