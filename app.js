@@ -993,6 +993,7 @@ let renamingTeamId = "";
 let lastSavedTeamFingerprint = "";
 let savedTeamTooltipEl = null;
 let activeSavedTeamTooltipTarget = null;
+let savedTeamTooltipPinned = false;
 let confirmModalResolve = null;
 
 const els = {
@@ -1273,7 +1274,9 @@ function bindEvents() {
     if (event.target.closest?.(".saved-team-sprite") || event.target.closest?.(".saved-team-tooltip")) return;
     hideSavedTeamTooltip();
   });
-  document.addEventListener?.("scroll", () => hideSavedTeamTooltip(), true);
+  document.addEventListener?.("scroll", () => {
+    if (!savedTeamTooltipPinned) hideSavedTeamTooltip();
+  }, true);
 }
 
 function openImportModal() {
@@ -2048,15 +2051,20 @@ function wireSavedTeamTooltips(root) {
   root.querySelectorAll(".saved-team-sprite[data-saved-team-id]").forEach((sprite) => {
     sprite.addEventListener("mouseenter", () => showSavedTeamTooltip(sprite));
     sprite.addEventListener("focus", () => showSavedTeamTooltip(sprite));
-    sprite.addEventListener("mouseleave", () => hideSavedTeamTooltip());
-    sprite.addEventListener("blur", () => hideSavedTeamTooltip());
+    sprite.addEventListener("mouseleave", () => {
+      if (!savedTeamTooltipPinned) hideSavedTeamTooltip();
+    });
+    sprite.addEventListener("blur", () => {
+      if (!savedTeamTooltipPinned) hideSavedTeamTooltip();
+    });
     sprite.addEventListener("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
-      if (activeSavedTeamTooltipTarget === sprite && savedTeamTooltipEl && !savedTeamTooltipEl.hidden) {
+      const isOpen = activeSavedTeamTooltipTarget === sprite && savedTeamTooltipEl && !savedTeamTooltipEl.hidden;
+      if (isOpen && savedTeamTooltipPinned) {
         hideSavedTeamTooltip();
       } else {
-        showSavedTeamTooltip(sprite);
+        showSavedTeamTooltip(sprite, { pinned: true });
       }
     });
   });
@@ -2072,13 +2080,15 @@ function ensureSavedTeamTooltip() {
   return savedTeamTooltipEl;
 }
 
-function showSavedTeamTooltip(target) {
+function showSavedTeamTooltip(target, { pinned = false } = {}) {
   const html = savedTeamTooltipHtml(target.dataset.savedTeamId, Number(target.dataset.savedSlotIndex));
   if (!html) return;
   const tooltip = ensureSavedTeamTooltip();
   activeSavedTeamTooltipTarget = target;
+  savedTeamTooltipPinned = Boolean(pinned);
   tooltip.innerHTML = html;
   tooltip.hidden = false;
+  tooltip.classList.toggle("is-pinned", savedTeamTooltipPinned);
   tooltip.classList.remove("is-visible");
   positionSavedTeamTooltip(target, tooltip);
   requestAnimationFrame(() => tooltip.classList.add("is-visible"));
@@ -2087,8 +2097,10 @@ function showSavedTeamTooltip(target) {
 function hideSavedTeamTooltip() {
   if (!savedTeamTooltipEl) return;
   savedTeamTooltipEl.classList.remove("is-visible");
+  savedTeamTooltipEl.classList.remove("is-pinned");
   savedTeamTooltipEl.hidden = true;
   activeSavedTeamTooltipTarget = null;
+  savedTeamTooltipPinned = false;
 }
 
 function positionSavedTeamTooltip(target, tooltip) {
@@ -2097,6 +2109,14 @@ function positionSavedTeamTooltip(target, tooltip) {
   tooltip.style.top = "0px";
   const rect = target.getBoundingClientRect();
   const tip = tooltip.getBoundingClientRect();
+  const compactViewport = window.matchMedia?.("(max-width: 600px)")?.matches;
+  if (compactViewport) {
+    const left = clamp((window.innerWidth - tip.width) / 2, margin, Math.max(margin, window.innerWidth - tip.width - margin));
+    const top = clamp((window.innerHeight - tip.height) / 2, margin, Math.max(margin, window.innerHeight - tip.height - margin));
+    tooltip.style.left = `${Math.round(left)}px`;
+    tooltip.style.top = `${Math.round(top)}px`;
+    return;
+  }
   let left = rect.right + 12;
   if (left + tip.width > window.innerWidth - margin) left = rect.left - tip.width - 12;
   left = clamp(left, margin, Math.max(margin, window.innerWidth - tip.width - margin));

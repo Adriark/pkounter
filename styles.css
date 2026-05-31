@@ -1492,6 +1492,8 @@ body.modal-open::before {
 
 button.saved-team-sprite {
   cursor: pointer;
+  user-select: none;
+  touch-action: manipulation;
 }
 
 .saved-team-sprite:hover,
@@ -11325,5 +11327,206 @@ body:not(.landing-page) .pk-header .header-helping-link:focus-visible .support-l
     flex-basis: 25px !important;
     width: 25px !important;
     height: 25px !important;
+  }
+}
+
+/* Final mobile polish: centered app popups, tappable saved-team details,
+   and a full Helping Hand CTA in the compact header. */
+.saved-team-tooltip.is-pinned {
+  pointer-events: auto !important;
+  overscroll-behavior: contain !important;
+}
+
+@media (max-width: 760px) {
+  .pk-modal,
+  .import-tray {
+    place-items: center !important;
+    align-items: center !important;
+    justify-items: center !important;
+    padding: 14px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+
+  .pk-dialog,
+  .import-dialog {
+    width: min(100%, 540px) !important;
+    max-width: calc(100vw - 28px) !important;
+    max-height: min(680px, calc(100dvh - 28px)) !important;
+    margin: auto !important;
+    overflow: auto !important;
+    overscroll-behavior: contain !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .saved-team-tooltip {
+    width: min(360px, calc(100vw - 28px)) !important;
+    max-width: calc(100vw - 28px) !important;
+    max-height: min(76dvh, calc(100dvh - 40px)) !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+    font-size: 0.82rem !important;
+    border-color: rgba(70, 219, 160, 0.58) !important;
+    box-shadow:
+      0 18px 46px rgba(0, 0, 0, 0.52),
+      0 0 0 1px rgba(75, 225, 165, 0.12),
+      0 0 24px rgba(36, 177, 126, 0.16) !important;
+  }
+
+  .saved-team-tooltip.is-pinned {
+    touch-action: pan-y !important;
+  }
+
+  body:not(.landing-page) .pk-header .header-actions {
+    justify-content: flex-end !important;
+    gap: 5px !important;
+    min-width: 0 !important;
+    padding-right: 8px !important;
+    overflow: visible !important;
+  }
+
+  body:not(.landing-page) .pk-header .header-helping-link,
+  body:not(.landing-page) .pk-header .header-helping-link:visited,
+  body:not(.landing-page) .pk-header .header-helping-link:hover,
+  body:not(.landing-page) .pk-header .header-helping-link:focus,
+  body:not(.landing-page) .pk-header .header-helping-link:focus-visible,
+  body:not(.landing-page) .pk-header .header-helping-link:active {
+    flex: 0 1 auto !important;
+    width: auto !important;
+    min-width: 112px !important;
+    max-width: 136px !important;
+    height: 32px !important;
+    min-height: 32px !important;
+    padding: 0 7px !important;
+    gap: 5px !important;
+  }
+
+  html[lang="en"] body:not(.landing-page) .pk-header .header-helping-link,
+  html[data-lang="en"] body:not(.landing-page) .pk-header .header-helping-link {
+    min-width: 124px !important;
+    max-width: 146px !important;
+  }
+
+  body:not(.landing-page) .pk-header .header-helping-link .support-link__text,
+  body:not(.landing-page) .pk-header .header-helping-link:hover .support-link__text,
+  body:not(.landing-page) .pk-header .header-helping-link:focus .support-link__text,
+  body:not(.landing-page) .pk-header .header-helping-link:focus-visible .support-link__text,
+  body:not(.landing-page) .pk-header .header-helping-link:active .support-link__text {
+    position: relative !important;
+    inset: auto !important;
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: 90px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    clip: auto !important;
+    clip-path: none !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-size: 0.58rem !important;
+    line-height: 1 !important;
+  }
+
+  html[lang="en"] body:not(.landing-page) .pk-header .header-helping-link .support-link__text,
+  html[data-lang="en"] body:not(.landing-page) .pk-header .header-helping-link .support-link__text {
+    max-width: 104px !important;
+    font-size: 0.54rem !important;
+  }
+
+  body:not(.landing-page) .pk-header .header-helping-link .support-link__icon,
+  body:not(.landing-page) .pk-header .header-helping-link:hover .support-link__icon,
+  body:not(.landing-page) .pk-header .header-helping-link:focus-visible .support-link__icon {
+    flex: 0 0 18px !important;
+    width: 18px !important;
+    height: 18px !important;
+  }
+
+  body:not(.landing-page) .pk-header .header-separator {
+    display: block !important;
+    flex: 0 0 1px !important;
+    width: 1px !important;
+    min-width: 1px !important;
+    height: 28px !important;
+    margin: 0 1px !important;
+    background: rgba(128, 166, 186, 0.36) !important;
+  }
+
+  body:not(.landing-page) .pk-header .header-icon-button {
+    width: 29px !important;
+    height: 29px !important;
+    min-width: 29px !important;
+    min-height: 29px !important;
+  }
+
+  body:not(.landing-page) .pk-header .header-icon-button--user,
+  body:not(.landing-page) .pk-header .header-icon-button--user .header-icon-img {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    min-height: 34px !important;
+  }
+}
+
+@media (max-width: 390px) {
+  body:not(.landing-page) .pk-header .header-actions {
+    gap: 4px !important;
+    padding-right: 6px !important;
+  }
+
+  body:not(.landing-page) .pk-header .header-helping-link,
+  body:not(.landing-page) .pk-header .header-helping-link:visited,
+  body:not(.landing-page) .pk-header .header-helping-link:hover,
+  body:not(.landing-page) .pk-header .header-helping-link:focus,
+  body:not(.landing-page) .pk-header .header-helping-link:focus-visible,
+  body:not(.landing-page) .pk-header .header-helping-link:active {
+    min-width: 104px !important;
+    max-width: 124px !important;
+    height: 31px !important;
+    min-height: 31px !important;
+    padding: 0 6px !important;
+    gap: 4px !important;
+  }
+
+  html[lang="en"] body:not(.landing-page) .pk-header .header-helping-link,
+  html[data-lang="en"] body:not(.landing-page) .pk-header .header-helping-link {
+    min-width: 116px !important;
+    max-width: 136px !important;
+  }
+
+  body:not(.landing-page) .pk-header .header-helping-link .support-link__text {
+    max-width: 82px !important;
+    font-size: 0.52rem !important;
+  }
+
+  html[lang="en"] body:not(.landing-page) .pk-header .header-helping-link .support-link__text,
+  html[data-lang="en"] body:not(.landing-page) .pk-header .header-helping-link .support-link__text {
+    max-width: 96px !important;
+    font-size: 0.49rem !important;
+  }
+
+  body:not(.landing-page) .pk-header .header-helping-link .support-link__icon,
+  body:not(.landing-page) .pk-header .header-helping-link:hover .support-link__icon,
+  body:not(.landing-page) .pk-header .header-helping-link:focus-visible .support-link__icon {
+    flex-basis: 16px !important;
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  body:not(.landing-page) .pk-header .header-icon-button {
+    width: 27px !important;
+    height: 27px !important;
+    min-width: 27px !important;
+    min-height: 27px !important;
+  }
+
+  body:not(.landing-page) .pk-header .header-icon-button--user,
+  body:not(.landing-page) .pk-header .header-icon-button--user .header-icon-img {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
   }
 }
