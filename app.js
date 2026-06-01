@@ -45,6 +45,24 @@ const LANGUAGE_OPTION_LABELS = {
   en: "English",
   es: "Español",
 };
+const SCROLL_HANDOFF_SELECTOR = [
+  ".team-panel",
+  ".editor-panel #editor",
+  ".suggestions-panel .suggestions",
+  ".counters-panel .counters",
+  ".threat-panel .counters",
+  ".side-tab-panel .suggestions",
+  ".side-tab-panel .counters",
+].join(",");
+const SCROLL_HANDOFF_IGNORE_SELECTOR = [
+  ".pk-modal",
+  ".import-tray",
+  ".combo-menu",
+  ".format-menu",
+  ".header-menu-floating",
+  ".saved-team-tooltip",
+  ".move-info-popover",
+].join(",");
 
 const CHOICE_ITEM_IDS = new Set(["choiceband", "choicescarf", "choicespecs"]);
 const CHOICE_LOCK_BAD_MOVE_IDS = new Set(["protect", "detect", "spikyshield", "kingsshield", "banefulbunker", "silktrap", "obstruct"]);
@@ -1091,6 +1109,7 @@ function init() {
   renderLanguageSelect();
   renderPokemonList();
   bindEvents();
+  installScrollBoundaryHandoff();
   syncResponsiveSideLayout({ render: false });
   renderAll();
   initSupabaseAuth();
@@ -1114,6 +1133,56 @@ function mountHeaderMenus() {
       document.body.appendChild(menu);
     }
   });
+}
+
+function installScrollBoundaryHandoff() {
+  if (document.documentElement.dataset.scrollBoundaryHandoff === "true") return;
+  document.documentElement.dataset.scrollBoundaryHandoff = "true";
+  document.addEventListener("wheel", handleScrollBoundaryHandoff, {
+    capture: true,
+    passive: false,
+  });
+}
+
+function handleScrollBoundaryHandoff(event) {
+  if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.shiftKey) return;
+  if (!event.deltaY || Math.abs(event.deltaY) < Math.abs(event.deltaX)) return;
+  const rawTarget = event.target;
+  const target = rawTarget instanceof Element ? rawTarget : rawTarget?.parentElement;
+  if (!target) return;
+  if (target.closest(SCROLL_HANDOFF_IGNORE_SELECTOR)) return;
+
+  const panel = target.closest(SCROLL_HANDOFF_SELECTOR);
+  if (!panel || !isScrollableY(panel)) return;
+
+  const maxPanelScroll = panel.scrollHeight - panel.clientHeight;
+  const atTop = panel.scrollTop <= 1;
+  const atBottom = panel.scrollTop >= maxPanelScroll - 1;
+  const leavingPanel = (event.deltaY < 0 && atTop) || (event.deltaY > 0 && atBottom);
+  if (!leavingPanel) return;
+
+  const page = document.scrollingElement || document.documentElement;
+  const maxPageScroll = page.scrollHeight - page.clientHeight;
+  if (maxPageScroll <= 1) return;
+
+  const pageAtTop = page.scrollTop <= 1;
+  const pageAtBottom = page.scrollTop >= maxPageScroll - 1;
+  if ((event.deltaY < 0 && pageAtTop) || (event.deltaY > 0 && pageAtBottom)) return;
+
+  event.preventDefault();
+  page.scrollBy({ top: normalizeWheelDeltaY(event), left: 0, behavior: "auto" });
+}
+
+function isScrollableY(element) {
+  const style = window.getComputedStyle(element);
+  if (!/(auto|scroll|overlay)/.test(style.overflowY)) return false;
+  return element.scrollHeight > element.clientHeight + 1;
+}
+
+function normalizeWheelDeltaY(event) {
+  if (event.deltaMode === WheelEvent.DOM_DELTA_LINE) return event.deltaY * 16;
+  if (event.deltaMode === WheelEvent.DOM_DELTA_PAGE) return event.deltaY * window.innerHeight;
+  return event.deltaY;
 }
 
 function bindEvents() {

@@ -11702,3 +11702,31 @@ body:not(.landing-page) .pk-header .header-helping-link:focus-visible .support-l
     min-height: 32px !important;
   }
 }
+
+/* Scroll handoff: internal builder panels keep their own scroll, but do not
+   trap wheel/touch momentum once they reach the top or bottom edge. */
+body:not(.landing-page):not(.about-page) {
+  overscroll-behavior-y: auto !important;
+}
+
+body:not(.landing-page):not(.about-page) .app-shell,
+body:not(.landing-page):not(.about-page) .team-panel,
+body:not(.landing-page):not(.about-page) .editor-panel #editor,
+body:not(.landing-page):not(.about-page) .side-tab-panel,
+body:not(.landing-page):not(.about-page) .side-tab-panel .suggestions,
+body:not(.landing-page):not(.about-page) .side-tab-panel .counters,
+body:not(.landing-page):not(.about-page) .suggestions-panel .suggestions,
+body:not(.landing-page):not(.about-page) .counters-panel .counters,
+body:not(.landing-page):not(.about-page) .threat-panel .counters {
+  overscroll-behavior-y: auto !important;
+}
+
+body:not(.landing-page):not(.about-page) .team-panel,
+body:not(.landing-page):not(.about-page) .editor-panel #editor,
+body:not(.landing-page):not(.about-page) .side-tab-panel .suggestions,
+body:not(.landing-page):not(.about-page) .side-tab-panel .counters,
+body:not(.landing-page):not(.about-page) .suggestions-panel .suggestions,
+body:not(.landing-page):not(.about-page) .counters-panel .counters,
+body:not(.landing-page):not(.about-page) .threat-panel .counters {
+  -webkit-overflow-scrolling: touch;
+}
