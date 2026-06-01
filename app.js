@@ -197,6 +197,7 @@ const UI_TEXT = {
     authCreateAccount: "Crear cuenta",
     authDiscord: "Entrar con Discord",
     authEmail: "Email",
+    authEmailAlreadyExists: "Ya existe una cuenta con este email. Inicia sesión o recupera tu contraseña.",
     authEmailPlaceholder: "Tu email",
     authForgot: "¿Has olvidado la contraseña?",
     authGoogle: "Entrar con Google",
@@ -204,10 +205,16 @@ const UI_TEXT = {
     authLogout: "Cerrar sesión",
     authLogoutBusy: "Cerrando...",
     authPassword: "Contraseña",
+    authPasswordMismatch: "Las contraseñas no coinciden.",
+    authPasswordUpdated: "Contraseña actualizada.",
     authPasswordPlaceholder: "Contraseña",
     authRegister: "Registro",
+    authResetEmailSent: "Email de recuperación enviado. Abre el enlace desde tu correo para crear una nueva contraseña.",
     authResetPassword: "Cambiar contraseña",
     authSignIn: "Entrar",
+    authSignUpEmailSent: "Cuenta creada. Te hemos enviado un correo para confirmar tu email. Revisa también la carpeta de spam o promociones si no lo ves.",
+    authSignUpGenericError: "No se ha podido crear la cuenta. Inténtalo de nuevo en unos segundos.",
+    authSignUpSignedIn: "Cuenta creada. Ya has iniciado sesión.",
     authUsername: "Usuario",
     authUsernamePlaceholder: "Usuario",
     attributionNotice: "Pkounter no está afiliado a Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown, MunchStats ni PokéAPI.",
@@ -297,6 +304,7 @@ const UI_TEXT = {
     authCreateAccount: "Create account",
     authDiscord: "Continue with Discord",
     authEmail: "Email",
+    authEmailAlreadyExists: "An account with this email already exists. Please sign in or reset your password.",
     authEmailPlaceholder: "Your email",
     authForgot: "Forgot password?",
     authGoogle: "Continue with Google",
@@ -304,10 +312,16 @@ const UI_TEXT = {
     authLogout: "Sign out",
     authLogoutBusy: "Signing out...",
     authPassword: "Password",
+    authPasswordMismatch: "Passwords do not match.",
+    authPasswordUpdated: "Password updated.",
     authPasswordPlaceholder: "Password",
     authRegister: "Register",
+    authResetEmailSent: "Password reset email sent. Open the link from your email to create a new password.",
     authResetPassword: "Update password",
     authSignIn: "Sign in",
+    authSignUpEmailSent: "Account created. We've sent you an email to confirm your address. Check your spam or promotions folder if you don't see it.",
+    authSignUpGenericError: "We couldn't create your account. Please try again in a few seconds.",
+    authSignUpSignedIn: "Account created. You are now signed in.",
     authUsername: "Username",
     authUsernamePlaceholder: "Username",
     attributionNotice: "Pkounter is not affiliated with Nintendo, Game Freak, The Pokémon Company, Smogon, Pokémon Showdown, MunchStats, or PokéAPI.",
@@ -1338,9 +1352,30 @@ function translateSupabaseError(message) {
       : "Username must be 3-24 characters using lowercase letters, numbers, or underscore.";
   }
   if (id.includes("useralreadyregistered") || id.includes("alreadyregistered") || id.includes("alreadyexists")) {
-    return isEs ? "Ya existe una cuenta con ese email." : "An account with that email already exists.";
+    return isEs ? UI_TEXT.es.authEmailAlreadyExists : UI_TEXT.en.authEmailAlreadyExists;
   }
   return raw;
+}
+
+function isExistingAccountError(message) {
+  const id = toId(message);
+  return id.includes("useralreadyregistered")
+    || id.includes("alreadyregistered")
+    || id.includes("alreadyexists")
+    || id.includes("emailalreadyregistered")
+    || id.includes("emailalreadyexists");
+}
+
+function signUpErrorMessage(error) {
+  const raw = supabaseBridge().formatError?.(error) || error?.message || String(error || "");
+  if (isExistingAccountError(raw)) return t("authEmailAlreadyExists");
+  const translated = translateSupabaseError(raw);
+  return translated && translated !== raw ? translated : t("authSignUpGenericError");
+}
+
+function signUpLooksLikeExistingEmail(result) {
+  const identities = result?.user?.identities;
+  return Array.isArray(identities) && identities.length === 0;
 }
 
 async function initSupabaseAuth() {
@@ -1588,6 +1623,7 @@ function renderAuthModal(message = "") {
       ${authProviderButtonsHtml()}
       ${authSecondaryActionsHtml([
         { text: isEs ? "¿Ya tienes cuenta?" : "Already have an account?", action: t("authLogin"), mode: "login" },
+        { text: isEs ? "¿Ya la creaste antes?" : "Already registered?", action: t("authForgot"), mode: "forgot" },
       ])}`;
   } else if (authMode === "forgot") {
     els.authContent.innerHTML = `
@@ -1686,18 +1722,20 @@ async function handleAuthFormSubmit(event) {
   try {
     if (form.dataset.authForm === "register") {
       const result = await supabaseAuth().signUp(data);
+      if (signUpLooksLikeExistingEmail(result)) {
+        setAuthMessage(t("authEmailAlreadyExists"), "error");
+        return;
+      }
       const needsEmail = !result.session;
-      setAuthMessage(needsEmail
-        ? (selectedLanguage === "es" ? "Cuenta creada. Revisa tu email para confirmarla." : "Account created. Please check your email.")
-        : (selectedLanguage === "es" ? "Cuenta creada. Ya has iniciado sesión." : "Account created. You are now signed in."), "success");
+      setAuthMessage(needsEmail ? t("authSignUpEmailSent") : t("authSignUpSignedIn"), "success");
       if (!needsEmail) closeAuthModal();
     } else if (form.dataset.authForm === "forgot") {
       await supabaseAuth().resetPassword(data.email);
-      setAuthMessage(selectedLanguage === "es" ? "Email de recuperación enviado." : "Password reset email sent.", "success");
+      setAuthMessage(t("authResetEmailSent"), "success");
     } else if (form.dataset.authForm === "reset") {
-      if (data.password !== data.confirm) throw new Error(selectedLanguage === "es" ? "Las contraseñas no coinciden." : "Passwords do not match.");
+      if (data.password !== data.confirm) throw new Error(t("authPasswordMismatch"));
       await supabaseAuth().updatePassword(data.password);
-      setAuthMessage(selectedLanguage === "es" ? "Contraseña actualizada." : "Password updated.", "success");
+      setAuthMessage(t("authPasswordUpdated"), "success");
       setTimeout(() => closeAuthModal(), 700);
     } else {
       await supabaseAuth().signIn(data);
@@ -1705,7 +1743,7 @@ async function handleAuthFormSubmit(event) {
       showAppToast(selectedLanguage === "es" ? "Sesión iniciada." : "Signed in.", "success");
     }
   } catch (error) {
-    setAuthMessage(supabaseError(error), "error");
+    setAuthMessage(form.dataset.authForm === "register" ? signUpErrorMessage(error) : supabaseError(error), "error");
   } finally {
     submit.disabled = false;
   }

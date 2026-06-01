@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' https://play.pokemonshowdown.com https://raw.githubusercontent.com data:; connect-src 'self' https://kjcyhauosltrdorpihoi.supabase.co; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests" />
+  <title>Reset Password - Pkounter</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="canonical" href="https://pkounter.com/reset-password/" />
+
+  <link rel="icon" type="image/png" href="/assets/Pkounter_icon.png?v=2" />
+  <link rel="shortcut icon" type="image/png" href="/assets/Pkounter_icon.png?v=2" />
+  <link rel="apple-touch-icon" href="/assets/Pkounter_icon.png?v=2" />
+
+  <link rel="stylesheet" href="/styles.css?v=20260601a" />
+</head>
+<body class="reset-page">
+  <main class="reset-shell">
+    <section class="reset-card" aria-labelledby="reset-title">
+      <a class="reset-logo-link" href="/" aria-label="Pkounter">
+        <img class="reset-logo" src="/assets/Pkounter_logo_cropped.png?v=2" alt="Pkounter" />
+      </a>
+
+      <div class="reset-language" role="group" aria-label="Language">
+        <button type="button" data-reset-lang="en">English</button>
+        <button type="button" data-reset-lang="es">Español</button>
+      </div>
+
+      <p class="reset-kicker" data-reset-i18n="kicker">Pkounter account</p>
+      <h1 id="reset-title" data-reset-i18n="title">Create a new password</h1>
+      <p class="reset-copy" data-reset-i18n="copy">Enter your new password to finish recovering your account.</p>
+
+      <div class="reset-message" data-reset-message hidden></div>
+
+      <form class="reset-form" data-reset-form>
+        <label>
+          <span data-reset-i18n="passwordLabel">New password</span>
+          <input name="password" type="password" autocomplete="new-password" minlength="8" required />
+        </label>
+        <label>
+          <span data-reset-i18n="confirmLabel">Repeat password</span>
+          <input name="confirm" type="password" autocomplete="new-password" minlength="8" required />
+        </label>
+        <button class="accent-button" type="submit" data-reset-submit data-reset-i18n="submit">Update password</button>
+      </form>
+
+      <a class="reset-back" href="/building/" data-reset-i18n="back">Back to builder</a>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/supabase-client.js?v=20260601a"></script>
+  <script src="/reset-password.js?v=20260601a"></script>
+</body>
+</html>

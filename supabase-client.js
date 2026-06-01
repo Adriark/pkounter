@@ -52,6 +52,10 @@
     return `${window.location.origin}/building/`;
   }
 
+  function resetPasswordRedirectTo() {
+    return `${window.location.origin}/reset-password/`;
+  }
+
   function formatError(error) {
     if (!error) return "";
     return error.message || String(error);
@@ -142,7 +146,7 @@
     const emailError = validateEmail(email);
     if (emailError) throw new Error(emailError);
     const { data, error } = await client.auth.resetPasswordForEmail(cleanEmail(email), {
-      redirectTo: authRedirectTo(),
+      redirectTo: resetPasswordRedirectTo(),
     });
     if (error) throw error;
     return data;
@@ -237,6 +241,7 @@
       resetPassword,
       updatePassword,
       getRedirectTo: authRedirectTo,
+      getResetPasswordRedirectTo: resetPasswordRedirectTo,
       onAuthStateChange: (...args) => client.auth.onAuthStateChange(...args),
     },
     teams: {
