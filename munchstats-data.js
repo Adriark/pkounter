@@ -96728,12 +96728,10 @@ const MUNCH_STATS = {
             "Dragalgite": 100
           },
           "abilities": [
-            "No Ability",
             "Regenerator"
           ],
           "abilityUsage": {
-            "No Ability": 83.1,
-            "Regenerator": 16.9
+            "Regenerator": 100
           },
           "teammates": [
             "Corviknight",
@@ -99033,12 +99031,10 @@ const MUNCH_STATS = {
             "Raichunite Y": 100
           },
           "abilities": [
-            "No Ability",
             "No Guard"
           ],
           "abilityUsage": {
-            "No Ability": 85.5,
-            "No Guard": 14.5
+            "No Guard": 100
           },
           "teammates": [
             "Garchomp",
@@ -99383,12 +99379,10 @@ const MUNCH_STATS = {
             "Staraptite": 100
           },
           "abilities": [
-            "No Ability",
             "Contrary"
           ],
           "abilityUsage": {
-            "No Ability": 88.1,
-            "Contrary": 11.9
+            "Contrary": 100
           },
           "teammates": [
             "Garchomp",
@@ -104917,12 +104911,10 @@ const MUNCH_STATS = {
             "Barbaracite": 100
           },
           "abilities": [
-            "No Ability",
             "Tough Claws"
           ],
           "abilityUsage": {
-            "No Ability": 94.1,
-            "Tough Claws": 5.9
+            "Tough Claws": 100
           },
           "teammates": [
             "Scizor",
@@ -105253,12 +105245,10 @@ const MUNCH_STATS = {
             "Eelektrossite": 100
           },
           "abilities": [
-            "No Ability",
             "Eelevate"
           ],
           "abilityUsage": {
-            "No Ability": 90.5,
-            "Eelevate": 9.5
+            "Eelevate": 100
           },
           "teammates": [
             "Garchomp",
@@ -107192,12 +107182,10 @@ const MUNCH_STATS = {
             "Pyroarite": 100
           },
           "abilities": [
-            "No Ability",
             "Fire Mane"
           ],
           "abilityUsage": {
-            "No Ability": 89.6,
-            "Fire Mane": 10.4
+            "Fire Mane": 100
           },
           "teammates": [
             "Hatterene",
@@ -109178,12 +109166,10 @@ const MUNCH_STATS = {
             "Falinksite": 100
           },
           "abilities": [
-            "No Ability",
             "Defiant"
           ],
           "abilityUsage": {
-            "No Ability": 76.7,
-            "Defiant": 23.3
+            "Defiant": 100
           },
           "teammates": [
             "Dragonite",
@@ -110062,12 +110048,10 @@ const MUNCH_STATS = {
             "Scolipite": 100
           },
           "abilities": [
-            "No Ability",
             "Shell Armor"
           ],
           "abilityUsage": {
-            "No Ability": 86,
-            "Shell Armor": 14
+            "Shell Armor": 100
           },
           "teammates": [
             "Garchomp",
@@ -112211,12 +112195,10 @@ const MUNCH_STATS = {
             "Raichunite X": 100
           },
           "abilities": [
-            "No Ability",
             "Electric Surge"
           ],
           "abilityUsage": {
-            "No Ability": 80.7,
-            "Electric Surge": 19.3
+            "Electric Surge": 100
           },
           "teammates": [
             "Samurott-Hisui",
@@ -114153,12 +114135,10 @@ const MUNCH_STATS = {
             "Scraftinite": 100
           },
           "abilities": [
-            "No Ability",
             "Intimidate"
           ],
           "abilityUsage": {
-            "No Ability": 77.2,
-            "Intimidate": 22.8
+            "Intimidate": 100
           },
           "teammates": [
             "Garchomp",
@@ -128936,12 +128916,10 @@ const MUNCH_STATS = {
             "Malamarite": 100
           },
           "abilities": [
-            "No Ability",
             "Contrary"
           ],
           "abilityUsage": {
-            "No Ability": 67.9,
-            "Contrary": 32.1
+            "Contrary": 100
           },
           "teammates": [
             "Gholdengo",
